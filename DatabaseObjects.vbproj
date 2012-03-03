@@ -186,6 +186,7 @@
     <Compile Include="SQL\Amend\SQLInsertFromSelect.vb" />
     <Compile Include="SQL\Amend\SQLUpdateField.vb" />
     <Compile Include="SQL\Expressions\SQLArithmeticExpression.vb" />
+    <Compile Include="SQL\Expressions\SQLBitwiseExpression.vb" />
     <Compile Include="SQL\Expressions\SQLCastFieldExpression.vb" />
     <Compile Include="SQL\Expressions\SQLExpression.vb" />
     <Compile Include="SQL\Expressions\SQLFieldAggregateExpression.vb" />
