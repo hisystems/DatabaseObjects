@@ -18,3 +18,6 @@ Imports System.Runtime.CompilerServices
 <Assembly: AssemblyCulture("")>
 <Assembly: AssemblyVersion("3.5.3.0")> 
 <Assembly: CLSCompliant(True)> 
+#If DEBUG Then
+<Assembly: InternalsVisibleTo("DatabaseObjects.UnitTests")> 
+#End If
