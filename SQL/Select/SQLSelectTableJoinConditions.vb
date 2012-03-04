@@ -12,11 +12,14 @@ Option Explicit On
 Namespace SQL
 
     Public Class SQLSelectTableJoinConditions
-        Implements Collections.Generic.IEnumerable(Of SQLSelectTableJoinCondition)
 
         Private pobjLogicalOperators As New Collections.Generic.List(Of LogicalOperator)
-        Private pobjConditions As New Collections.Generic.List(Of SQLSelectTableJoinCondition)
+        Private pobjConditions As New ArrayList
         Private pobjParent As SQLSelectTableJoin
+
+        Public Sub New()
+
+        End Sub
 
         Friend Sub New(ByVal objParent As SQLSelectTableJoin)
 
@@ -25,24 +28,27 @@ Namespace SQL
 
         End Sub
 
-        Friend ReadOnly Property Parent() As SQLSelectTableJoin
-            Get
-
-                Return pobjParent
-
-            End Get
-        End Property
-
         Public Function Add() As SQLSelectTableJoinCondition
 
             Return Add("", ComparisonOperator.EqualTo, "")
 
         End Function
 
+        Public Sub Add(ByVal conditions As SQLSelectTableJoinConditions)
+
+            AddLogicalOperatorIfRequired()
+            pobjConditions.Add(conditions)
+
+        End Sub
+
         Public Function Add( _
             ByVal strLeftTableFieldName As String, _
             ByVal eCompare As ComparisonOperator, _
             ByVal strRightTableFieldName As String) As SQLSelectTableJoinCondition
+
+            If pobjParent Is Nothing Then
+                Throw New InvalidOperationException("Use overloaded Add(SQLExpression, ComparisonOperator, SQLExpression) instead")
+            End If
 
             'The Add function is here basically for backward compatibility when the conditions could only accept field names and the left and right tables from the parent join were used as table aliases. 
             'Now that that SQLSelectTableBase is being used (which can represent a table or joined tables) we need to check that parent left and right tables are only SQLSelectTable objects.
@@ -110,14 +116,6 @@ Namespace SQL
 
         End Sub
 
-        Default Public ReadOnly Property Item(ByVal intIndex As Integer) As SQLSelectTableJoinCondition
-            Get
-
-                Return pobjConditions.Item(intIndex)
-
-            End Get
-        End Property
-
         Public ReadOnly Property IsEmpty As Boolean
             Get
 
@@ -134,6 +132,17 @@ Namespace SQL
             End Get
         End Property
 
+        Public Sub Delete(ByRef objConditions As SQLSelectTableJoinConditions)
+
+            If Not pobjConditions.Contains(objConditions) Then
+                Throw New IndexOutOfRangeException
+            End If
+
+            pobjConditions.Remove(objConditions)
+            objConditions = Nothing
+
+        End Sub
+
         Public Sub Delete(ByRef objOrderByField As SQLSelectTableJoinCondition)
 
             If Not pobjConditions.Contains(objOrderByField) Then
@@ -149,35 +158,28 @@ Namespace SQL
             Get
 
                 Dim strSQL As String = String.Empty
-                Dim objCondition As SQLSelectTableJoinCondition
+                Dim intIndex As Integer
 
-                With pobjConditions
-                    For intIndex As Integer = 0 To .Count() - 1
-                        If intIndex > 0 Then
-                            strSQL &= " " & SQLConvertLogicalOperator(DirectCast(pobjLogicalOperators.Item(intIndex - 1), LogicalOperator)) & " "
-                        End If
+                For Each objCondition As Object In pobjConditions
+                    If intIndex > 0 Then
+                        strSQL &= " " & SQLConvertLogicalOperator(CType(pobjLogicalOperators.Item(intIndex - 1), LogicalOperator)) & " "
+                    End If
 
-                        objCondition = DirectCast(.Item(intIndex), SQLSelectTableJoinCondition)
-                        strSQL &= objCondition.SQL(eConnectionType)
-                    Next
-                End With
+                    If TypeOf objCondition Is SQLSelectTableJoinConditions Then
+                        strSQL &= "(" & DirectCast(objCondition, SQLSelectTableJoinConditions).SQL(eConnectionType) & ")"
+                    ElseIf TypeOf objCondition Is SQLSelectTableJoinCondition Then
+                        strSQL &= DirectCast(objCondition, SQLSelectTableJoinCondition).SQL(eConnectionType)
+                    Else
+                        Throw New NotImplementedException(objCondition.GetType.FullName)
+                    End If
+
+                    intIndex += 1
+                Next
 
                 Return strSQL
 
             End Get
         End Property
-
-        Private Function GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
-
-            Return pobjConditions.GetEnumerator
-
-        End Function
-
-        Private Function GetEnumerator1() As System.Collections.Generic.IEnumerator(Of SQLSelectTableJoinCondition) Implements System.Collections.Generic.IEnumerable(Of SQLSelectTableJoinCondition).GetEnumerator
-
-            Return pobjConditions.GetEnumerator
-
-        End Function
 
     End Class
 
