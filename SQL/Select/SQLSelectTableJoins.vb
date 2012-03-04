@@ -33,9 +33,9 @@ Namespace SQL
         End Function
 
         Public Function Add( _
-            ByVal objLeftTable As SQLSelectTable, _
+            ByVal objLeftTable As SQLSelectTableBase, _
             ByVal eJoin As SQLSelectTableJoin.Type, _
-            ByVal objRightTable As SQLSelectTable) As SQLSelectTableJoin
+            ByVal objRightTable As SQLSelectTableBase) As SQLSelectTableJoin
 
             Dim objJoin As SQLSelectTableJoin = New SQLSelectTableJoin(Me)
 

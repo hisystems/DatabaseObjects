@@ -16,7 +16,7 @@ Namespace SQL
         Protected MustOverride ReadOnly Property Source(ByVal eConnectionType As Database.ConnectionType) As String
         Friend MustOverride Function GetPrefix() As String
 
-        Private pstrAlias As String
+        Private pstrAlias As String = String.Empty
 
         Public Sub New()
 

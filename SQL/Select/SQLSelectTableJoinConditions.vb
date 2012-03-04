@@ -44,24 +44,60 @@ Namespace SQL
             ByVal eCompare As ComparisonOperator, _
             ByVal strRightTableFieldName As String) As SQLSelectTableJoinCondition
 
+            'The Add function is here basically for backward compatibility when the conditions could only accept field names and the left and right tables from the parent join were used as table aliases. 
+            'Now that that SQLSelectTableBase is being used (which can represent a table or joined tables) we need to check that parent left and right tables are only SQLSelectTable objects.
+            If Not TypeOf pobjParent.LeftTable Is SQLSelectTable Then
+                Throw New ArgumentException("The left table is expected to be an SQLSelectTable so that the left table alias can be utilised for the strLeftTableFieldName argument. Use the Add(SQLExpression, ComparisonOperator, SQLExpression) overload instead.")
+            ElseIf Not TypeOf pobjParent.RightTable Is SQLSelectTable Then
+                Throw New ArgumentException("The right table is expected to be an SQLSelectTable so that the right table alias can be utilised for the strRightTableFieldName argument. Use the Add(SQLExpression, ComparisonOperator, SQLExpression) overload instead.")
+            End If
+
+            EnsureComparisonOperatorValid(eCompare)
+            AddLogicalOperatorIfRequired()
+
+            Add = New SQLSelectTableJoinCondition(Me)
+            Add.LeftExpression = New SQLFieldExpression(DirectCast(pobjParent.LeftTable, SQLSelectTable), strLeftTableFieldName)
+            Add.Compare = eCompare
+            Add.RightExpression = New SQLFieldExpression(DirectCast(pobjParent.RightTable, SQLSelectTable), strRightTableFieldName)
+
+            pobjConditions.Add(Add)
+
+        End Function
+
+        Public Function Add( _
+            ByVal objLeftExpression As SQLExpression, _
+            ByVal eCompare As ComparisonOperator, _
+            ByVal objRightExpression As SQLExpression) As SQLSelectTableJoinCondition
+
+            EnsureComparisonOperatorValid(eCompare)
+            AddLogicalOperatorIfRequired()
+
+            Add = New SQLSelectTableJoinCondition(Me)
+
+            Add.LeftExpression = objLeftExpression
+            Add.Compare = eCompare
+            Add.RightExpression = objRightExpression
+
+            pobjConditions.Add(Add)
+
+        End Function
+
+        Private Sub AddLogicalOperatorIfRequired()
+
             'Add the AND operator if an operator hasn't been called after the previous Add call
             If pobjLogicalOperators.Count() < pobjConditions.Count() Then
                 Me.AddLogicalOperator(LogicalOperator.And)
             End If
 
+        End Sub
+
+        Private Sub EnsureComparisonOperatorValid(eCompare As ComparisonOperator)
+
             If eCompare = ComparisonOperator.Like Or eCompare = ComparisonOperator.NotLike Then
                 Throw New Exceptions.DatabaseObjectsException("LIKE operator is not supported for table joins.")
             End If
 
-            Add = New SQLSelectTableJoinCondition(Me)
-
-            Add.LeftTableFieldName = strLeftTableFieldName
-            Add.Compare = eCompare
-            Add.RightTableFieldName = strRightTableFieldName
-
-            pobjConditions.Add(Add)
-
-        End Function
+        End Sub
 
         Public Sub AddLogicalOperator( _
             ByVal eLogicalOperator As LogicalOperator)

@@ -12,6 +12,7 @@ Option Explicit On
 Namespace SQL
 
     Public Class SQLSelectTableJoin
+        Inherits SQLSelectTableBase
 
         Public Enum Type
             Inner
@@ -94,30 +95,17 @@ Namespace SQL
             End Set
         End Property
 
-        Friend ReadOnly Property SQL(ByVal eConnectionType As Database.ConnectionType) As String
+        Friend Overrides Function GetPrefix() As String
+
+            Return MyBase.Alias
+
+        End Function
+
+        Protected Overrides ReadOnly Property Source(ByVal eConnectionType As Database.ConnectionType) As String
             Get
 
-                Dim strSQL As String = String.Empty
-                Dim strJoin As String = String.Empty
-
-                Select Case Me.TheType
-                    Case SQLSelectTableJoin.Type.Inner
-                        strJoin = "INNER JOIN"
-                    Case SQLSelectTableJoin.Type.FullOuter
-                        strJoin = "FULL OUTER JOIN"
-                    Case SQLSelectTableJoin.Type.LeftOuter
-                        strJoin = "LEFT OUTER JOIN"
-                    Case SQLSelectTableJoin.Type.RightOuter
-                        strJoin = "RIGHT OUTER JOIN"
-                End Select
-
-                If Index() = 0 Then
-                    strSQL = pobjLeftTable.SQL(eConnectionType)
-                Else
-                    strSQL = pobjParent(Index() - 1).SQL(eConnectionType)
-                End If
-
-                strSQL &= " " & strJoin & " " & pobjRightTable.SQL(eConnectionType)
+                Dim strSQL As String = _
+                    pobjLeftTable.SQL(eConnectionType) & " " & GetJoinString(Me.TheType) & " " & pobjRightTable.SQL(eConnectionType)
 
                 If Not pobjConditions Is Nothing AndAlso Not pobjConditions.IsEmpty Then
                     strSQL &= " ON " & pobjConditions.SQL(eConnectionType)
@@ -129,13 +117,20 @@ Namespace SQL
             End Get
         End Property
 
-        Private Function Index() As Integer
+        Private Shared Function GetJoinString(eJoinType As Type) As String
 
-            For intIndex As Integer = 0 To pobjParent.Count - 1
-                If pobjParent(intIndex) Is Me Then
-                    Return intIndex
-                End If
-            Next
+            Select Case eJoinType
+                Case SQLSelectTableJoin.Type.Inner
+                    Return "INNER JOIN"
+                Case SQLSelectTableJoin.Type.FullOuter
+                    Return "FULL OUTER JOIN"
+                Case SQLSelectTableJoin.Type.LeftOuter
+                    Return "LEFT OUTER JOIN"
+                Case SQLSelectTableJoin.Type.RightOuter
+                    Return "RIGHT OUTER JOIN"
+                Case Else
+                    Throw New NotImplementedException(eJoinType.ToString)
+            End Select
 
         End Function
 
