@@ -327,6 +327,7 @@
     <Compile Include="Contraints\IConstraint.vb" />
     <Compile Include="SQL\Views\SQLCreateView.vb" />
     <Compile Include="SQL\Views\SQLDropView.vb" />
+    <Compile Include="SQL\Views\SQLViewExists.vb" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
