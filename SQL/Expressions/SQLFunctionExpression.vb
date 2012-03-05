@@ -38,10 +38,37 @@ Namespace SQL
         Public Sub New(strFunctionName As String, ParamArray arguments() As SQLExpression)
 
             Me.New(strFunctionName)
+            InitializeArguments(arguments)
+
+        End Sub
+
+        ''' <summary>
+        ''' Used when the arguments are known but the function name is dependant on the connection type.
+        ''' Typically, in this scenario the FunctionName() will be overridden.
+        ''' </summary>
+        ''' <param name="arguments"></param>
+        ''' <remarks></remarks>
+        Protected Sub New(ParamArray arguments() As SQLExpression)
+
+            InitializeArguments(arguments)
+
+        End Sub
+
+        Private Sub InitializeArguments(ParamArray arguments() As SQLExpression)
+
+            If arguments.Any(Function(item) item Is Nothing) Then
+                Throw New ArgumentNullException
+            End If
 
             pobjFunctionArguments = arguments
 
         End Sub
+
+        Protected Overridable Function FunctionName(ByVal eConnectionType As Database.ConnectionType) As String
+
+            Return pstrFunctionName
+
+        End Function
 
         Friend Overrides Function SQL(ByVal eConnectionType As Database.ConnectionType) As String
 
@@ -51,7 +78,7 @@ Namespace SQL
                 strArguments = String.Join(", ", pobjFunctionArguments.Select(Function(argument) argument.SQL(eConnectionType)).ToArray)
             End If
 
-            Return pstrFunctionName & "(" & strArguments & ")"
+            Return Me.FunctionName(eConnectionType) & "(" & strArguments & ")"
 
         End Function
 
