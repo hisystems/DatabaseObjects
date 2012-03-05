@@ -325,6 +325,7 @@
     <Compile Include="Contraints\ObjectIsSetConstraint.vb" />
     <Compile Include="Contraints\StringIsSetConstraint.vb" />
     <Compile Include="Contraints\IConstraint.vb" />
+    <Compile Include="SQL\Views\SQLCreateView.vb" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
