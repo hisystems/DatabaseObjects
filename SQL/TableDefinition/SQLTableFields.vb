@@ -9,21 +9,38 @@
 Option Strict On
 Option Explicit On
 
+Imports System.Linq
+
 Namespace SQL
 
     Public Class SQLTableFields
-        Implements System.Collections.Generic.IEnumerable(Of SQLTableField)
+        Implements System.Collections.Generic.IEnumerable(Of SQLTableFieldBase)
 
         Friend Enum AlterModeType
+
+            ''' <summary>
+            ''' Columns are being added or created
+            ''' </summary>
+            ''' <remarks></remarks>
             Add
-            Alter
+
+            ''' <summary>
+            ''' Columns are being modified.
+            ''' </summary>
+            ''' <remarks></remarks>
+            Modify
+
+            ''' <summary>
+            ''' Columns are being dropped
+            ''' </summary>
+            ''' <remarks></remarks>
             Drop
         End Enum
 
         Private Const pcintAlterModeUninitialized As Integer = -1
 
         Friend AlterMode As AlterModeType = CType(pcintAlterModeUninitialized, AlterModeType)
-        Private pobjFields As New Collections.Generic.List(Of SQLTableField)
+        Private pobjFields As New Collections.Generic.List(Of SQLTableFieldBase)
 
         Public Sub New()
 
@@ -69,6 +86,20 @@ Namespace SQL
 
         End Function
 
+        Public Function AddComputed( _
+            ByVal strFieldName As String, _
+            ByVal objComputation As SQLExpression) As SQLTableFieldComputed
+
+            EnsureAlterModeValid(AlterModeType.Add)
+
+            Dim objField As New SQLTableFieldComputed(strFieldName, objComputation)
+
+            pobjFields.Add(objField)
+
+            Return objField
+
+        End Function
+
         Public Sub Add(ByVal objField As SQLTableField)
 
             If objField Is Nothing Then
@@ -84,7 +115,7 @@ Namespace SQL
         Default Public ReadOnly Property Item(ByVal strFieldName As String) As SQLTableField
             Get
 
-                EnsureAlterModeValid(AlterModeType.Alter)
+                EnsureAlterModeValid(AlterModeType.Modify)
 
                 Dim intIndex As Integer
 
@@ -132,57 +163,71 @@ Namespace SQL
 
         End Function
 
-        Friend ReadOnly Property SQL(ByVal eConnectionType As Database.ConnectionType, Optional ByVal bIncludeMode As Boolean = True) As String
-            Get
-                Const cstrSeperator As String = ", "
+        ''' <summary>
+        ''' 
+        ''' </summary>
+        ''' <param name="eConnectionType"></param>
+        ''' <param name="bIncludeColumnModifier">
+        ''' Indicates whether the ADD, MODIFY or DROP modifiers are required for each column.
+        ''' When utilised from SQLCreateTable this will always be false. However, for SQLAlterTable this will be true.</param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Friend Function SQL(ByVal eConnectionType As Database.ConnectionType, ByVal bIncludeColumnModifier As Boolean) As String
 
-                Dim strSQL As String = String.Empty
-                Dim strMode As String = String.Empty
-                Dim bOnlyFieldName As Boolean
+            Const cstrSeperator As String = ", "
 
-                bOnlyFieldName = AlterMode = AlterModeType.Drop
+            Dim strSQL As String = String.Empty
+            Dim strColumnModifier As String = String.Empty
 
-                'Include mode when altering a table, otherwise when creating a table the mode is not required.
-                If bIncludeMode Then
-                    Select Case AlterMode
-                        Case AlterModeType.Add
-                            strMode = "ADD"
-                        Case AlterModeType.Alter
-                            Select Case eConnectionType
-                                Case Database.ConnectionType.MySQL, _
-                                     Database.ConnectionType.Pervasive
-                                    strMode = "MODIFY COLUMN"
-                                Case Database.ConnectionType.MicrosoftAccess, _
-                                     Database.ConnectionType.SQLServer, _
-                                     Database.ConnectionType.SQLServerCompactEdition, _
-                                     Database.ConnectionType.HyperSQL
-                                    strMode = "ALTER COLUMN"
-                                Case Else
-                                    Throw New NotImplementedException(eConnectionType.ToString)
-                            End Select
-                        Case AlterModeType.Drop
-                            strMode = "DROP COLUMN"
-                    End Select
+            'Include mode when altering a table, otherwise when creating a table the mode is not required.
+            If bIncludeColumnModifier Then
+                strColumnModifier = GetAlterModeColumnModifier(AlterMode, eConnectionType)
 
-                    'This case statement is related to the if statement below with the mode space char being added for MySQL
-                    If eConnectionType <> Database.ConnectionType.MySQL Then
-                        strSQL = strMode & " "
+                'This case statement is related to the if statement below with the mode space char being added for MySQL
+                If eConnectionType <> Database.ConnectionType.MySQL Then
+                    strSQL = strColumnModifier & " "
+                End If
+            End If
+
+            For Each objField As SQLTableFieldBase In pobjFields
+                If bIncludeColumnModifier Then
+                    If eConnectionType = Database.ConnectionType.MySQL Then
+                        strSQL &= strColumnModifier & " "
                     End If
                 End If
 
-                For Each objField As SQLTableField In pobjFields
-                    If bIncludeMode Then
-                        If eConnectionType = Database.ConnectionType.MySQL Then
-                            strSQL &= strMode & " "
-                        End If
-                    End If
-                    strSQL &= objField.SQL(eConnectionType, bOnlyFieldName) & cstrSeperator
-                Next
+                strSQL &= objField.SQL(eConnectionType, bOnlyFieldName:=(AlterMode = AlterModeType.Drop)) & cstrSeperator
+            Next
 
-                Return strSQL.Substring(0, strSQL.Length - cstrSeperator.Length)        'remove the last comma and space
+            Return strSQL.Substring(0, strSQL.Length - cstrSeperator.Length)        'remove the last comma and space
 
-            End Get
-        End Property
+        End Function
+
+        Private Shared Function GetAlterModeColumnModifier(ByVal eAlterMode As AlterModeType, ByVal eConnectionType As Database.ConnectionType) As String
+
+            Select Case eAlterMode
+                Case AlterModeType.Add
+                    Return "ADD"
+                Case AlterModeType.Modify
+                    Select Case eConnectionType
+                        Case Database.ConnectionType.MySQL, _
+                             Database.ConnectionType.Pervasive
+                            Return "MODIFY COLUMN"
+                        Case Database.ConnectionType.MicrosoftAccess, _
+                             Database.ConnectionType.SQLServer, _
+                             Database.ConnectionType.SQLServerCompactEdition, _
+                             Database.ConnectionType.HyperSQL
+                            Return "ALTER COLUMN"
+                        Case Else
+                            Throw New NotImplementedException(eConnectionType.ToString)
+                    End Select
+                Case AlterModeType.Drop
+                    Return "DROP COLUMN"
+                Case Else
+                    Throw New NotImplementedException
+            End Select
+
+        End Function
 
         Private Sub EnsureAlterModeValid(ByVal eAlterMode As SQLTableFields.AlterModeType)
 
@@ -202,7 +247,7 @@ Namespace SQL
             Select Case eAlterMode
                 Case AlterModeType.Add
                     Return "adding"
-                Case AlterModeType.Alter
+                Case AlterModeType.Modify
                     Return "altering"
                 Case AlterModeType.Drop
                     Return "dropping"
@@ -212,7 +257,7 @@ Namespace SQL
 
         End Function
 
-        Private Function GetEnumerator() As System.Collections.Generic.IEnumerator(Of SQLTableField) Implements System.Collections.Generic.IEnumerable(Of SQLTableField).GetEnumerator
+        Private Function GetEnumerator() As System.Collections.Generic.IEnumerator(Of SQLTableFieldBase) Implements System.Collections.Generic.IEnumerable(Of SQLTableFieldBase).GetEnumerator
 
             Return pobjFields.GetEnumerator
 
@@ -227,9 +272,76 @@ Namespace SQL
     End Class
 
 
-    Public Class SQLTableField
+    Public MustInherit Class SQLTableFieldBase
 
-        Private pstrName As String
+        Protected Friend MustOverride Function SQL(ByVal eConnectionType As Database.ConnectionType, ByVal bOnlyFieldName As Boolean) As String
+
+        Private pobjNameAsExpression As New SQLFieldExpression
+
+        Public Property Name() As String
+            Get
+
+                Return pobjNameAsExpression.Name
+
+            End Get
+
+            Set(ByVal Value As String)
+
+                If String.IsNullOrEmpty(Value) Then
+                    Throw New ArgumentNullException
+                End If
+
+                pobjNameAsExpression.Name = Value.Trim
+
+            End Set
+        End Property
+
+        Protected ReadOnly Property NameAsExpression As SQLExpression
+            Get
+
+                Return pobjNameAsExpression
+
+            End Get
+        End Property
+
+    End Class
+
+    Public Class SQLTableFieldComputed
+        Inherits SQLTableFieldBase
+
+        Private pobjComputation As SQLExpression
+
+        Public Sub New(ByVal strFieldName As String, ByVal objComputation As SQLExpression)
+
+            MyBase.Name = strFieldName
+
+            If objComputation Is Nothing Then
+                Throw New ArgumentNullException
+            End If
+
+            pobjComputation = objComputation
+
+        End Sub
+
+        Protected Friend Overrides Function SQL(eConnectionType As Database.ConnectionType, bOnlyFieldName As Boolean) As String
+
+            If bOnlyFieldName Then
+                Throw New InvalidOperationException("Computed columns cannot be used for dropping fields")
+            End If
+
+            Return MyBase.NameAsExpression.SQL(eConnectionType) & " AS (" & pobjComputation.SQL(eConnectionType) & ")"
+
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Represents a new database field to be created or added to a database table.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Class SQLTableField
+        Inherits SQLTableFieldBase
+
         Private peType As SQL.DataType = DataType.VariableCharacter
         Private pintSize As Integer = 1
         Private pintScale As Integer = 0
@@ -242,20 +354,6 @@ Namespace SQL
         Public Sub New()
 
         End Sub
-
-        Public Property Name() As String
-            Get
-
-                Return pstrName
-
-            End Get
-
-            Set(ByVal Value As String)
-
-                pstrName = Value.Trim
-
-            End Set
-        End Property
 
         Public Property DataType() As SQL.DataType
             Get
@@ -417,42 +515,36 @@ Namespace SQL
             End Set
         End Property
 
-        Friend ReadOnly Property SQL( _
-            ByVal eConnectionType As Database.ConnectionType, _
-            ByVal bOnlyFieldName As Boolean) As String
+        Protected Friend Overrides Function SQL(eConnectionType As Database.ConnectionType, bOnlyFieldName As Boolean) As String
 
-            Get
+            If bOnlyFieldName Then
+                Return MyBase.NameAsExpression.SQL(eConnectionType)
+            Else
+                Return SQLForColumnAddOrModify(eConnectionType)
+            End If
 
-                Dim strName As String
-                Dim strDataType As String = String.Empty
-                Dim strColumnOptions As String
-                Dim strSQL As String = String.Empty
+        End Function
 
-                If Me.Name = String.Empty Then
-                    Throw New Exceptions.DatabaseObjectsException("Field Name has not been set.")
-                End If
+        Private Function SQLForColumnAddOrModify(eConnectionType As Database.ConnectionType) As String
 
-                strName = SQLConvertIdentifierName(Me.Name, eConnectionType)
+            Dim strDataType As String = String.Empty
+            Dim strColumnOptions As String
+            Dim strSQL As String = String.Empty
 
-                If bOnlyFieldName Then
-                    strSQL = strName
-                Else
-                    'For Pervasive do not specify NULL/NOT NULL and the data type for an IDENTITY field
-                    Dim bSpecifyNullStatus As Boolean = Not (pbAutoIncrements And (eConnectionType = Database.ConnectionType.Pervasive))
-                    Dim bSpecifyDataType As Boolean = Not (pbAutoIncrements And (eConnectionType = Database.ConnectionType.Pervasive))
+            'For Pervasive do not specify NULL/NOT NULL and the data type for an IDENTITY field
+            Dim bSpecifyNullStatus As Boolean = Not (pbAutoIncrements And (eConnectionType = Database.ConnectionType.Pervasive))
+            Dim bSpecifyDataType As Boolean = Not (pbAutoIncrements And (eConnectionType = Database.ConnectionType.Pervasive))
 
-                    If bSpecifyDataType Then
-                        strDataType = Misc.SQLConvertDataTypeString(eConnectionType, peType, pintSize, pintPrecision, pintScale)
-                    End If
+            If bSpecifyDataType Then
+                strDataType = Misc.SQLConvertDataTypeString(eConnectionType, peType, pintSize, pintPrecision, pintScale)
+            End If
 
-                    strColumnOptions = ColumnOptions(eConnectionType, bSpecifyNullStatus)
-                    strSQL = strName & " " & strDataType & strColumnOptions
-                End If
+            strColumnOptions = ColumnOptions(eConnectionType, bSpecifyNullStatus)
+            strSQL = MyBase.NameAsExpression.SQL(eConnectionType) & " " & strDataType & strColumnOptions
 
-                Return strSQL
-            End Get
+            Return strSQL
 
-        End Property
+        End Function
 
         Private Function ColumnOptions( _
             ByVal eConnection As Database.ConnectionType, _

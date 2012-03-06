@@ -55,7 +55,7 @@ Namespace SQL
 
                 strSQL = _
                     "CREATE TABLE " & _
-                    SQLConvertIdentifierName(Me.Name, Me.ConnectionType) & " (" & pobjFields.SQL(Me.ConnectionType, bIncludeMode:=False) & ")"
+                    SQLConvertIdentifierName(Me.Name, Me.ConnectionType) & " (" & pobjFields.SQL(Me.ConnectionType, bIncludeColumnModifier:=False) & ")"
 
                 Return strSQL
 

@@ -51,7 +51,7 @@ Namespace SQL
 
                 Return _
                     "ALTER TABLE " & SQLConvertIdentifierName(Me.Name, Me.ConnectionType) & " " & _
-                    pobjFields.SQL(Me.ConnectionType)
+                    pobjFields.SQL(Me.ConnectionType, bIncludeColumnModifier:=True)
 
             End Get
         End Property
