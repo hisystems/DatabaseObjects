@@ -12,6 +12,7 @@ Option Explicit On
 Namespace SQL
 
     Public Class SQLConditionExpression
+        Inherits SQLExpression
 
         Private pobjLeftExpression As SQLExpression
         Private peCompare As ComparisonOperator
@@ -82,13 +83,17 @@ Namespace SQL
             End Set
         End Property
 
-        Friend ReadOnly Property SQL(ByVal eConnectionType As Database.ConnectionType) As String
-            Get
+        Friend Overrides Function SQL(eConnectionType As Database.ConnectionType) As String
 
-                Return Condition(pobjLeftExpression, peCompare, pobjRightExpression, eConnectionType)
+            If pobjLeftExpression Is Nothing Then
+                Throw New InvalidOperationException("Left expression is not set")
+            ElseIf pobjRightExpression Is Nothing Then
+                Throw New InvalidOperationException("Right expression is not set")
+            End If
 
-            End Get
-        End Property
+            Return Condition(pobjLeftExpression, peCompare, pobjRightExpression, eConnectionType)
+
+        End Function
 
         Private Function Condition( _
             ByVal objLeftExpression As SQLExpression, _
