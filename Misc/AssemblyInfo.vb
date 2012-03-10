@@ -1,7 +1,7 @@
 
 ' ___________________________________________________
 '
-'  © Hi-Integrity Systems 2010. All rights reserved.
+'  © Hi-Integrity Systems 2012. All rights reserved.
 '  www.hisystems.com.au - Toby Wicks
 ' ___________________________________________________
 '
@@ -16,7 +16,7 @@ Imports System.Runtime.CompilerServices
 <Assembly: AssemblyCopyright("2010 Hi-Integrity Systems")> 
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
-<Assembly: AssemblyVersion("3.5.3.0")> 
+<Assembly: AssemblyVersion("3.6.0.0")> 
 <Assembly: CLSCompliant(True)> 
 #If DEBUG Then
 <Assembly: InternalsVisibleTo("DatabaseObjects.UnitTests")> 
