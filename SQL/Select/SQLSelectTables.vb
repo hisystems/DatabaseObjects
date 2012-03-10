@@ -14,6 +14,7 @@ Namespace SQL
     Public Class SQLSelectTables
         Implements Collections.Generic.IEnumerable(Of SQLSelectTableBase)
 
+        Private pobjParent As SQLSelect
         Private pobjTables As New Collections.Generic.List(Of SQLSelectTableBase)
         Private pobjJoins As SQLSelectTableJoins = New SQLSelectTableJoins
 
@@ -22,6 +23,36 @@ Namespace SQL
             MyBase.New()
 
         End Sub
+
+        Friend Sub New(ByVal objParent As SQLSelect)
+
+            MyBase.New()
+
+            pobjParent = objParent
+
+        End Sub
+
+        ''' <summary>
+        ''' Returns the associated parent SQLSelect object associated with this table collection.
+        ''' Returns nothing if the object is not assigned to an SQLSelect object.
+        ''' </summary>
+        Public Property Parent As SQLSelect
+            Get
+
+                Return pobjParent
+
+            End Get
+
+            Friend Set(value As SQLSelect)
+
+                If value Is Nothing Then
+                    Throw New ArgumentNullException
+                End If
+
+                pobjParent = value
+
+            End Set
+        End Property
 
         Public Function Add() As SQLSelectTable
 

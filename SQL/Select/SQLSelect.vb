@@ -15,7 +15,7 @@ Namespace SQL
         Inherits SQLStatement
 
         Private pobjFields As SQLSelectFields = New SQLSelectFields
-        Private pobjTables As SQLSelectTables = New SQLSelectTables
+        Private pobjTables As SQLSelectTables = New SQLSelectTables(Me)
         Private pobjConditions As SQLConditions = New SQLConditions
         Private pobjHavingConditions As SQLSelectHavingConditions = New SQLSelectHavingConditions
         Private pobjOrderByFields As SQLSelectOrderByFields = New SQLSelectOrderByFields
@@ -107,6 +107,7 @@ Namespace SQL
                 End If
 
                 pobjTables = Value
+                pobjTables.Parent = Me
 
             End Set
         End Property
