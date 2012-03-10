@@ -800,10 +800,9 @@ Public Class Database
         EnsureKeyDataTypeValid(objKey)
 
         With objSelect
-            Dim objPrimaryTable As SQL.SQLSelectTable = .Tables.Add(objCollection.TableName)
+            .Tables.Add(objCollection.TableName)
             '.Fields.Add objCollection.DistinctFieldName
             .Where.Add(objCollection.KeyFieldName, SQL.ComparisonOperator.EqualTo, objKey)
-            .Tables.Joins = objCollection.TableJoins(objPrimaryTable, .Tables)
             objSubset = objCollection.Subset
             If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
                 .Where.Add(objSubset)
