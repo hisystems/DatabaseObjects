@@ -284,8 +284,7 @@ Public Class Database
         Dim objSubset As SQL.SQLConditions
 
         With objSelect
-            Dim objPrimaryTable As SQL.SQLSelectTable = .Tables.Add(objCollection.TableName)
-            .Tables.Joins = objCollection.TableJoins(objPrimaryTable, .Tables)
+            .Tables.Add(objCollection.TableName)
             .Where.Add(objCollection.DistinctFieldName, SQL.ComparisonOperator.EqualTo, objDistinctValue)
             objSubset = objCollection.Subset
             If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
