@@ -114,6 +114,7 @@
     <Compile Include="Attributes\SubsetAttribute.vb" />
     <Compile Include="Attributes\TableAttribute.vb" />
     <Compile Include="Attributes\TableJoinAttribute.vb" />
+    <Compile Include="Contraints\RegExConstraint.vb" />
     <Compile Include="Contraints\DateIsTodayOrFutureForNewObjectConstraint.vb" />
     <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.vb" />
     <Compile Include="Contraints\StringMaxLengthConstraint.vb" />
