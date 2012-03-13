@@ -243,7 +243,6 @@ Public Class DatabaseObjectLockController
         objIndex.TableName = pstrLockTableName
         objIndex.Fields.Add("TableName")
         objIndex.Fields.Add("RecordID")
-        objIndex.Fields.Add("UserID")
 
         Return objIndex
 
