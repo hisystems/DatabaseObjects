@@ -229,9 +229,7 @@ Public Class Database
         ByVal objCollection As IDatabaseObjects, _
         ByVal objDistinctValue As Object) As SQL.SQLFieldValues
 
-        Dim objFieldValues As SQL.SQLFieldValues
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
-        Dim objReader As IDataReader
         Dim objSubset As SQL.SQLConditions
 
         With objSelect
@@ -244,19 +242,15 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-        objReader = pobjConnection.Execute(objSelect)
-
-        If objReader.Read() Then
-            objFieldValues = FieldValuesFromDataReader(objCollection, objReader)
-        Else
-            objFieldValues = Nothing
-        End If
-
-        objReader.Close()
-        pobjConnection.Finished()
-
-        Return objFieldValues
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                If objReader.Read() Then
+                    Return FieldValuesFromDataReader(objCollection, objReader)
+                Else
+                    Return Nothing
+                End If
+            End Using
+        End Using
 
     End Function
 
@@ -280,7 +274,6 @@ Public Class Database
         ByVal objDistinctValue As Object) As Boolean
 
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
-        Dim objReader As IDataReader
         Dim objSubset As SQL.SQLConditions
 
         With objSelect
@@ -292,13 +285,11 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-        ObjectExistsByDistinctValue = objReader.Read
-
-        objReader.Close()
-        pobjConnection.Finished()
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                Return objReader.Read
+            End Using
+        End Using
 
     End Function
 
@@ -385,46 +376,46 @@ Public Class Database
         ItemKeyEnsureValid(objCollection, objItem, objFieldValues)
 #End If
 
-        pobjConnection.Start()
+        Using objConnection As New ConnectionScope(Me)
 
-        If objItem.IsSaved Then
-            objUpdate = New SQL.SQLUpdate
-            objUpdate.TableName = objCollection.TableName
-            objUpdate.Fields.Add(objFieldValues)
-            objUpdate.Where.Add(objCollection.DistinctFieldName, SQL.ComparisonOperator.EqualTo, objItem.DistinctValue)
-            objSubset = objCollection.Subset
-            If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
-                objUpdate.Where.Add(objSubset)
-            End If
+            If objItem.IsSaved Then
+                objUpdate = New SQL.SQLUpdate
+                objUpdate.TableName = objCollection.TableName
+                objUpdate.Fields.Add(objFieldValues)
+                objUpdate.Where.Add(objCollection.DistinctFieldName, SQL.ComparisonOperator.EqualTo, objItem.DistinctValue)
+                objSubset = objCollection.Subset
+                If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
+                    objUpdate.Where.Add(objSubset)
+                End If
 
-            pobjConnection.ExecuteNonQuery(objUpdate)
-        Else
-            objInsert = New SQL.SQLInsert
-            objInsert.TableName = objCollection.TableName
-            objInsert.Fields = objFieldValues
-            pobjConnection.ExecuteNonQuery(objInsert)
+                objConnection.ExecuteNonQuery(objUpdate)
+            Else
+                objInsert = New SQL.SQLInsert
+                objInsert.TableName = objCollection.TableName
+                objInsert.Fields = objFieldValues
+                objConnection.ExecuteNonQuery(objInsert)
 
-            Dim objRollbackDistinctValue As Object = objItem.DistinctValue
+                Dim objRollbackDistinctValue As Object = objItem.DistinctValue
 
 #If UseAutoAssignment Then
             If objCollection.DistinctFieldAutoAssignment = SQL.FieldValueAutoAssignmentType.NewUniqueIdentifier Then
                 objItem.DistinctValue = objNewGUID
             ElseIf objCollection.DistinctFieldAutoAssignment = SQL.FieldValueAutoAssignmentType.AutoIncrement Then
 #Else
-            If objCollection.DistinctFieldAutoIncrements Then
+                If objCollection.DistinctFieldAutoIncrements Then
 #End If
-                objItem.DistinctValue = pobjConnection.ExecuteScalar(New SQL.SQLAutoIncrementValue)
+                    objItem.DistinctValue = Connection.ExecuteScalar(New SQL.SQLAutoIncrementValue)
+                End If
+
+                objItem.IsSaved = True
+
+                If Transaction.Current IsNot Nothing Then
+                    Transaction.Current.EnlistVolatile(New TransactionExecuteActionOnRollback(Sub() objItem.IsSaved = False), EnlistmentOptions.None)
+                    Transaction.Current.EnlistVolatile(New TransactionExecuteActionOnRollback(Sub() objItem.DistinctValue = objRollbackDistinctValue), EnlistmentOptions.None)
+                End If
             End If
 
-            objItem.IsSaved = True
-
-            If Transaction.Current IsNot Nothing Then
-                Transaction.Current.EnlistVolatile(New TransactionExecuteActionOnRollback(Sub() objItem.IsSaved = False), EnlistmentOptions.None)
-                Transaction.Current.EnlistVolatile(New TransactionExecuteActionOnRollback(Sub() objItem.DistinctValue = objRollbackDistinctValue), EnlistmentOptions.None)
-            End If
-        End If
-
-        pobjConnection.Finished()
+        End Using
 
     End Sub
 
@@ -433,7 +424,6 @@ Public Class Database
         ByVal objItem As IDatabaseObject, _
         ByVal objFieldValues As SQL.SQLFieldValues)
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect
         Dim objKeyFieldValue As Object
         Dim objSubset As SQL.SQLConditions
@@ -465,16 +455,13 @@ Public Class Database
                 End If
             End With
 
-            pobjConnection.Start()
-
-            objReader = pobjConnection.Execute(objSelect)
-
-            If objReader.Read Then
-                Throw New Exceptions.ObjectAlreadyExistsException(objItem, objKeyFieldValue)
-            End If
-
-            objReader.Close()
-            pobjConnection.Finished()
+            Using objConnection As New ConnectionScope(Me)
+                Using objReader As IDataReader = objConnection.Execute(objSelect)
+                    If objReader.Read Then
+                        Throw New Exceptions.ObjectAlreadyExistsException(objItem, objKeyFieldValue)
+                    End If
+                End Using
+            End Using
         End If
 
     End Sub
@@ -563,10 +550,8 @@ Public Class Database
         ByVal objCollection As IDatabaseObjects, _
         ByVal objKey As Object) As IDatabaseObject
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
         Dim objSubset As SQL.SQLConditions
-        Dim objReturnObject As IDatabaseObject
 
         EnsureKeyDataTypeValid(objKey)
 
@@ -580,20 +565,15 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-
-        If objReader.Read Then
-            objReturnObject = ObjectFromDataReader(objCollection, objReader)
-        Else
-            objReturnObject = Nothing
-        End If
-
-        objReader.Close()
-        pobjConnection.Finished()
-
-        Return objReturnObject
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                If objReader.Read Then
+                    Return ObjectFromDataReader(objCollection, objReader)
+                Else
+                    Return Nothing
+                End If
+            End Using
+        End Using
 
     End Function
 
@@ -622,7 +602,6 @@ Public Class Database
     Public Function ObjectByOrdinalFirst( _
         ByVal objCollection As IDatabaseObjects) As IDatabaseObject
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
 
         With objSelect
@@ -634,18 +613,15 @@ Public Class Database
             .OrderBy = objCollection.OrderBy
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-
-        If objReader.Read() Then
-            ObjectByOrdinalFirst = ObjectFromDataReader(objCollection, objReader)
-        Else
-            Throw New Exceptions.ObjectDoesNotExistException(objCollection, "TOP 1")
-        End If
-
-        objReader.Close()
-        pobjConnection.Finished()
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                If objReader.Read() Then
+                    Return ObjectFromDataReader(objCollection, objReader)
+                Else
+                    Throw New Exceptions.ObjectDoesNotExistException(objCollection, "TOP 1")
+                End If
+            End Using
+        End Using
 
     End Function
 
@@ -675,7 +651,6 @@ Public Class Database
     Public Function ObjectByOrdinalLast( _
         ByVal objCollection As IDatabaseObjects) As IDatabaseObject
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
 
         With objSelect
@@ -692,18 +667,15 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-
-        If objReader.Read() Then
-            ObjectByOrdinalLast = ObjectFromDataReader(objCollection, objReader)
-        Else
-            Throw New Exceptions.ObjectDoesNotExistException(objCollection, "TOP 1 with reversed ordering")
-        End If
-
-        objReader.Close()
-        pobjConnection.Finished()
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                If objReader.Read() Then
+                    Return ObjectFromDataReader(objCollection, objReader)
+                Else
+                    Throw New Exceptions.ObjectDoesNotExistException(objCollection, "TOP 1 with reversed ordering")
+                End If
+            End Using
+        End Using
 
     End Function
 
@@ -739,7 +711,6 @@ Public Class Database
     Public Function ObjectsCount( _
         ByVal objCollection As IDatabaseObjects) As Integer
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
 
         With objSelect
@@ -749,15 +720,12 @@ Public Class Database
             .Tables.Joins = objCollection.TableJoins(objPrimaryTable, .Tables)
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-        objReader.Read()
-
-        ObjectsCount = CType(objReader(0), Integer)
-
-        objReader.Close()
-        pobjConnection.Finished()
+         Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                objReader.Read()
+                Return CType(objReader(0), Integer)
+            End Using
+        End Using
 
     End Function
 
@@ -793,7 +761,6 @@ Public Class Database
         ByVal objCollection As IDatabaseObjects, _
         ByVal objKey As Object) As Boolean
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
         Dim objSubset As SQL.SQLConditions
 
@@ -809,13 +776,11 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-
-        objReader = pobjConnection.Execute(objSelect)
-        ObjectExists = objReader.Read
-
-        objReader.Close()
-        pobjConnection.Finished()
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                Return objReader.Read
+            End Using
+        End Using
 
     End Function
 
@@ -871,9 +836,9 @@ Public Class Database
                 End If
             End With
 
-            pobjConnection.Start()
-            pobjConnection.ExecuteNonQuery(objDelete)
-            pobjConnection.Finished()
+            Using objConnection As New ConnectionScope(Me)
+                objConnection.ExecuteNonQuery(objDelete)
+            End Using
 
             objItem.IsSaved = False
 
@@ -947,9 +912,9 @@ Public Class Database
             .Where = objCollection.Subset
         End With
 
-        pobjConnection.Start()
-        pobjConnection.ExecuteNonQuery(objDelete)
-        pobjConnection.Finished()
+        Using objConnection As New ConnectionScope(Me)
+            objConnection.ExecuteNonQuery(objDelete)
+        End Using
 
     End Sub
 
@@ -983,7 +948,6 @@ Public Class Database
 
         Dim objArrayList As IList = New ArrayList
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
-        Dim objReader As IDataReader
 
         With objSelect
             Dim objPrimaryTable As SQL.SQLSelectTable = .Tables.Add(objCollection.TableName)
@@ -992,17 +956,15 @@ Public Class Database
             .OrderBy = objCollection.OrderBy
         End With
 
-        pobjConnection.Start()
-        objReader = pobjConnection.Execute(objSelect)
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                While objReader.Read
+                    objArrayList.Add(ObjectFromDataReader(objCollection, objReader))
+                End While
 
-        While objReader.Read
-            objArrayList.Add(ObjectFromDataReader(objCollection, objReader))
-        End While
-
-        objReader.Close()
-        pobjConnection.Finished()
-
-        Return objArrayList
+                Return objArrayList
+            End Using
+        End Using
 
     End Function
 
@@ -1071,7 +1033,6 @@ Public Class Database
 
         Dim objDictionary As IDictionary = New Hashtable
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
-        Dim objReader As IDataReader
         Dim strKeyField As String
 
         With objSelect
@@ -1081,23 +1042,22 @@ Public Class Database
             .OrderBy = objCollection.OrderBy
         End With
 
-        pobjConnection.Start()
-        objReader = pobjConnection.Execute(objSelect)
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
 
-        If bKeyIsDistinctField Then
-            strKeyField = objCollection.DistinctFieldName
-        Else
-            strKeyField = objCollection.KeyFieldName
-        End If
+                If bKeyIsDistinctField Then
+                    strKeyField = objCollection.DistinctFieldName
+                Else
+                    strKeyField = objCollection.KeyFieldName
+                End If
 
-        While objReader.Read
-            objDictionary.Add(objReader(strKeyField), ObjectFromDataReader(objCollection, objReader))
-        End While
+                While objReader.Read
+                    objDictionary.Add(objReader(strKeyField), ObjectFromDataReader(objCollection, objReader))
+                End While
 
-        objReader.Close()
-        pobjConnection.Finished()
-
-        Return objDictionary
+                Return objDictionary
+            End Using
+        End Using
 
     End Function
 
@@ -1174,7 +1134,6 @@ Public Class Database
         ByVal objCollection As IDatabaseObjects, _
         ByVal objSearchCriteria As SQL.SQLConditions) As IList
 
-        Dim objReader As IDataReader
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
         Dim objResults As ArrayList = New ArrayList
 
@@ -1194,17 +1153,15 @@ Public Class Database
             End If
         End With
 
-        pobjConnection.Start()
-        objReader = pobjConnection.Execute(objSelect)
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                While objReader.Read
+                    objResults.Add(ObjectFromDataReader(objCollection, objReader))
+                End While
 
-        While objReader.Read
-            objResults.Add(ObjectFromDataReader(objCollection, objReader))
-        End While
-
-        objReader.Close()
-        pobjConnection.Finished()
-
-        Return objResults
+                Return objResults
+            End Using
+        End Using
 
     End Function
 
@@ -1313,21 +1270,15 @@ Public Class Database
             End If
         End With
 
-        Me.Connection.Start()
-
-        Dim objReader As IDataReader = Me.Connection.Execute(objSelect)
-        Dim objReadValue As Object
-
-        If objReader.Read() Then
-            objReadValue = objReader(0)
-        Else
-            Throw New Exceptions.ObjectDoesNotExistException(objCollection, objItem.DistinctValue)
-        End If
-
-        objReader.Close()
-        Me.Connection.Finished()
-
-        Return objReadValue
+        Using objConnection As New ConnectionScope(Me)
+            Using objReader As IDataReader = objConnection.Execute(objSelect)
+                If objReader.Read() Then
+                    Return objReader(0)
+                Else
+                    Throw New Exceptions.ObjectDoesNotExistException(objCollection, objItem.DistinctValue)
+                End If
+            End Using
+        End Using
 
     End Function
 
@@ -1401,7 +1352,9 @@ Public Class Database
             objUpdate.Where.Add(objSubset)
         End If
 
-        Me.Connection.ExecuteNonQueryWithConnect(objUpdate)
+        Using objConnection As New ConnectionScope(Me)
+            objConnection.ExecuteNonQuery(objUpdate)
+        End Using
 
     End Sub
 
@@ -2043,6 +1996,7 @@ Public Class Database
         ''' avoiding potential deadlocks.
         ''' </remarks>
         ''' --------------------------------------------------------------------------------
+        <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Sub Start()
 
             Dim objCurrentTransaction As Transaction = Transaction.Current
@@ -2103,6 +2057,7 @@ Public Class Database
         ''' avoiding potential deadlocks.
         ''' </remarks>
         ''' --------------------------------------------------------------------------------
+        <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Sub Finished()
 
             Dim objCurrentTransaction As Transaction = Transaction.Current
@@ -2358,6 +2313,7 @@ Public Class Database
         ''' ConnectionController.Start or ConnectionController.Finished do not have to be called.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
+        <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Function ExecuteNonQueryWithConnect(ByVal objSQLStatement As SQL.ISQLStatement) As Integer
 
             Me.Start()
@@ -2373,6 +2329,7 @@ Public Class Database
         ''' ConnectionController.Start or ConnectionController.Finished do not have to be called.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
+        <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Function ExecuteNonQueryWithConnect(ByVal objSQLStatements As SQL.ISQLStatement()) As Integer
 
             Me.Start()

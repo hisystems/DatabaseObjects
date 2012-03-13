@@ -22,7 +22,7 @@ Public Class DatabaseObjectLockController
 
     Private pstrCurrentUserID As String
     Private pstrLockTableName As String
-    Private pobjConnection As Database.ConnectionController
+    Private pobjDatabase As Database
 
     Public Sub New(ByVal objDatabase As Database, ByVal strLockTableName As String, ByVal strCurrentUserID As String)
 
@@ -34,7 +34,7 @@ Public Class DatabaseObjectLockController
             Throw New ArgumentNullException("Lock table name")
         End If
 
-        pobjConnection = objDatabase.Connection
+        pobjDatabase = objDatabase
         pstrCurrentUserID = strCurrentUserID
         pstrLockTableName = strLockTableName
 
@@ -44,22 +44,17 @@ Public Class DatabaseObjectLockController
 
     Private Function EnsureTableExists() As Boolean
 
-        Dim bTableExists As Boolean
         Dim objTableExists As New SQL.SQLTableExists(pstrLockTableName)
 
-        pobjConnection.Start()
-
-        With pobjConnection.Execute(objTableExists)
-            bTableExists = .Read
-            .Close()
-        End With
-
-        If Not bTableExists Then
-            pobjConnection.ExecuteNonQuery(CreateTable)
-            pobjConnection.ExecuteNonQuery(CreateTableIndex)
-        End If
-
-        pobjConnection.Finished()
+        Using connection As New ConnectionScope(pobjDatabase)
+            With connection.Execute(objTableExists)
+                'If table does not exist
+                If Not .Read Then
+                    connection.ExecuteNonQuery(CreateTable)
+                    connection.ExecuteNonQuery(CreateTableIndex)
+                End If
+            End With
+        End Using
 
     End Function
 
@@ -105,18 +100,15 @@ Public Class DatabaseObjectLockController
             objSelect.Where.Add("TableName", SQL.ComparisonOperator.EqualTo, objCollection.TableName)
             objSelect.Where.Add("RecordID", SQL.ComparisonOperator.EqualTo, CStr(objObject.DistinctValue))
 
-            pobjConnection.Start()
-
-            Dim objReader As IDataReader = pobjConnection.Execute(objSelect)
-
-            If objReader.Read() Then
-                LockedByUserID = CStr(objReader(0))
-            Else
-                Throw New Exceptions.DatabaseObjectsException("Object is not locked")
-            End If
-
-            objReader.Close()
-            pobjConnection.Finished()
+            Using connection As New ConnectionScope(pobjDatabase)
+                Using objReader As IDataReader = connection.Execute(objSelect)
+                    If objReader.Read() Then
+                        Return CStr(objReader(0))
+                    Else
+                        Throw New Exceptions.DatabaseObjectsException("Object is not locked")
+                    End If
+                End Using
+            End Using
 
         End Get
     End Property
@@ -136,14 +128,12 @@ Public Class DatabaseObjectLockController
             objSelect.Where.Add(objAdditionalCondition)
         End If
 
-        pobjConnection.Start()
-        Dim objReader As IDataReader = pobjConnection.Execute(objSelect)
-        objReader.Read()
-
-        LockRecordExists = CInt(objReader(0)) <> 0
-
-        objReader.Close()
-        pobjConnection.Finished()
+        Using connection As New ConnectionScope(pobjDatabase)
+            Using objReader As IDataReader = connection.Execute(objSelect)
+                objReader.Read()
+                Return CInt(objReader(0)) <> 0
+            End Using
+        End Using
 
     End Function
 
@@ -175,16 +165,13 @@ Public Class DatabaseObjectLockController
         'this connection has a DatabaseObjectsException will be thrown because duplicate keys will 
         'be added to the table.
 
-        pobjConnection.Start()
-
-        Try
-            pobjConnection.ExecuteNonQuery(objInsert)
-        Catch ex As Exceptions.DatabaseObjectsException
-            pobjConnection.Finished()
-            Throw New Exceptions.ObjectAlreadyLockedException(objCollection, objObject)
-        End Try
-
-        pobjConnection.Finished()
+        Using connection As New ConnectionScope(pobjDatabase)
+            Try
+                connection.ExecuteNonQuery(objInsert)
+            Catch ex As Exceptions.DatabaseObjectsException
+                Throw New Exceptions.ObjectAlreadyLockedException(objCollection, objObject)
+            End Try
+        End Using
 
     End Sub
 
@@ -209,9 +196,9 @@ Public Class DatabaseObjectLockController
         objDelete.Where.Add("RecordID", SQL.ComparisonOperator.EqualTo, CStr(objObject.DistinctValue))
         objDelete.Where.Add("UserID", SQL.ComparisonOperator.EqualTo, pstrCurrentUserID)
 
-        pobjConnection.Start()
-        pobjConnection.ExecuteNonQuery(objDelete)
-        pobjConnection.Finished()
+        Using connection As New ConnectionScope(pobjDatabase)
+            connection.ExecuteNonQuery(objDelete)
+        End Using
 
     End Sub
 
@@ -228,9 +215,9 @@ Public Class DatabaseObjectLockController
         objDelete.TableName = pstrLockTableName
         objDelete.Where.Add("UserID", SQL.ComparisonOperator.EqualTo, pstrCurrentUserID)
 
-        pobjConnection.Start()
-        pobjConnection.ExecuteNonQuery(objDelete)
-        pobjConnection.Finished()
+        Using connection As New ConnectionScope(pobjDatabase)
+            connection.ExecuteNonQuery(objDelete)
+        End Using
 
     End Sub
 
