@@ -84,7 +84,7 @@ Friend Class DatabaseObjectsUsingAttributesHelper
             If objConstructorParameters.Length = 0 Then
                 objObjectInstance = objConstructor.Invoke(Nothing)
                 Exit For
-            ElseIf objConstructorParameters.Length = 1 AndAlso objConstructorParameters(0).ParameterType.IsSubclassOf(GetType(DatabaseObjects)) Then
+            ElseIf objConstructorParameters.Length = 1 AndAlso (objConstructorParameters(0).ParameterType.IsSubclassOf(GetType(DatabaseObjects)) OrElse objConstructorParameters(0).ParameterType.Equals(GetType(DatabaseObjects))) Then
                 objObjectInstance = objConstructor.Invoke({pobjDatabaseObjects})
                 Exit For
             End If
