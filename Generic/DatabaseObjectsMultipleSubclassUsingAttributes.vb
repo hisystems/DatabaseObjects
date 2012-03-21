@@ -121,7 +121,7 @@ Namespace Generic
 
         Protected Overrides Function ItemInstance_() As T
 
-            Return DirectCast(pobjAttributeHelper.ItemInstance, T)
+            Throw New NotSupportedException("ItemInstance_ is not supported for IDatabaseObjectsMultipleSubclass objects")
 
         End Function
 
