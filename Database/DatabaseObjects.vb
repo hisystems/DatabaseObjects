@@ -34,6 +34,12 @@ Public MustInherit Class DatabaseObjects
     Private pobjDatabase As Database
     Private pobjParent As DatabaseObject
 
+    ''' <summary>
+    ''' May optionally be set to the container object that this object is a child of.
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private _rootContainer As RootContainer
+
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Initializes a new DatabaseObjects with it's associated database.
@@ -50,6 +56,26 @@ Public MustInherit Class DatabaseObjects
         End If
 
         pobjDatabase = objDatabase
+
+    End Sub
+
+    ''' --------------------------------------------------------------------------------
+    ''' <summary>
+    ''' Initializes with it the associated root container and database.
+    ''' </summary>
+    ''' 
+    ''' <param name="rootContainer">
+    ''' The root object that this collection is associated with.
+    ''' </param>
+    ''' --------------------------------------------------------------------------------
+    Protected Sub New(ByVal rootContainer As RootContainer)
+
+        If rootContainer Is Nothing Then
+            Throw New ArgumentNullException
+        End If
+
+        Me._rootContainer = rootContainer
+        pobjDatabase = rootContainer.Database
 
     End Sub
 
@@ -88,6 +114,24 @@ Public MustInherit Class DatabaseObjects
 
         End Get
     End Property
+
+    ''' <summary>
+    ''' Returns the root container object that this object is a child of.
+    ''' </summary>
+    ''' <remarks>
+    ''' Traverses up the object heirarchy to find the root container class.
+    ''' </remarks>
+    Protected Friend Function RootContainer(Of TRootContainer As RootContainer)() As TRootContainer
+
+        If _rootContainer IsNot Nothing Then
+            Return DirectCast(Me._rootContainer, TRootContainer)
+        ElseIf pobjParent IsNot Nothing Then
+            Return pobjParent.RootContainer(Of TRootContainer)()
+        Else
+            Return Nothing
+        End If
+
+    End Function
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>

@@ -60,6 +60,21 @@ Namespace Generic
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
+        ''' Initializes with it the associated root container and database.
+        ''' </summary>
+        ''' 
+        ''' <param name="rootContainer">
+        ''' The root object that this collection is associated with.
+        ''' </param>
+        ''' --------------------------------------------------------------------------------
+        Protected Sub New(ByVal rootContainer As RootContainer)
+
+            MyBase.New(rootContainer)
+
+        End Sub
+
+        ''' --------------------------------------------------------------------------------
+        ''' <summary>
         ''' Initializes a new instance with it's associated database and data that 
         ''' can be used for specifying a subset.
         ''' </summary>

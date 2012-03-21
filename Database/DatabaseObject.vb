@@ -174,6 +174,18 @@ Public MustInherit Class DatabaseObject
     End Property
 
     ''' <summary>
+    ''' Returns the root container object that this object is a child of.
+    ''' </summary>
+    ''' <remarks>
+    ''' Traverses up the object heirarchy to find the root container class.
+    ''' </remarks>
+    Protected Friend Function RootContainer(Of TRootContainer As RootContainer)() As TRootContainer
+
+        Return pobjParentCollection.RootContainer(Of TRootContainer)()
+
+    End Function
+
+    ''' <summary>
     ''' Deletes the record from the database associated with this record.
     ''' After which this object becomes invalid.
     ''' The IsSaved property is automtically set to false.

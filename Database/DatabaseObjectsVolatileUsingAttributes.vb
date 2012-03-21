@@ -68,6 +68,22 @@ Public MustInherit Class DatabaseObjectsVolatileUsingAttributes
 
     End Sub
 
+    ''' --------------------------------------------------------------------------------
+    ''' <summary>
+    ''' Initializes with it the associated root container and database.
+    ''' </summary>
+    ''' 
+    ''' <param name="rootContainer">
+    ''' The root object that this collection is associated with.
+    ''' </param>
+    ''' --------------------------------------------------------------------------------
+    Protected Sub New(ByVal rootContainer As RootContainer)
+
+        MyBase.New(rootContainer)
+        pobjAttributeHelper = New DatabaseObjectsUsingAttributesHelper(Me)
+
+    End Sub
+
     ''' <summary>
     ''' Must override VolatileItemsLoad so that the attributes can be read before
     ''' any of the objects are loaded.

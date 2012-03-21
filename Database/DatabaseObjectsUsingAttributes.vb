@@ -53,6 +53,22 @@ Public MustInherit Class DatabaseObjectsUsingAttributes
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
+    ''' Initializes with it the associated root container and database.
+    ''' </summary>
+    ''' 
+    ''' <param name="rootContainer">
+    ''' The root object that this collection is associated with.
+    ''' </param>
+    ''' --------------------------------------------------------------------------------
+    Protected Sub New(ByVal rootContainer As RootContainer)
+
+        MyBase.New(rootContainer)
+        pobjAttributeHelper = New DatabaseObjectsUsingAttributesHelper(Me)
+
+    End Sub
+
+    ''' --------------------------------------------------------------------------------
+    ''' <summary>
     ''' Initializes a new DatabaseObjects with it's associated parent object.
     ''' The Parent property can be used to access the parent variable passed into this constructor.
     ''' </summary>
