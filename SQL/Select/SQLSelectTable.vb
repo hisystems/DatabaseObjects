@@ -14,6 +14,7 @@ Namespace SQL
     Public Class SQLSelectTable
         Inherits SQLSelectTableBase
 
+        Private pstrDatabaseName As String
         Private pstrSchemaName As String
         Private pstrName As String
 
@@ -33,6 +34,20 @@ Namespace SQL
             MyBase.Alias = strAlias
 
         End Sub
+
+        Public Property DatabaseName As String
+            Get
+
+                Return pstrDatabaseName
+
+            End Get
+
+            Set(value As String)
+
+                pstrDatabaseName = value
+
+            End Set
+        End Property
 
         Public Property SchemaName As String
             Get
@@ -84,6 +99,10 @@ Namespace SQL
                 End If
 
                 Dim strSQL As String = String.Empty
+
+                If pstrDatabaseName <> String.Empty Then
+                    strSQL &= SQLConvertIdentifierName(pstrDatabaseName, eConnectionType) & "."
+                End If
 
                 If pstrSchemaName <> String.Empty Then
                     strSQL &= SQLConvertIdentifierName(pstrSchemaName, eConnectionType) & "."
