@@ -25,6 +25,8 @@ Namespace SQL
         Private pstrFunctionName As String
         Private pobjFunctionArguments As SQLExpression()
 
+        Public IncludeParenthesesWhenArgumentsEmpty As Boolean = False
+
         Public Sub New(strFunctionName As String)
 
             If String.IsNullOrEmpty(strFunctionName) Then
@@ -78,7 +80,11 @@ Namespace SQL
                 strArguments = String.Join(", ", pobjFunctionArguments.Select(Function(argument) argument.SQL(eConnectionType)).ToArray)
             End If
 
-            Return Me.FunctionName(eConnectionType) & "(" & strArguments & ")"
+            If (IncludeParenthesesWhenArgumentsEmpty AndAlso pobjFunctionArguments Is Nothing) OrElse pobjFunctionArguments IsNot Nothing Then
+                strArguments = "(" & strArguments & ")"
+            End If
+
+            Return Me.FunctionName(eConnectionType) & strArguments
 
         End Function
 
