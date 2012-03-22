@@ -110,6 +110,7 @@ Public Class ConnectionScope
 
         If Not Me._disposed Then
             _connection.Finished()
+            Me._disposed = True
         End If
 
         GC.SuppressFinalize(Me)
