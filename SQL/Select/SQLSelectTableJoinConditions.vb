@@ -41,6 +41,7 @@ Namespace SQL
 
         End Sub
 
+        <Obsolete("Instead use other overloaded operator Add(SQLExpression, ComparisonOperator, SQLExpression). For example: Add(New SQLFieldExpression(New SQLSelectTable(""Table1""), ""Field1""), ComparisonOperator.EqualTo, New SQLFieldExpression(New SQLSelectTable(""Table2""), ""Field2"")")> _
         Public Function Add( _
             ByVal strLeftTableFieldName As String, _
             ByVal eCompare As ComparisonOperator, _
