@@ -172,10 +172,11 @@ Namespace SQL
                 Next
 
                 If Not pobjJoins Is Nothing Then
-                    If pobjJoins.SQL(eConnectionType) <> String.Empty And strSQL <> String.Empty Then
+                    Dim strJoinsSQL As String = pobjJoins.SQL(eConnectionType)
+                    If strJoinsSQL <> String.Empty And strSQL <> String.Empty Then
                         strSQL &= " "
                     End If
-                    strSQL &= pobjJoins.SQL(eConnectionType)
+                    strSQL &= strJoinsSQL
                 End If
 
                 Return strSQL
