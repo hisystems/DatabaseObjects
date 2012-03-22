@@ -57,7 +57,7 @@ Namespace SQL
         Friend Overrides Function SQL(ByVal eConnectionType As Database.ConnectionType) As String
 
             If Me.AggregateFunction = AggregateFunction.None Then
-                Throw New MethodAccessException("AggregateFunction unspecified for " & Me.GetType.Name)
+                Throw New InvalidOperationException("AggregateFunction unspecified for " & Me.GetType.Name)
             End If
 
             Dim strFieldName As String = String.Empty

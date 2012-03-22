@@ -365,7 +365,7 @@ Namespace SQL
             Set(ByVal Value As SQL.DataType)
 
                 If pbAutoIncrements AndAlso Not DataTypeIsInteger(Value) Then
-                    Throw New MethodAccessException("Data type " & Value.ToString & " cannot be used as an autoincrement field, as it is not an integer field")
+                    Throw New InvalidOperationException("Data type " & Value.ToString & " cannot be used as an autoincrement field, as it is not an integer field")
                 End If
 
                 peType = Value
@@ -507,7 +507,7 @@ Namespace SQL
             Set(ByVal Value As Object)
 
                 If peType = DataType.UniqueIdentifier Then
-                    Throw New MethodAccessException("Cannot set the default value when the data type is of type DatabaseObjects.SQL.DataType.UniqueIdentifier")
+                    Throw New InvalidOperationException("Cannot set the default value when the data type is of type DatabaseObjects.SQL.DataType.UniqueIdentifier")
                 End If
 
                 pobjDefault = Value

@@ -2157,7 +2157,7 @@ Public Class Database
         Friend Sub RollbackTransaction()
 
             If pintTransactionLevel <= 0 Then
-                Throw New MethodAccessException("A transaction has not been started")
+                Throw New InvalidOperationException("A transaction has not been started")
             End If
 
             Select Case peConnectionType
