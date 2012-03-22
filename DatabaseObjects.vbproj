@@ -201,7 +201,7 @@
     <Compile Include="SQL\Expressions\SQLFieldExpression.vb" />
     <Compile Include="SQL\Expressions\SQLFunctionExpression.vb" />
     <Compile Include="SQL\Expressions\SQLGetDateFunctionExpression.vb" />
-    <Compile Include="SQL\Expressions\SQLLeftExpression.vb" />
+    <Compile Include="SQL\Expressions\SQLLeftFunctionExpression.vb" />
     <Compile Include="SQL\Expressions\SQLLengthFunctionExpression.vb" />
     <Compile Include="SQL\Select\SQLSelectHavingCondition.vb" />
     <Compile Include="SQL\Select\SQLSelectHavingConditions.vb" />
