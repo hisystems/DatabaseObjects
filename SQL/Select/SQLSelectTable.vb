@@ -81,16 +81,6 @@ Namespace SQL
             End Set
         End Property
 
-        Friend Overrides Function GetPrefix() As String
-
-            If Me.Alias <> String.Empty Then
-                Return MyBase.Alias
-            Else
-                Return pstrName
-            End If
-
-        End Function
-
         Protected Overrides ReadOnly Property Source(ByVal eConnectionType As Database.ConnectionType) As String
             Get
 

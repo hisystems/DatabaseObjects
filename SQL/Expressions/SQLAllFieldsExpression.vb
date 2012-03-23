@@ -48,7 +48,7 @@ Namespace SQL
             Dim strSQL As String = String.Empty
 
             If pobjTable IsNot Nothing Then
-                strSQL = SQLConvertIdentifierName(pobjTable.GetPrefix, eConnectionType) & "."
+                strSQL &= SQLTablePrefix(pobjTable, eConnectionType) & "."
             End If
 
             Return strSQL & "*"

@@ -14,7 +14,6 @@ Namespace SQL
     Public MustInherit Class SQLSelectTableBase
 
         Protected MustOverride ReadOnly Property Source(ByVal eConnectionType As Database.ConnectionType) As String
-        Friend MustOverride Function GetPrefix() As String
 
         Private pstrAlias As String = String.Empty
 
@@ -22,7 +21,7 @@ Namespace SQL
 
         End Sub
 
-        Public Property [Alias]() As String
+        Public Overridable Property [Alias]() As String
             Get
 
                 Return pstrAlias
@@ -41,7 +40,7 @@ Namespace SQL
 
                 Dim strSQL As String = Me.Source(eConnectionType)
 
-                If pstrAlias <> String.Empty Then
+                If Me.Alias <> String.Empty Then
                     strSQL &= " " & SQLConvertIdentifierName(Me.Alias, eConnectionType)
                 End If
 

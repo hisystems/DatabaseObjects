@@ -29,12 +29,6 @@ Namespace SQL
 
         End Sub
 
-        Friend Overrides Function GetPrefix() As String
-
-            Return MyBase.Alias
-
-        End Function
-         
         Protected Overrides ReadOnly Property Source(ByVal eConnectionType As Database.ConnectionType) As String
             Get
 

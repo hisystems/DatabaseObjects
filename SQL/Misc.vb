@@ -262,17 +262,32 @@ Namespace SQL
         End Function
 
         Public Function SQLFieldNameAndTablePrefix( _
-            ByVal objTable As SQLSelectTableBase, _
+            ByVal objTable As SQLSelectTable, _
             ByVal strFieldName As String, _
             ByVal eConnectionType As Database.ConnectionType) As String
 
             Dim strTablePrefix As String = String.Empty
 
-            If Not objTable Is Nothing Then
-                strTablePrefix = SQLConvertIdentifierName(objTable.GetPrefix, eConnectionType) & "."
+            If objTable IsNot Nothing Then
+                strTablePrefix = SQLTablePrefix(objTable, eConnectionType) & "."
             End If
 
             Return strTablePrefix & SQLConvertIdentifierName(strFieldName, eConnectionType)
+
+        End Function
+
+        ''' <summary>
+        ''' Returns the table alias or if the alias is not set the table's name.
+        ''' </summary>
+        Public Function SQLTablePrefix( _
+            ByVal objTable As SQLSelectTable, _
+            ByVal eConnectionType As Database.ConnectionType) As String
+
+            If objTable.Alias <> String.Empty Then
+                Return SQLConvertIdentifierName(objTable.Alias, eConnectionType)
+            Else
+                Return SQLConvertIdentifierName(objTable.Name, eConnectionType)
+            End If
 
         End Function
 
