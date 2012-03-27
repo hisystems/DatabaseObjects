@@ -716,8 +716,7 @@ Public Class Database
         With objSelect
             .Where = objCollection.Subset
             .Fields.Add(String.Empty, SQL.AggregateFunction.Count)
-            Dim objPrimaryTable As SQL.SQLSelectTable = .Tables.Add(objCollection.TableName)
-            .Tables.Joins = objCollection.TableJoins(objPrimaryTable, .Tables)
+            .Tables.Add(objCollection.TableName)
         End With
 
          Using objConnection As New ConnectionScope(Me)
