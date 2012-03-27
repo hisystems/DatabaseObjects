@@ -24,7 +24,7 @@ Namespace SQL
                 Case Database.ConnectionType.SQLServerCompactEdition
                     Return "GetDate()"
                 Case Database.ConnectionType.MySQL
-                    Throw New NotImplementedException()
+                    Return "CURDATE()"
                 Case Database.ConnectionType.Pervasive
                     Throw New NotImplementedException()
                 Case Else
