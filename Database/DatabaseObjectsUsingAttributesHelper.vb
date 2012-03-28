@@ -73,30 +73,19 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
     Public Function ItemInstance() As IDatabaseObject
 
+        Dim itemInstanceType As Type
+
         If pobjItemInstance Is Nothing Then
-            Throw New Exceptions.DatabaseObjectsException("ItemInstanceAttribute has not been specified or the ItemInstance function was not overridden for type '" & pobjDatabaseObjects.GetType.FullName & "'")
-        End If
-
-        Dim objObjectInstance As Object = Nothing
-
-        For Each objConstructor As ConstructorInfo In pobjItemInstance.Type.GetConstructors(BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic)
-            Dim objConstructorParameters As ParameterInfo() = objConstructor.GetParameters()
-            If objConstructorParameters.Length = 0 Then
-                objObjectInstance = objConstructor.Invoke(Nothing)
-                Exit For
-            ElseIf objConstructorParameters.Length = 1 AndAlso (objConstructorParameters(0).ParameterType.IsSubclassOf(GetType(DatabaseObjects)) OrElse objConstructorParameters(0).ParameterType.Equals(GetType(DatabaseObjects))) Then
-                objObjectInstance = objConstructor.Invoke({pobjDatabaseObjects})
-                Exit For
-            End If
-        Next
-
-        If objObjectInstance Is Nothing Then
-            Throw New Exceptions.DatabaseObjectsException("An empty constructor or constructor with argument DatabaseObjects.DatabaseObjects (or subclass) could not be found for type '" & pobjItemInstance.Type.FullName & "'. This type has been specified by the ItemInstanceAttribute for the type '" & pobjDatabaseObjects.GetType.FullName & "'")
-        ElseIf Not TypeOf objObjectInstance Is IDatabaseObject Then
-            Throw New Exceptions.DatabaseObjectsException("'" & pobjItemInstance.Type.FullName & "' does not implement IDatabaseObject or inherit from DatabaseObject. Type was specified for use by the ItemInstanceAttribute on the type '" & pobjDatabaseObjects.GetType.FullName & "'")
+            Try
+                itemInstanceType = DatabaseObjectsItemInstance.GetGenericCollectionTArgument(pobjDatabaseObjects.GetType)
+            Catch ex As Exceptions.DatabaseObjectsException
+                Throw New Exceptions.DatabaseObjectsException("ItemInstanceAttribute has not been specified and " + ex.Message)
+            End Try
         Else
-            Return DirectCast(objObjectInstance, IDatabaseObject)
+            itemInstanceType = pobjItemInstance.Type
         End If
+
+        Return DatabaseObjectsItemInstance.CreateItemInstance(itemInstanceType, pobjDatabaseObjects)
 
     End Function
 

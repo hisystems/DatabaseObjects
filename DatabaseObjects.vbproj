@@ -122,6 +122,7 @@
     <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.vb" />
     <Compile Include="Contraints\StringMaxLengthConstraint.vb" />
     <Compile Include="Database\ConnectionScope.vb" />
+    <Compile Include="Database\DatabaseObjectsItemInstance.vb" />
     <Compile Include="Database\RootContainer.vb" />
     <Compile Include="Database\DatabaseObjectsUsingAttributes.vb" />
     <Compile Include="Database\DatabaseObjectsUsingAttributesHelper.vb" />

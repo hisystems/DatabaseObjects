@@ -497,6 +497,9 @@ Namespace Generic
         ''' It is suffixed with an underscore so that it does not conflict with the underlying
         ''' non-generic equivalent ItemInstance function. It's purpose is indentical to the
         ''' non-generic version.
+        ''' If this function is not overriden an object of type T will be created. 
+        ''' The type T must have a default constructor or a constructor that accepts a type of 
+        ''' DatabaseObjects.Generic.DatabaseObjects or a subclass.
         ''' </summary>
         ''' 
         ''' <example> 
@@ -510,7 +513,13 @@ Namespace Generic
         ''' </example>    
         ''' --------------------------------------------------------------------------------
         ''' 
-        Protected MustOverride Function ItemInstance_() As T
+        Protected Overridable Function ItemInstance_() As T
+
+            Dim itemInstanceType As Type = DatabaseObjectsItemInstance.GetGenericCollectionTArgument(Me.GetType)
+
+            Return DirectCast(DatabaseObjectsItemInstance.CreateItemInstance(itemInstanceType, Me), T)
+
+        End Function
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
