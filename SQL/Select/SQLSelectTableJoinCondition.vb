@@ -69,10 +69,17 @@ Namespace SQL
         Friend ReadOnly Property SQL(ByVal eConnectionType As Database.ConnectionType) As String
             Get
 
-                Return _
-                    pobjLeftExpression.SQL(eConnectionType) & " " & _
-                    SQLConvertCompare(Compare) & " " & _
-                    pobjRightExpression.SQL(eConnectionType)
+                'Account for the situation where EqualTo to NULL is appropriately translated to 'IS NULL'
+                If TypeOf pobjRightExpression Is SQLValueExpression Then
+                    Return _
+                        pobjLeftExpression.SQL(eConnectionType) & " " & _
+                        SQLConvertCondition(Compare, DirectCast(pobjRightExpression, SQLValueExpression).Value, eConnectionType)
+                Else
+                    Return _
+                        pobjLeftExpression.SQL(eConnectionType) & " " & _
+                        SQLConvertCompare(Compare) & " " & _
+                        pobjRightExpression.SQL(eConnectionType)
+                End If
 
             End Get
         End Property
