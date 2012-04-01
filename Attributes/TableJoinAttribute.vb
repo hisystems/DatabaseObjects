@@ -28,7 +28,7 @@ Option Explicit On
 ''' </code>
 ''' </example>
 ''' --------------------------------------------------------------------------------
-<AttributeUsage(AttributeTargets.Class, AllowMultiple:=False, Inherited:=True)> _
+<AttributeUsage(AttributeTargets.Class, AllowMultiple:=True, Inherited:=True)> _
 Public Class TableJoinAttribute
     Inherits Attribute
 

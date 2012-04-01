@@ -8,6 +8,7 @@
 
 Option Strict On
 Option Explicit On
+Option Infer On
 
 Imports System.Linq
 Imports System.Reflection
@@ -30,7 +31,7 @@ Friend Class DatabaseObjectsUsingAttributesHelper
     Private pobjKeyField As KeyFieldAttribute = Nothing
     Private pobjOrderByAttributes As New System.Collections.Generic.List(Of OrderByFieldAttribute)
     Private pobjSubset As SubsetAttribute = Nothing
-    Private pobjTableJoin As TableJoinAttribute = Nothing
+    Private pobjTableJoins As New System.Collections.Generic.List(Of TableJoinAttribute)
     Private pobjItemInstance As ItemInstanceAttribute = Nothing
 
     Public Sub New(ByVal objDatabaseObjects As DatabaseObjects)
@@ -56,7 +57,7 @@ Friend Class DatabaseObjectsUsingAttributesHelper
                 ElseIf TypeOf objAttribute Is TableAttribute Then
                     pobjTable = DirectCast(objAttribute, TableAttribute)
                 ElseIf TypeOf objAttribute Is TableJoinAttribute Then
-                    pobjTableJoin = DirectCast(objAttribute, TableJoinAttribute)
+                    pobjTableJoins.Add(DirectCast(objAttribute, TableJoinAttribute))
                 ElseIf TypeOf objAttribute Is ItemInstanceAttribute Then
                     pobjItemInstance = DirectCast(objAttribute, ItemInstanceAttribute)
                 End If
@@ -185,14 +186,20 @@ Friend Class DatabaseObjectsUsingAttributesHelper
     Public Function TableJoins(ByVal objPrimaryTable As SQL.SQLSelectTable, ByVal objTables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins
 
         'If attribute was not specified 
-        If pobjTableJoin Is Nothing Then
+        If pobjTableJoins.Count = 0 Then
             Return Nothing
         Else
             Dim objTableJoins As SQL.SQLSelectTableJoins = New SQL.SQLSelectTableJoins
+            Dim leftTable As SQL.SQLSelectTableBase = objPrimaryTable
+            Dim leftTableName As String = objPrimaryTable.Name
 
-            With objTableJoins.Add(objPrimaryTable, SQL.SQLSelectTableJoin.Type.Inner, objTables.Add(pobjTableJoin.ToTableName))
-                .Where.Add(pobjTableJoin.FieldName, SQL.ComparisonOperator.EqualTo, pobjTableJoin.ToFieldName)
-            End With
+            For Each tableJoinAttribute In pobjTableJoins
+                Dim rightTable As SQL.SQLSelectTableBase = objTables.Add(tableJoinAttribute.ToTableName)
+                Dim tableJoin = objTableJoins.Add(leftTable, SQL.SQLSelectTableJoin.Type.Inner, rightTable)
+                tableJoin.Where.Add(New SQL.SQLFieldExpression(New SQL.SQLSelectTable(leftTableName), tableJoinAttribute.FieldName), SQL.ComparisonOperator.EqualTo, New SQL.SQLFieldExpression(New SQL.SQLSelectTable(tableJoinAttribute.ToTableName), tableJoinAttribute.ToFieldName))
+                leftTable = tableJoin
+                leftTableName = tableJoinAttribute.ToTableName
+            Next
 
             Return objTableJoins
         End If
