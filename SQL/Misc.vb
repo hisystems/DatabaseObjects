@@ -103,7 +103,7 @@ Namespace SQL
                 End If
 
                 If dtDate.Hour <> 0 Or dtDate.Minute <> 0 Or dtDate.Second <> 0 Then
-                    strDate &= " " & dtDate.Hour & ":" & dtDate.Minute & ":" & dtDate.Second
+                    strDate &= " " & dtDate.Hour & ":" & dtDate.Minute & ":" & dtDate.Second & "." & dtDate.Millisecond
                 End If
 
                 Select Case eConnectionType
