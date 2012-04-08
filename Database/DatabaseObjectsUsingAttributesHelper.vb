@@ -74,19 +74,28 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
     Public Function ItemInstance() As IDatabaseObject
 
-        Dim itemInstanceType As Type
+        Dim itemInstanceType = GetItemInstanceType()
+
+        Return DatabaseObjectsItemInstance.CreateItemInstance(itemInstanceType, pobjDatabaseObjects)
+
+    End Function
+
+    ''' <summary>
+    ''' Returns the item instance type to instantiate.
+    ''' It may be defined as a T argument on a generic collection or explicitly
+    ''' via the ItemInstance attribute.
+    ''' </summary>
+    Private Function GetItemInstanceType() As Type
 
         If pobjItemInstance Is Nothing Then
             Try
-                itemInstanceType = DatabaseObjectsItemInstance.GetGenericCollectionTArgument(pobjDatabaseObjects.GetType)
+                Return DatabaseObjectsItemInstance.GetGenericCollectionTArgument(pobjDatabaseObjects.GetType)
             Catch ex As Exceptions.DatabaseObjectsException
                 Throw New Exceptions.DatabaseObjectsException("ItemInstanceAttribute has not been specified and " + ex.Message)
             End Try
         Else
-            itemInstanceType = pobjItemInstance.Type
+            Return pobjItemInstance.Type
         End If
-
-        Return DatabaseObjectsItemInstance.CreateItemInstance(itemInstanceType, pobjDatabaseObjects)
 
     End Function
 
@@ -185,24 +194,42 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
     Public Function TableJoins(ByVal objPrimaryTable As SQL.SQLSelectTable, ByVal objTables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins
 
+        Dim tableJoinsCollection As SQL.SQLSelectTableJoins
+
         'If attribute was not specified 
-        If pobjTableJoins.Count = 0 Then
-            Return Nothing
+        If pobjTableJoins.Count > 0 Then
+            tableJoinsCollection = TableJoinsFromAttributes(pobjTableJoins.ToArray, objPrimaryTable, objTables)
         Else
-            Dim objTableJoins As SQL.SQLSelectTableJoins = New SQL.SQLSelectTableJoins
-            Dim leftTable As SQL.SQLSelectTableBase = objPrimaryTable
-            Dim leftTableName As String = objPrimaryTable.Name
+            'If the ObjectReferenceEarlyBindingAttribute is specified on the item instance then create the table joins that will be required
+            Dim earlyBindingTableJoins = ObjectReferenceEarlyBinding.GetTableJoins(pobjDatabaseObjects, objPrimaryTable, Me.GetItemInstanceType)
 
-            For Each tableJoinAttribute In pobjTableJoins
-                Dim rightTable As SQL.SQLSelectTableBase = objTables.Add(tableJoinAttribute.ToTableName)
-                Dim tableJoin = objTableJoins.Add(leftTable, SQL.SQLSelectTableJoin.Type.Inner, rightTable)
-                tableJoin.Where.Add(New SQL.SQLFieldExpression(New SQL.SQLSelectTable(leftTableName), tableJoinAttribute.FieldName), SQL.ComparisonOperator.EqualTo, New SQL.SQLFieldExpression(New SQL.SQLSelectTable(tableJoinAttribute.ToTableName), tableJoinAttribute.ToFieldName))
-                leftTable = tableJoin
-                leftTableName = tableJoinAttribute.ToTableName
-            Next
-
-            Return objTableJoins
+            If earlyBindingTableJoins.Count > 0 Then
+                tableJoinsCollection = earlyBindingTableJoins
+            Else
+                tableJoinsCollection = Nothing
+            End If
         End If
+
+        Return tableJoinsCollection
+
+    End Function
+
+    Private Shared Function TableJoinsFromAttributes(tableJoinAttributes As TableJoinAttribute(), ByVal primaryTable As SQL.SQLSelectTable, ByVal tables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins
+
+        Dim tableJoinsCollection As New SQL.SQLSelectTableJoins
+
+        Dim leftTable As SQL.SQLSelectTableBase = primaryTable
+        Dim leftTableName As String = primaryTable.Name
+
+        For Each tableJoinAttribute In tableJoinAttributes
+            Dim rightTable As SQL.SQLSelectTableBase = tables.Add(tableJoinAttribute.ToTableName)
+            Dim tableJoin = tableJoinsCollection.Add(leftTable, SQL.SQLSelectTableJoin.Type.Inner, rightTable)
+            tableJoin.Where.Add(New SQL.SQLFieldExpression(New SQL.SQLSelectTable(leftTableName), tableJoinAttribute.FieldName), SQL.ComparisonOperator.EqualTo, New SQL.SQLFieldExpression(New SQL.SQLSelectTable(tableJoinAttribute.ToTableName), tableJoinAttribute.ToFieldName))
+            leftTable = tableJoin
+            leftTableName = tableJoinAttribute.ToTableName
+        Next
+
+        Return tableJoinsCollection
 
     End Function
 

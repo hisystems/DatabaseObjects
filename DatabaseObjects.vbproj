@@ -101,6 +101,7 @@
     <Import Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ObjectReferenceEarlyBindingAttribute.vb" />
     <Compile Include="Attributes\ItemInstanceAttribute.vb" />
     <Compile Include="Attributes\DistinctFieldAttribute.vb" />
     <Compile Include="Attributes\FieldMappingAttribute.vb">
@@ -121,6 +122,7 @@
     <Compile Include="Contraints\DateIsTodayOrFutureForNewObjectConstraint.vb" />
     <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.vb" />
     <Compile Include="Contraints\StringMaxLengthConstraint.vb" />
+    <Compile Include="Database\ObjectReferenceEarlyBinding.vb" />
     <Compile Include="Database\ConnectionScope.vb" />
     <Compile Include="Database\DatabaseObjectsItemInstance.vb" />
     <Compile Include="Database\RootContainer.vb" />

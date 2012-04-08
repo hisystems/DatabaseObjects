@@ -8,6 +8,7 @@
 
 Option Strict On
 Option Explicit On
+Option Infer On
 
 ''' --------------------------------------------------------------------------------
 ''' <summary>
@@ -209,7 +210,17 @@ Public Module DatabaseObjectUsingAttributesHelper
             LoadFieldsForBaseTypes(objObject, objType.BaseType, objFields)
             LoadFieldsForObject(objObject, objType, objFields)
             LoadFieldsForHookedObjects(objObject, objType, objFields)
+            LoadFieldsForObjectReferenceEarlyBinding(objObject, objType, objFields)
         End If
+
+    End Sub
+
+    Private Sub LoadFieldsForObjectReferenceEarlyBinding(ByVal objectToLoad As Object, ByVal type As System.Type, ByVal fieldValues As SQL.SQLFieldValues)
+
+        For Each earlyBindingField In ObjectReferenceEarlyBinding.GetObjectReferenceEarlyBindingFields(type)
+            Dim objectReference = DirectCast(earlyBindingField.Field.GetValue(objectToLoad), ObjectReference)
+            objectReference.Object = Database.ObjectFromFieldValues(objectReference.ParentCollection, fieldValues)
+        Next
 
     End Sub
 

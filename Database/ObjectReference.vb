@@ -179,6 +179,14 @@ Public Class ObjectReference
         End Set
     End Property
 
+    Friend ReadOnly Property ParentCollection As IDatabaseObjects
+        Get
+
+            Return pobjCollection
+
+        End Get
+    End Property
+
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Returns whether the Object property would return Nothing.
