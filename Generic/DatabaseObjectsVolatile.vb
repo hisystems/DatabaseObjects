@@ -97,28 +97,6 @@ Namespace Generic
 
         End Sub
 
-        '''' --------------------------------------------------------------------------------
-        '''' <summary>
-        '''' Initializes a new instance with it's associated database.
-        '''' </summary>
-        '''' 
-        '''' <param name="objDatabase">
-        '''' The database that this collection is associated with.
-        '''' </param>
-        ' '''
-        '''' <param name="objParent">
-        '''' The parent collection that this collection is associated with. This is often
-        '''' useful so that the SubSet property can use the Parent to filter 
-        '''' by a particular value pertinent to the parent object. Using the object
-        '''' is optional. 
-        '''' </param>
-        '''' --------------------------------------------------------------------------------
-        'Protected Sub New(ByVal objDatabase As Database, ByVal objParent As Object)
-
-        '    MyBase.New(objDatabase, objParent)
-
-        'End Sub
-
         ''' --------------------------------------------------------------------------------
         ''' <summary>
         ''' Adds a new object (created via ItemInstance) to the in-memory list, and flags the 
@@ -246,18 +224,9 @@ Namespace Generic
         ''' </code>
         ''' </example>    
         ''' --------------------------------------------------------------------------------
-        Protected MustOverride Function ItemInstance_() As T
+        Protected Overridable Function ItemInstance_() As T
 
-        ''' --------------------------------------------------------------------------------
-        ''' <summary>
-        ''' This function should not be overridden, only the ItemInstance_() function needs
-        ''' to be overridden. This function simply onforwards the ItemInstance_() value to the
-        ''' non-generic version ItemInstance().
-        ''' </summary>
-        ''' --------------------------------------------------------------------------------
-        Protected Overrides Function ItemInstance() As IDatabaseObject
-
-            Return Me.ItemInstance_()
+            Return DirectCast(MyBase.ItemInstance, T)
 
         End Function
 

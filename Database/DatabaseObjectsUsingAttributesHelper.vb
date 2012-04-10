@@ -64,12 +64,6 @@ Friend Class DatabaseObjectsUsingAttributesHelper
             Next
         End If
 
-        If pobjDistinctField Is Nothing Then
-            Throw New Exceptions.DatabaseObjectsException("DistinctField attribute has not been specified.")
-        ElseIf pobjTable Is Nothing Then
-            Throw New Exceptions.DatabaseObjectsException("Table attribute has not been specified.")
-        End If
-
     End Sub
 
     Public Function ItemInstance() As IDatabaseObject
@@ -102,6 +96,10 @@ Friend Class DatabaseObjectsUsingAttributesHelper
     Public ReadOnly Property DistinctFieldName() As String
         Get
 
+            If pobjDistinctField Is Nothing Then
+                Throw New Exceptions.DatabaseObjectsException("DistinctFieldAttribute has not been specified on " & pobjDatabaseObjects.GetType.FullName)
+            End If
+
             Return pobjDistinctField.Name
 
         End Get
@@ -111,6 +109,10 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
     Public ReadOnly Property DistinctFieldAutoAssignment() As SQL.FieldValueAutoAssignmentType
         Get
+
+            If pobjDistinctField Is Nothing Then
+                Throw New Exceptions.DatabaseObjectsException("DistinctFieldAttribute has not been specified on " & pobjDatabaseObjects.GetType.FullName)
+            End If
 
             Return pobjDistinctField.AutomaticAssignment
 
@@ -122,6 +124,10 @@ Friend Class DatabaseObjectsUsingAttributesHelper
     Public ReadOnly Property DistinctFieldAutoIncrements() As Boolean
         Get
 
+            If pobjDistinctField Is Nothing Then
+                Throw New Exceptions.DatabaseObjectsException("DistinctFieldAttribute has not been specified on " & pobjDatabaseObjects.GetType.FullName)
+            End If
+
             Return pobjDistinctField.AutomaticAssignment = SQL.FieldValueAutoAssignmentType.AutoIncrement
 
         End Get
@@ -131,6 +137,10 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
     Public ReadOnly Property TableName() As String
         Get
+
+            If pobjTable Is Nothing Then
+                Throw New Exceptions.DatabaseObjectsException("TableAttribute has not been specified on " & pobjDatabaseObjects.GetType.FullName)
+            End If
 
             Return pobjTable.Name
 

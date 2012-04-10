@@ -11,6 +11,11 @@ Option Explicit On
 
 Namespace Generic
 
+    ''' <summary>
+    ''' Extends DatabaseObjects.Generic.DatabaseObjects but provides a additional override ItemInstanceForSubclass_
+    ''' which allows different subclasses to be created (that inherit from T) based on the contents of a database record
+    ''' as specified by the SQLFieldValues argument.
+    ''' </summary>
     Public MustInherit Class DatabaseObjectsMultipleSubclass(Of T As IDatabaseObject)
         Inherits DatabaseObjects(Of T)
         Implements IDatabaseObjectsMultipleSubclass
@@ -98,6 +103,12 @@ Namespace Generic
         Protected Overrides Function ItemInstance_() As T
 
             Throw New NotSupportedException("ItemInstance_ is not supported for IDatabaseObjectsMultipleSubclass objects")
+
+        End Function
+
+        Protected Overrides Function ItemInstance() As IDatabaseObject
+
+            Throw New NotSupportedException("ItemInstance is not supported for IDatabaseObjectsMultipleSubclass objects")
 
         End Function
 

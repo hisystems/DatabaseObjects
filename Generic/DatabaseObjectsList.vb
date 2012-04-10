@@ -10,7 +10,7 @@ Namespace Generic
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' This class extends Generic.DatabaseObjectsEnumerable by providing public
+    ''' This class extends DatabaseObjects.Generic.DatabaseObjectsEnumerable by providing public
     ''' Add, Item and Count properties. 
     ''' For more information please see DatabaseObjects.DatabaseObjects.
     ''' </summary>

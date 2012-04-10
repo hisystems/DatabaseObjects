@@ -55,7 +55,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>UseAutoAssignment=False</DefineConstants>
+    <DefineConstants>UseAutoAssignment=false</DefineConstants>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <DebugSymbols>true</DebugSymbols>
@@ -126,9 +126,7 @@
     <Compile Include="Database\ConnectionScope.vb" />
     <Compile Include="Database\DatabaseObjectsItemInstance.vb" />
     <Compile Include="Database\RootContainer.vb" />
-    <Compile Include="Database\DatabaseObjectsUsingAttributes.vb" />
     <Compile Include="Database\DatabaseObjectsUsingAttributesHelper.vb" />
-    <Compile Include="Database\DatabaseObjectsVolatileUsingAttributes.vb" />
     <Compile Include="Database\DatabaseObjectUsingAttributesHelper.vb" />
     <Compile Include="Database\IDatabaseObjectsMultipleSubclass.vb" />
     <Compile Include="Database\MicrosoftAccessDatabase.vb" />
@@ -154,13 +152,7 @@
     <Compile Include="Database\DatabaseObjectsEnumerable.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Database\DatabaseObjectsVolatile.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Database\DatabaseObjectUsingAttributes.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Database\DatabaseObjectUsingAttributesLockable.vb">
+    <Compile Include="Obsolete\DatabaseObjectUsingAttributes.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Database\IDatabaseObject.vb">
@@ -176,20 +168,24 @@
     <Compile Include="Database\IGlobalDatabaseObjects.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Generic\DatabaseObjectsEnumerableUsingAttributes.vb" />
+    <Compile Include="Obsolete\DatabaseObjectsUsingAttributes.vb" />
+    <Compile Include="Database\DatabaseObjectsVolatile.vb" />
+    <Compile Include="Obsolete\DatabaseObjectsVolatileUsingAttributes.vb" />
+    <Compile Include="Obsolete\DatabaseObjectUsingAttributesLockable.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsEnumerableUsingAttributes.vb" />
     <Compile Include="Generic\DatabaseObjectsListKeyed.vb" />
     <Compile Include="Generic\DatabaseObjectsList.vb" />
-    <Compile Include="Generic\DatabaseObjectsListKeyedUsingAttributes.vb" />
-    <Compile Include="Generic\DatabaseObjectsListUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsListKeyedUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsListUsingAttributes.vb" />
     <Compile Include="Generic\DatabaseObjectsMultipleSubclass.vb" />
-    <Compile Include="Generic\DatabaseObjectsMultipleSubclassUsingAttributes.vb" />
-    <Compile Include="Generic\DatabaseObjectsUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsMultipleSubclassUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsUsingAttributes.vb" />
     <Compile Include="Generic\DatabaseObjectsVolatile.vb" />
     <Compile Include="Generic\DatabaseObjectsEnumerable.vb" />
     <Compile Include="Generic\DatabaseObjects.vb" />
     <Compile Include="Generic\DatabaseObjectsVolatileList.vb" />
-    <Compile Include="Generic\DatabaseObjectsVolatileListUsingAttributes.vb" />
-    <Compile Include="Generic\DatabaseObjectsVolatileUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsVolatileListUsingAttributes.vb" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsVolatileUsingAttributes.vb" />
     <Compile Include="Generic\ObjectReference.vb" />
     <Compile Include="Misc\AssemblyInfo.vb" />
     <Compile Include="SQL\Amend\SQLInsertFromSelect.vb" />

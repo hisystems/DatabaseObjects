@@ -11,14 +11,12 @@ Option Explicit On
 
 ''' --------------------------------------------------------------------------------
 ''' <summary>
-''' This class can be used in conjunction with the DatabaseObjects class to simplify
-''' the process of using the DatabaseObjects library. This class implements the 
-''' IDatabaseObject interface and provides the basic "plumbing" code required by the 
-''' interface. For this reason, inheriting from this class is preferable to 
-''' implementing the IDatabaseObject interface directly.
+''' Represents a single database record. Implements IDatabaseObject and provides
+''' the basic plumbing code required for the interface.
+''' Mapping of fields from the database record to the fields in the inheriting class
+''' can be defined by using the FieldMappingAttribute.
 ''' </summary>
 ''' --------------------------------------------------------------------------------
-''' 
 Public MustInherit Class DatabaseObject
     Implements IDatabaseObject
 
@@ -380,47 +378,95 @@ Public MustInherit Class DatabaseObject
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' Should copy the database fields from objFields to this object's variables. 
-    ''' objFields is populated with all of the fields from the associated record.
+    ''' Sets the properties and fields marked with the FieldMappingAttribute with the 
+    ''' values from the database record. Properties or fields that are an enum data 
+    ''' type are automatically converted from the database integer value to the equivalent 
+    ''' enum. For properties and fields marked with the FieldMappingObjectHookAttribute 
+    ''' the property's or field's object is also traversed for properties or fields marked
+    ''' with the FieldMappingAttribute. 
+    ''' Loads the lowest order base class that does not exist in the 
+    ''' DatabaseObjects assembly first up through to the highest order class.
+    ''' This function should generally not be called from an inheritor.
+    ''' Use LoadFieldValues() to correctly load this object from a set of field values.
     ''' </summary>
-    ''' 
+    ''' <remarks>
+    ''' Generally, this function should only be overriden in order to perform any custom
+    ''' loading of data from the database. To completely initialize and load the object 
+    ''' from an SQL.SQLFieldValues object call the protected LoadFieldValues(SQL.SQLFieldValues)
+    ''' sub.
+    ''' </remarks>
     ''' <example> 
     ''' <code>
-    ''' Protected Overrides Sub LoadFields(ByVal objFields As DatabaseObjects.SQL.SQLFieldValues)
     ''' 
-    '''     pstrCode = objFields("ProductCode").Value
-    '''     pstrDescription = objFields("ProductDescription").Value
+    ''' &lt;DatabaseObjects.FieldMapping("Name")&gt; _
+    ''' Private pstrName As String
     ''' 
-    ''' End Sub
+    ''' OR
+    ''' 
+    ''' &lt;DatabaseObjects.FieldMapping("Name")&gt; _
+    ''' Public Property Name() As String
+    '''     Get
+    ''' 
+    '''         Return pstrName
+    ''' 
+    '''     End Get
+    ''' 
+    '''     Set(ByVal Value As String)
+    ''' 
+    '''         pstrName = Value
+    ''' 
+    '''     End Set
+    ''' 
+    ''' End Property
     ''' </code>
     ''' </example>
     ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Sub LoadFields(ByVal objFields As SQL.SQLFieldValues) Implements IDatabaseObject.LoadFields
+    Protected Overridable Sub LoadFields(ByVal objFields As SQL.SQLFieldValues) Implements IDatabaseObject.LoadFields
 
+        DatabaseObjectUsingAttributesHelper.LoadFieldsForBaseTypes(Me, Me.GetType, objFields)
+
+    End Sub
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' Should return an SQLFieldValues object populated with the  
-    ''' fields to be written to the database. The first argument of the 
-    ''' SQLFieldValues.Add function is the database field name, the second is the 
-    ''' field's value.
+    ''' Gets the values from the properties and fields marked with the FieldMappingAttribute 
+    ''' to be saved to the database. Properties or fields that return an enum data type are 
+    ''' automatically converted from the enum to the equivalent integer value for database
+    ''' storage. For properties and fields marked with the FieldMappingObjectHookAttribute 
+    ''' the property's or field's object is also traversed for properties or fields marked
+    ''' with the FieldMappingAttribute. 
     ''' </summary>
-    ''' 
     ''' <example> 
     ''' <code>
-    ''' Protected Overrides Function SaveFields() As DatabaseObjects.SQL.SQLFieldValues
     ''' 
-    '''     SaveFields = New SQL.SQLFieldValues
-    '''     SaveFields.Add("ProductCode", pstrCode)
-    '''     SaveFields.Add("ProductDescription", pstrDescription)
+    ''' &lt;DatabaseObjects.FieldMapping("Name")&gt; _
+    ''' Private pstrName As String
     ''' 
-    ''' End Function
+    ''' OR
+    ''' 
+    ''' &lt;DatabaseObjects.FieldMapping("Name")&gt; _
+    ''' Public Property Name() As String
+    '''     Get
+    ''' 
+    '''         Return pstrName
+    ''' 
+    '''     End Get
+    ''' 
+    '''     Set(ByVal Value As String)
+    ''' 
+    '''         pstrName = Value
+    ''' 
+    '''     End Set
+    ''' 
+    ''' End Property
     ''' </code>
     ''' </example>
     ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function SaveFields() As SQL.SQLFieldValues Implements IDatabaseObject.SaveFields
+    Protected Overridable Function SaveFields() As SQL.SQLFieldValues Implements IDatabaseObject.SaveFields
+
+        Return DatabaseObjectUsingAttributesHelper.SaveFieldsForBaseTypes(Me, Me.GetType)
+
+    End Function
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
@@ -516,7 +562,7 @@ Public MustInherit Class DatabaseObject
         Return Not AreEqual(objItem1, objItem2)
 
     End Operator
- 
+
     Private Shared Function AreEqual(ByVal objItem1 As IDatabaseObject, ByVal objItem2 As IDatabaseObject) As Boolean
 
         If objItem1 Is Nothing AndAlso objItem2 Is Nothing Then

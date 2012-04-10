@@ -10,9 +10,8 @@ Namespace Generic
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' This class extends Generic.DatabaseObjectsList by providing a public
-    ''' Add(inherited) Item by key, Item by integer/ordinal (inherited), 
-    ''' Count (inherited) and Exists properties and function. 
+    ''' Extends DatabaseObjects.Generic.DatabaseObjectsList by providing a public
+    ''' Add(inherited) Item by key, Count (inherited) and Exists properties and function. 
     ''' For more information please see DatabaseObjects.DatabaseObjects.
     ''' </summary>
     ''' --------------------------------------------------------------------------------

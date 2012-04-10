@@ -10,7 +10,7 @@ Namespace Generic
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' This class extends DatabaseObjects and wraps all calls with the type T associated 
+    ''' Extends DatabaseObjects and wraps all calls with the type T associated 
     ''' this collection. For more information see DatabaseObjects.DatabaseObjects.
     ''' </summary>
     ''' --------------------------------------------------------------------------------
@@ -515,23 +515,7 @@ Namespace Generic
         ''' 
         Protected Overridable Function ItemInstance_() As T
 
-            Dim itemInstanceType As Type = DatabaseObjectsItemInstance.GetGenericCollectionTArgument(Me.GetType)
-
-            Return DirectCast(DatabaseObjectsItemInstance.CreateItemInstance(itemInstanceType, Me), T)
-
-        End Function
-
-        ''' --------------------------------------------------------------------------------
-        ''' <summary>
-        ''' This function should not be overridden, only the ItemInstance_() function needs
-        ''' to be overridden. This function simply onforwards the ItemInstance_() value to the
-        ''' non-generic version ItemInstance().
-        ''' </summary>
-        ''' --------------------------------------------------------------------------------
-        ''' 
-        Protected Overrides Function ItemInstance() As IDatabaseObject
-
-            Return DirectCast(Me.ItemInstance_(), IDatabaseObject)
+            Return DirectCast(MyBase.ItemInstance, T)
 
         End Function
 

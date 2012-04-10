@@ -10,14 +10,13 @@ Option Explicit On
 
 ''' --------------------------------------------------------------------------------
 ''' <summary>
-''' This class can be used in conjunction with the DatabaseObject class to simplify
-''' the process of using the DatabaseObjects library. This class implements the 
-''' IDatabaseObjects interface and provides the basic "plumbing" code required by 
-''' the interface. For this reason, inheriting from this class is preferable to 
-''' implementing the IDatabaseObjects interface directly.
+''' Represents a collection of database records. Implements IDatabaseObjects and provides
+''' the basic plumbing code required for the interface.
+''' Attributes can be used to specify the database specific information using
+''' class attributes DistinctFieldAttribute, TableAttribute, KeyFieldAttribute, ItemInstanceAttribute, 
+''' OrderByAttribute, SubsetAttribute and TableJoinAttribute.
 ''' </summary>
 ''' --------------------------------------------------------------------------------
-''' 
 Public MustInherit Class DatabaseObjects
     Implements IDatabaseObjects
 
@@ -33,12 +32,12 @@ Public MustInherit Class DatabaseObjects
 
     Private pobjDatabase As Database
     Private pobjParent As DatabaseObject
-
     ''' <summary>
     ''' May optionally be set to the container object that this object is a child of.
     ''' </summary>
     ''' <remarks></remarks>
     Private _rootContainer As RootContainer
+    Private pobjAttributeHelper As DatabaseObjectsUsingAttributesHelper
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
@@ -56,6 +55,7 @@ Public MustInherit Class DatabaseObjects
         End If
 
         pobjDatabase = objDatabase
+        pobjAttributeHelper = New DatabaseObjectsUsingAttributesHelper(Me)
 
     End Sub
 
@@ -76,6 +76,7 @@ Public MustInherit Class DatabaseObjects
 
         Me._rootContainer = rootContainer
         pobjDatabase = rootContainer.Database
+        pobjAttributeHelper = New DatabaseObjectsUsingAttributesHelper(Me)
 
     End Sub
 
@@ -97,6 +98,7 @@ Public MustInherit Class DatabaseObjects
 
         pobjDatabase = objParent.ParentDatabase
         pobjParent = objParent
+        pobjAttributeHelper = New DatabaseObjectsUsingAttributesHelper(Me)
 
     End Sub
 
@@ -683,6 +685,7 @@ Public MustInherit Class DatabaseObjects
     End Function
 
 #If UseAutoAssignment Then
+
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return whether the Distinct field as specified in the 
@@ -701,9 +704,14 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>  
-    ''' --------------------------------------------------------------------------------
-    Protected MustOverride Function DistinctFieldAutoAssignment() As SQL.FieldValueAutoAssignmentType Implements IDatabaseObjects.DistinctFieldAutoAssignment
+    Protected Overridable Function DistinctFieldAutoAssignment() As SQL.FieldValueAutoAssignmentType Implements IDatabaseObjects.DistinctFieldAutoAssignment
+
+        Return pobjAttributeHelper.DistinctFieldAutoAssignment
+
+    End Function
+
 #Else
+
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return whether the Distinct field as specified in the 
@@ -723,10 +731,14 @@ Public MustInherit Class DatabaseObjects
     ''' </example>    
     ''' --------------------------------------------------------------------------------
     <Obsolete(DatabaseObjects.DistinctFieldAutoIncrementsObsoleteWarningMessage)> _
-    Protected MustOverride Function DistinctFieldAutoIncrements() As Boolean Implements IDatabaseObjects.DistinctFieldAutoIncrements
+    Protected Overridable Function DistinctFieldAutoIncrements() As Boolean Implements IDatabaseObjects.DistinctFieldAutoIncrements
+
+        Return pobjAttributeHelper.DistinctFieldAutoIncrements
+
+    End Function
+
 #End If
 
-    ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return the field name that uniquely identifies each object 
     ''' within the collection. Typically, this is the field name of an identity or auto 
@@ -745,32 +757,12 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function DistinctFieldName() As String Implements IDatabaseObjects.DistinctFieldName
+    Protected Overridable Function DistinctFieldName() As String Implements IDatabaseObjects.DistinctFieldName
 
-    ''' --------------------------------------------------------------------------------
-    ''' <summary>
-    ''' Should return an instance of the class that is associated with this 
-    ''' collection of objects. The associated class must implement the IDatabaseObject 
-    ''' interface. Typically, a DatabaseObject (implements IDatabaseObject) instance is 
-    ''' returned from this function.
-    ''' </summary>
-    ''' 
-    ''' <example> 
-    ''' <code>
-    ''' Protected Overrides Function ItemInstance() As IDatabaseObject
-    ''' 
-    '''     Return New Product
-    ''' 
-    ''' End Function
-    ''' </code>
-    ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function ItemInstance() As IDatabaseObject Implements IDatabaseObjects.ItemInstance
+        Return pobjAttributeHelper.DistinctFieldName
 
-    ''' --------------------------------------------------------------------------------
+    End Function
+
     ''' <summary>
     ''' This property should return the field name that uniquely identifies each object 
     ''' within the collection. As opposed to the ordinal/index position, the key field 
@@ -789,11 +781,12 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function KeyFieldName() As String Implements IDatabaseObjects.KeyFieldName
+    Protected Overridable Function KeyFieldName() As String Implements IDatabaseObjects.KeyFieldName
 
-    ''' --------------------------------------------------------------------------------
+        Return pobjAttributeHelper.KeyFieldName
+
+    End Function
+
     ''' <summary>
     ''' Should return an SQLSelectOrderByFields object containing the list 
     ''' of fields the collection will be sorted by. Just as with an SQL statement, the 
@@ -815,11 +808,12 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function OrderBy() As SQL.SQLSelectOrderByFields Implements IDatabaseObjects.OrderBy
+    Protected Overridable Function OrderBy() As SQL.SQLSelectOrderByFields Implements IDatabaseObjects.OrderBy
 
-    ''' --------------------------------------------------------------------------------
+        Return pobjAttributeHelper.OrderBy
+
+    End Function
+
     ''' <summary>
     ''' Should return the conditions that define the collection's subset. 
     ''' If the collection should include the entire table then this function should return Nothing. 
@@ -840,11 +834,12 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function Subset() As SQL.SQLConditions Implements IDatabaseObjects.Subset
+    Protected Overridable Function Subset() As SQL.SQLConditions Implements IDatabaseObjects.Subset
 
-    ''' --------------------------------------------------------------------------------
+        Return pobjAttributeHelper.Subset
+
+    End Function
+
     ''' <summary>
     ''' Should return an SQLSelectTableJoins object containing the table 
     ''' or tables to be joined to the primary table. This function is useful in 
@@ -855,38 +850,11 @@ Public MustInherit Class DatabaseObjects
     ''' Should return Nothing if no table joins are required.
     ''' Implementing this function is optional.
     ''' </summary>
-    ''' 
-    ''' <example> 
-    ''' <code>
-    ''' Protected Overrides Function TableJoins(ByVal objPrimaryTable As SQL.SQLSelectTable, ByVal objTables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins
-    ''' 
-    '''     'Implementing this function is optional, but is useful when attempting to optimise loading speeds.
-    '''     'This function is used by the ObjectsList, Object, ObjectByKey, ObjectOrdinal and ObjectSearch functions.
-    '''     'If this function has been implemented Search can also search fields in the joined table(s).
-    '''     'In this example, the Products table will always be joined with the Supplier table. We could also join the Products
-    '''     'table to the Category table, however the Product.Category property is not used often enough to warrant
-    '''     'always joining the category table whenever loading a product. Of course, you can always join different
-    '''     'tables in different situations, for example you might want join to other tables when searching and to
-    '''     'not join other tables in normal circumstances.
-    ''' 
-    '''     Dim objTableJoins As SQL.SQLSelectTableJoins = New SQL.SQLSelectTableJoins
-    ''' 
-    '''     With objTableJoins.Add(objPrimaryTable, SQL.SQLSelectTableJoin.Type.Inner, objTables.Add("Suppliers"))
-    '''         .Where.Add("SupplierID", SQL.ComparisonOperator.EqualTo, "SupplierID")
-    '''     End With
-    ''' 
-    '''     With objTableJoins.Add(objPrimaryTable, SQL.SQLSelectTableJoin.Type.Inner, objTables.Add("Categories"))
-    '''         .Where.Add("CategoryID", SQL.ComparisonOperator.EqualTo, "CategoryID")
-    '''     End With
-    ''' 
-    '''     Return objTableJoins
-    ''' 
-    ''' End Function
-    ''' </code>
-    ''' </example>    
-    ''' --------------------------------------------------------------------------------
-    ''' 
-    Protected MustOverride Function TableJoins(ByVal objPrimaryTable As SQL.SQLSelectTable, ByVal objTables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins Implements IDatabaseObjects.TableJoins
+    Protected Overridable Function TableJoins(ByVal objPrimaryTable As SQL.SQLSelectTable, ByVal objTables As SQL.SQLSelectTables) As SQL.SQLSelectTableJoins Implements IDatabaseObjects.TableJoins
+
+        Return pobjAttributeHelper.TableJoins(objPrimaryTable, objTables)
+
+    End Function
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
@@ -903,8 +871,32 @@ Public MustInherit Class DatabaseObjects
     ''' End Function
     ''' </code>
     ''' </example>    
-    ''' --------------------------------------------------------------------------------
+    Protected Overridable Function TableName() As String Implements IDatabaseObjects.TableName
+
+        Return pobjAttributeHelper.TableName
+
+    End Function
+
+    ''' <summary>
+    ''' Should return an instance of the class that is associated with this 
+    ''' collection of objects. The associated class must implement the IDatabaseObject 
+    ''' interface. Typically, a DatabaseObject (implements IDatabaseObject) instance is 
+    ''' returned from this function.
+    ''' </summary>
     ''' 
-    Protected MustOverride Function TableName() As String Implements IDatabaseObjects.TableName
+    ''' <example> 
+    ''' <code>
+    ''' Protected Overrides Function ItemInstance() As IDatabaseObject
+    ''' 
+    '''     Return New Product
+    ''' 
+    ''' End Function
+    ''' </code>
+    ''' </example>    
+    Protected Overridable Function ItemInstance() As IDatabaseObject Implements IDatabaseObjects.ItemInstance
+
+        Return pobjAttributeHelper.ItemInstance
+
+    End Function
 
 End Class

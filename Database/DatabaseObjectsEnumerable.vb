@@ -8,11 +8,8 @@
 
 ''' --------------------------------------------------------------------------------
 ''' <summary>
-''' This class is identical to DatabaseObjects except that it implements the 
-''' IEnumerable interface, therefore providing support for the "For Each" construct. 
-''' If IEnumerable is not required then inherit from DatabaseObjects. Generally, 
-''' inheriting from DatabaseObjectsEnumerable is preferable to DatabaseObjects as it 
-''' generates simpler and more readable code.
+''' Extends DatabaseObjects and implements the IEnumerable interface, therefore 
+''' providing support for the "For Each" construct. 
 ''' </summary>
 ''' --------------------------------------------------------------------------------
 ''' 

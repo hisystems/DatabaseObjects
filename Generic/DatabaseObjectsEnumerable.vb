@@ -11,11 +11,8 @@ Namespace Generic
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
-    ''' This extends Generic.DatabaseObjects and implements the IEnumerable interface, 
+    ''' Extends DatabaseObjects.Generic.DatabaseObjects and implements the IEnumerable interface, 
     ''' therefore providing support for the "For Each" construct. 
-    ''' If IEnumerable is not required then inherit from Generic.DatabaseObjects. Generally, 
-    ''' inheriting from Generic.DatabaseObjectsEnumerable is preferable to 
-    ''' Generic.DatabaseObjects as it generates simpler and more readable code.
     ''' </summary>
     ''' --------------------------------------------------------------------------------
     Public MustInherit Class DatabaseObjectsEnumerable(Of T As IDatabaseObject)
