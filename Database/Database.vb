@@ -552,13 +552,15 @@ Public Class Database
 
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
         Dim objSubset As SQL.SQLConditions
+        Dim keyFieldName As String = objCollection.KeyFieldName
 
+        EnsureKeyFieldNameIsSet(keyFieldName, objCollection)
         EnsureKeyDataTypeValid(objKey)
 
         With objSelect
             Dim objPrimaryTable As SQL.SQLSelectTable = .Tables.Add(objCollection.TableName)
             .Tables.Joins = objCollection.TableJoins(objPrimaryTable, .Tables)
-            .Where.Add(objCollection.KeyFieldName, SQL.ComparisonOperator.EqualTo, objKey)
+            .Where.Add(keyFieldName, SQL.ComparisonOperator.EqualTo, objKey)
             objSubset = objCollection.Subset
             If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
                 .Where.Add(objSubset)
@@ -576,6 +578,17 @@ Public Class Database
         End Using
 
     End Function
+
+    ''' <summary>
+    ''' Throwns an exception if the key field name is "".
+    ''' </summary>
+    Private Sub EnsureKeyFieldNameIsSet(ByVal keyFieldName As String, collection As IDatabaseObjects)
+
+        If keyFieldName = String.Empty Then
+            Throw New InvalidOperationException("The KeyFieldAttribute has not been specified or the KeyFieldName function overridden for " & collection.GetType.FullName)
+        End If
+
+    End Sub
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
@@ -762,13 +775,15 @@ Public Class Database
 
         Dim objSelect As SQL.SQLSelect = New SQL.SQLSelect
         Dim objSubset As SQL.SQLConditions
+        Dim keyFieldName As String = objCollection.KeyFieldName
 
+        EnsureKeyFieldNameIsSet(keyFieldName, objCollection)
         EnsureKeyDataTypeValid(objKey)
 
         With objSelect
             .Tables.Add(objCollection.TableName)
             '.Fields.Add objCollection.DistinctFieldName
-            .Where.Add(objCollection.KeyFieldName, SQL.ComparisonOperator.EqualTo, objKey)
+            .Where.Add(keyFieldName, SQL.ComparisonOperator.EqualTo, objKey)
             objSubset = objCollection.Subset
             If Not objSubset Is Nothing AndAlso Not objSubset.IsEmpty Then
                 .Where.Add(objSubset)
