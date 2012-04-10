@@ -103,6 +103,7 @@ Friend Module ObjectReferenceEarlyBinding
 
 #If DEBUG Then
             excludeCollectionTypeNames.Add("DatabaseObjects.UnitTests.ItemInstanceTests+TableWithNoItemInstanceAttribute")
+            excludeCollectionTypeNames.Add("DatabaseObjects.UnitTests.AttributesInvalidTests+InvalidItemInstanceTypeCollection")
 #End If
 
             Return _
