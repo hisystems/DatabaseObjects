@@ -105,8 +105,6 @@ Friend Class DatabaseObjectsUsingAttributesHelper
         End Get
     End Property
 
-#If UseAutoAssignment Then
-
     Public ReadOnly Property DistinctFieldAutoAssignment() As SQL.FieldValueAutoAssignmentType
         Get
 
@@ -118,22 +116,6 @@ Friend Class DatabaseObjectsUsingAttributesHelper
 
         End Get
     End Property
-
-#Else
-
-    Public ReadOnly Property DistinctFieldAutoIncrements() As Boolean
-        Get
-
-            If pobjDistinctField Is Nothing Then
-                Throw New Exceptions.DatabaseObjectsException("DistinctFieldAttribute has not been specified on " & pobjDatabaseObjects.GetType.FullName)
-            End If
-
-            Return pobjDistinctField.AutomaticAssignment = SQL.FieldValueAutoAssignmentType.AutoIncrement
-
-        End Get
-    End Property
-
-#End If
 
     Public ReadOnly Property TableName() As String
         Get

@@ -21,14 +21,7 @@ Public MustInherit Class DatabaseObjects
     Implements IDatabaseObjects
 
     Friend Const DistinctFieldAutoIncrementsObsoleteWarningMessage As String = _
-        "Deprecated and replaced by DistinctFieldAutoAssignment to support both auto increment and automatically assigned globally unique identifiers. The DistinctFieldAutoIncrements function will be removed in future. " & _
-        "To migrate enable compilation constant UseAutoAssignment in DatabaseObjects project and modify all code by using Visual Studio's search and replace with the following regular expressions:" & Microsoft.VisualBasic.ControlChars.CrLf & _
-        "Replace: " & _
-            """DistinctFieldAutoIncrements\(\):bAs:bBoolean[\n:b]*Return:bTrue"" with " & _
-            """DistinctFieldAutoAssignment() As DatabaseObjects.SQL.FieldValueAutoAssignmentType\n\nReturn DatabaseObjects.SQL.FieldValueAutoAssignmentType.AutoIncrement""." & Microsoft.VisualBasic.ControlChars.CrLf & _
-        "And replace: " & _
-            """DistinctFieldAutoIncrements\(\):bAs:bBoolean[\n:b]*Return:bFalse"" with " & _
-            """DistinctFieldAutoAssignment() As DatabaseObjects.SQL.FieldValueAutoAssignmentType\n\nReturn DatabaseObjects.SQL.FieldValueAutoAssignmentType.None"""
+        "Obsolete and replaced by DistinctFieldAutoAssignment to support both auto increment and automatically assigned globally unique identifiers."
 
     Private pobjDatabase As Database
     Private pobjParent As DatabaseObject
@@ -684,8 +677,6 @@ Public MustInherit Class DatabaseObjects
 
     End Function
 
-#If UseAutoAssignment Then
-
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return whether the Distinct field as specified in the 
@@ -710,8 +701,6 @@ Public MustInherit Class DatabaseObjects
 
     End Function
 
-#Else
-
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return whether the Distinct field as specified in the 
@@ -733,11 +722,10 @@ Public MustInherit Class DatabaseObjects
     <Obsolete(DatabaseObjects.DistinctFieldAutoIncrementsObsoleteWarningMessage)> _
     Protected Overridable Function DistinctFieldAutoIncrements() As Boolean Implements IDatabaseObjects.DistinctFieldAutoIncrements
 
-        Return pobjAttributeHelper.DistinctFieldAutoIncrements
+        'Indicates to defer logic to the DistinctFieldAutoAssignment function as this function is obsolete.
+        Return False
 
     End Function
-
-#End If
 
     ''' <summary>
     ''' Should return the field name that uniquely identifies each object 

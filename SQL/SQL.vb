@@ -272,8 +272,6 @@ Namespace SQL
         ''' <remarks></remarks>
         AutoIncrement
 
-#If UseAutoAssignment Then
-
         ''' <summary>
         ''' Indicates that the field is a UNIQUEIDENTIFIER and should be automatically
         ''' assigned a new GUID using the System.Guid class.
@@ -283,8 +281,6 @@ Namespace SQL
         ''' </summary>
         ''' <remarks></remarks>
         NewUniqueIdentifier
-
-#End If
 
     End Enum
 

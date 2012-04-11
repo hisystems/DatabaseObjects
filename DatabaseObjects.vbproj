@@ -55,7 +55,8 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>UseAutoAssignment=false</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <DebugSymbols>true</DebugSymbols>
@@ -73,7 +74,8 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>UseAutoAssignment=False</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <DebugSymbols>false</DebugSymbols>

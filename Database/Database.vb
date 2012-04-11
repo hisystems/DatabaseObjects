@@ -340,10 +340,8 @@ Public Class Database
         Dim objUpdate As SQL.SQLUpdate
         Dim objInsert As SQL.SQLInsert
         Dim objSubset As SQL.SQLConditions
-
-#If UseAutoAssignment Then
         Dim objNewGUID As System.Guid
-#End If
+        Dim autoAssignment As SQL.FieldValueAutoAssignmentType = MergeDistinctFieldAutoAssignmentAndDistinctFieldAutoIncrements(objCollection)
 
         objFieldValues = objItem.SaveFields
 
@@ -353,8 +351,7 @@ Public Class Database
 
         'Add the distinct field value if it hasn't been added via the SaveFields sub
         If Not objFieldValues.Exists(objCollection.DistinctFieldName) Then
-#If UseAutoAssignment Then
-            Select objCollection.DistinctFieldAutoAssignment
+            Select Case autoAssignment
                 Case SQL.FieldValueAutoAssignmentType.None
                     objFieldValues.Add(objCollection.DistinctFieldName, objItem.DistinctValue)
                 Case SQL.FieldValueAutoAssignmentType.NewUniqueIdentifier
@@ -365,11 +362,6 @@ Public Class Database
                         objFieldValues.Add(objCollection.DistinctFieldName, objNewGUID)
                     End If
             End Select
-#Else
-            If Not objCollection.DistinctFieldAutoIncrements Then
-                objFieldValues.Add(objCollection.DistinctFieldName, objItem.DistinctValue)
-            End If
-#End If
         End If
 
 #If Not Debug Then
@@ -395,18 +387,14 @@ Public Class Database
                 objInsert.Fields = objFieldValues
                 objConnection.ExecuteNonQuery(objInsert)
 
+                Select Case autoAssignment
+                    Case SQL.FieldValueAutoAssignmentType.NewUniqueIdentifier
+                        objItem.DistinctValue = objNewGUID
+                    Case SQL.FieldValueAutoAssignmentType.AutoIncrement
+                        objItem.DistinctValue = Connection.ExecuteScalar(New SQL.SQLAutoIncrementValue)
+                End Select
+
                 Dim objRollbackDistinctValue As Object = objItem.DistinctValue
-
-#If UseAutoAssignment Then
-            If objCollection.DistinctFieldAutoAssignment = SQL.FieldValueAutoAssignmentType.NewUniqueIdentifier Then
-                objItem.DistinctValue = objNewGUID
-            ElseIf objCollection.DistinctFieldAutoAssignment = SQL.FieldValueAutoAssignmentType.AutoIncrement Then
-#Else
-                If objCollection.DistinctFieldAutoIncrements Then
-#End If
-                    objItem.DistinctValue = Connection.ExecuteScalar(New SQL.SQLAutoIncrementValue)
-                End If
-
                 objItem.IsSaved = True
 
                 If Transaction.Current IsNot Nothing Then
@@ -418,6 +406,19 @@ Public Class Database
         End Using
 
     End Sub
+
+    ''' <summary>
+    ''' Merges the obsolete function DistinctFieldAutoIncrements with the new DistinctFieldAutoAssignment function.
+    ''' </summary>
+    Private Function MergeDistinctFieldAutoAssignmentAndDistinctFieldAutoIncrements(collection As IDatabaseObjects) As SQL.FieldValueAutoAssignmentType
+
+        If collection.DistinctFieldAutoIncrements Then
+            Return SQL.FieldValueAutoAssignmentType.AutoIncrement
+        Else
+            Return collection.DistinctFieldAutoAssignment
+        End If
+
+    End Function
 
     Private Sub ItemKeyEnsureValid( _
         ByVal objCollection As IDatabaseObjects, _

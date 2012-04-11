@@ -128,7 +128,6 @@ Public Interface IDatabaseObjects
     ''' --------------------------------------------------------------------------------
     Function DistinctFieldName() As String
 
-#If UseAutoAssignment Then
     ''' --------------------------------------------------------------------------------
     ''' <summary>
     ''' Should return whether the Distinct field as specified in the 
@@ -136,6 +135,12 @@ Public Interface IDatabaseObjects
     ''' (Autonumber in Microsoft Access) or is a unique identifier field. 
     ''' If set to either value then the IDatabaseObject.DistinctValue value is 
     ''' automatically set when a new object is saved.
+    ''' This function takes precedence over the obsolete DistinctFieldAutoIncrements()
+    ''' and should be used instead of DistinctFieldAutoIncrements.
+    ''' Returning true from DistinctFieldAutoIncrements is logically equivalent to returning
+    ''' SQL.FieldValueAutoAssignmentType.AutoIncrement from DistinctFieldAutoAssignment.
+    ''' However, if DistinctFieldAutoIncrements returns true and DistinctFieldAutoAssignment
+    ''' returns SQL.FieldValueAutoAssignmentType.None then DistinctFieldAutoIncrements is used.
     ''' </summary>
     ''' 
     ''' <example> 
@@ -149,9 +154,12 @@ Public Interface IDatabaseObjects
     ''' </example>  
     ''' --------------------------------------------------------------------------------
     Function DistinctFieldAutoAssignment() As SQL.FieldValueAutoAssignmentType
-#Else
+
     ''' --------------------------------------------------------------------------------
     ''' <summary>
+    ''' Obsolete - use DistinctFieldAutoAssignment instead.
+    ''' This function is subordinate to DistinctFieldAutoAssignment
+    ''' and should only be used for backwards compatibility.
     ''' Should return whether the Distinct field as specified in the 
     ''' associated collection's IDatabaseObject.DistinctField is an identity (SQL Server) 
     ''' or autonumber (Microsoft Access) field. If set to true, then the 
@@ -170,8 +178,6 @@ Public Interface IDatabaseObjects
     ''' --------------------------------------------------------------------------------
     <Obsolete(DatabaseObjects.DistinctFieldAutoIncrementsObsoleteWarningMessage)> _
     Function DistinctFieldAutoIncrements() As Boolean
-#End If
-
 
     ''' --------------------------------------------------------------------------------
     ''' <summary>
