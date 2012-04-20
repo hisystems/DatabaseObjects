@@ -16,7 +16,7 @@ Imports System.Runtime.CompilerServices
 <Assembly: AssemblyCopyright("2010 Hi-Integrity Systems")> 
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
-<Assembly: AssemblyVersion("3.8.0.0")> 
+<Assembly: AssemblyVersion("3.8.1.0")> 
 <Assembly: CLSCompliant(True)> 
 #If DEBUG Then
 <Assembly: InternalsVisibleTo("DatabaseObjects.UnitTests")> 
