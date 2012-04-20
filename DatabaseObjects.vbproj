@@ -192,6 +192,7 @@
     <Compile Include="Misc\AssemblyInfo.vb" />
     <Compile Include="SQL\Amend\SQLInsertFromSelect.vb" />
     <Compile Include="SQL\Amend\SQLUpdateField.vb" />
+    <Compile Include="SQL\Expressions\SQLStringConcatExpression.vb" />
     <Compile Include="SQL\Expressions\SQLAggregateExpression.vb" />
     <Compile Include="SQL\Expressions\SQLAllFieldsExpression.vb" />
     <Compile Include="SQL\Expressions\SQLRightFunctionExpression.vb" />
