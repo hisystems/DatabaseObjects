@@ -569,7 +569,7 @@ Namespace SQL
                         Case Database.ConnectionType.MicrosoftAccess
                             strDataType = "YESNO"
                         Case Database.ConnectionType.MySQL
-                            strDataType = "BOOLEAN"
+                            strDataType = "BIT"
                         Case Database.ConnectionType.SQLServer, Database.ConnectionType.SQLServerCompactEdition
                             strDataType = "BIT"
                         Case Database.ConnectionType.Pervasive
