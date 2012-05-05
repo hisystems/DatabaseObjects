@@ -42,7 +42,14 @@ Namespace SQL
                     Case Database.ConnectionType.MicrosoftAccess
                         Throw New NotSupportedException
                     Case Database.ConnectionType.MySQL
-                        strSQL = "SHOW VIEWS LIKE " & SQLConvertValue(pstrViewName, Me.ConnectionType)
+                        objSelect = New SQLSelect
+                        With objSelect
+                            .ConnectionType = Me.ConnectionType
+                            .Tables.Add("Tables").SchemaName = "INFORMATION_SCHEMA"
+                            .Where.Add("Table_Type", ComparisonOperator.EqualTo, "View")
+                            .Where.Add("TABLE_NAME", ComparisonOperator.Like, pstrViewName)
+                            strSQL = .SQL
+                        End With
                     Case Database.ConnectionType.SQLServer
                         objSelect = New SQLSelect
                         With objSelect
