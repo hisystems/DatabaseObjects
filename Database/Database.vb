@@ -1870,85 +1870,6 @@ Public Class Database
 
     End Class
 
-    ''' <summary>
-    ''' Manages transactions when used with the System.Transactions.TransactionScope class.
-    ''' </summary>
-    Private Class TransactionsManager
-        Implements System.Transactions.IEnlistmentNotification
-
-        Private pobjConnectionController As ConnectionController
-
-        Public Sub New(ByVal objConnectionController As ConnectionController)
-
-            If objConnectionController Is Nothing Then
-                Throw New ArgumentNullException
-            End If
-
-            pobjConnectionController = objConnectionController
-
-        End Sub
-
-        Friend Sub BeginTransaction(ByVal eIsolationLevel As System.Transactions.IsolationLevel)
-
-            pobjConnectionController.BeginTransaction(TranslateIsolationLevel(eIsolationLevel))
-
-        End Sub
-
-        ''' <summary>
-        ''' Translate the enum equivalents from the System.Transactions.IsolationLevel enum 
-        ''' to the System.Data.IsolationLevel enum.
-        ''' </summary>
-        Private Function TranslateIsolationLevel(ByVal eIsolationLevel As System.Transactions.IsolationLevel) As System.Data.IsolationLevel
-
-            Select Case eIsolationLevel
-                Case System.Transactions.IsolationLevel.ReadCommitted
-                    Return System.Data.IsolationLevel.ReadCommitted
-
-                Case System.Transactions.IsolationLevel.ReadUncommitted
-                    Return System.Data.IsolationLevel.ReadUncommitted
-
-                Case System.Transactions.IsolationLevel.RepeatableRead
-                    Return System.Data.IsolationLevel.RepeatableRead
-
-                Case System.Transactions.IsolationLevel.Serializable
-                    Return System.Data.IsolationLevel.Serializable
-
-                Case System.Transactions.IsolationLevel.Snapshot
-                    Return System.Data.IsolationLevel.Snapshot
-
-                Case System.Transactions.IsolationLevel.Unspecified
-                    Return Data.IsolationLevel.Unspecified
-
-                Case Else
-                    Throw New NotImplementedException(eIsolationLevel.ToString)
-            End Select
-
-        End Function
-
-        Private Sub Prepare(ByVal preparingEnlistment As System.Transactions.PreparingEnlistment) Implements System.Transactions.IEnlistmentNotification.Prepare
-
-            preparingEnlistment.Prepared()
-
-        End Sub
-
-        Private Sub Commit(ByVal enlistment As System.Transactions.Enlistment) Implements System.Transactions.IEnlistmentNotification.Commit
-
-            pobjConnectionController.CommitTransaction()
-
-        End Sub
-
-        Private Sub InDoubt(ByVal enlistment As System.Transactions.Enlistment) Implements System.Transactions.IEnlistmentNotification.InDoubt
-
-        End Sub
-
-        Private Sub Rollback(ByVal enlistment As System.Transactions.Enlistment) Implements System.Transactions.IEnlistmentNotification.Rollback
-
-            pobjConnectionController.RollbackTransaction()
-
-        End Sub
-
-    End Class
-
     Public Class ConnectionController
 
         ''' <summary>
@@ -2014,40 +1935,7 @@ Public Class Database
         <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Sub Start()
 
-            Dim objCurrentTransaction As Transaction = Transaction.Current
-
-            If objCurrentTransaction Is Nothing Then
-                ' When not called from with a TransactionScope ensure a connection is open.
-                ConnectionStart()
-            Else
-                'Only create a new transaction when in a different TransactionScope
-                If pobjLastTransaction <> objCurrentTransaction Then
-                    ' When called from within a TransactionScope ensure a connection is open and a transaction started.
-                    StartLocalTransaction(objCurrentTransaction)
-                    pobjLastTransaction = objCurrentTransaction
-                End If
-            End If
-
-        End Sub
-
-        Private Sub StartLocalTransaction(ByVal objCurrentTransaction As System.Transactions.Transaction)
-
-            ' When called from within a TransactionScope enlist a resource manager and begin the transaction
-            Dim objTransactionManager As TransactionsManager = New TransactionsManager(Me)
-
-            If peConnectionType = ConnectionType.MicrosoftAccess Then
-                'If this is the default isolation level
-                If objCurrentTransaction.IsolationLevel = System.Transactions.IsolationLevel.Serializable Then
-                    'Isolation levels are not supported in Microsoft Access therefore ignore the isolation level specified
-                    objTransactionManager.BeginTransaction(System.Transactions.IsolationLevel.Unspecified)
-                Else
-                    Throw New Exceptions.DatabaseObjectsException("Isolation Level " & objCurrentTransaction.IsolationLevel.ToString & " is not supported for Microsoft Access")
-                End If
-            Else
-                objTransactionManager.BeginTransaction(objCurrentTransaction.IsolationLevel)
-            End If
-
-            objCurrentTransaction.EnlistVolatile(objTransactionManager, EnlistmentOptions.None)
+            ConnectionStart()
 
         End Sub
 
@@ -2060,8 +1948,6 @@ Public Class Database
         ''' If not in transaction mode then the connection is closed.
         ''' Always call Finished when finished using the connection whether in
         ''' transaction mode or not as the library will close the connection if necessary.
-        ''' If called within a TransactionScope() then the database transaction will be committed
-        ''' at the end of the TransactionScope().
         ''' </summary>
         ''' <remarks>
         ''' This feature is particularly relevant when database records are locked 
@@ -2075,29 +1961,7 @@ Public Class Database
         <Obsolete("Use DatabaseObjects.ConnectionScope")>
         Public Sub Finished()
 
-            Dim objCurrentTransaction As Transaction = Transaction.Current
-
-            If objCurrentTransaction Is Nothing Then
-                ' When not called from with a TransactionScope the connection as finished.
-                ConnectionFinished()
-            Else
-                ' When within a TransactionScope then the TransactionManager will commit and 
-                ' close the connection as necessary at the end of the TransactionScope's using statement.
-            End If
-
-        End Sub
-
-        ''' <summary>
-        ''' Allows the use of TransactionScope around a set of Execute, ExecuteNonQuery or ExecuteScalar
-        ''' with out requiring an explicit call to .Start() as it should be implied from the fact that
-        ''' the statements are wrapped in a TransactionScope() using statement.
-        ''' </summary>
-        Private Sub StartIfInTransactionScope()
-
-            If pobjConnection.State = ConnectionState.Closed AndAlso Transaction.Current IsNot Nothing Then
-                ' This will cause the transaction to start
-                Me.Start()
-            End If
+            ConnectionFinished()
 
         End Sub
 
@@ -2204,16 +2068,11 @@ Public Class Database
         ''' Executes the SQL statement. 
         ''' Returns Nothing/null if no record was selected, otherwise the first field from the
         ''' returned result.
-        ''' ConnectionController.Start must be called prior to and 
-        ''' ConnectionController.Finished afterwards or the statement be wrapped in a TransactionScope().
-        ''' Otherwise the connection will not be correctly closed.
-        ''' If wrapped in a TransactionScope call then Start is implicitly called if it has
-        ''' not been called previously with the transaction scope.
+        ''' ConnectionController.Start must be called prior to and ConnectionController.Finished afterwards,
+        ''' otherwise the connection will not be correctly closed.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
         Public Function ExecuteScalar(ByVal objSQLStatement As SQL.ISQLStatement) As Object
-
-            StartIfInTransactionScope()
 
             Dim objDataReader As IDataReader = ExecuteInternal(pobjConnection, objSQLStatement)
 
@@ -2252,16 +2111,10 @@ Public Class Database
         ''' --------------------------------------------------------------------------------
         ''' <summary>
         ''' Executes the SQL statement. 
-        ''' ConnectionController.Start must be called prior to and 
-        ''' ConnectionController.Finished afterwards or the statement be wrapped in a TransactionScope().
-        ''' Otherwise the connection will not be correctly closed.
-        ''' If wrapped in a TransactionScope call then Start is implicitly called if it has
-        ''' not been called previously with the transaction scope.
+        ''' ConnectionController.Start must be called prior to and ConnectionController.Finished afterwards.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
         Public Function Execute(ByVal objSQLStatement As SQL.ISQLStatement) As IDataReader
-
-            StartIfInTransactionScope()
 
             Return ExecuteInternal(pobjConnection, objSQLStatement)
 
@@ -2270,16 +2123,10 @@ Public Class Database
         ''' --------------------------------------------------------------------------------
         ''' <summary>
         ''' Executes the SQL statements. 
-        ''' ConnectionController.Start must be called prior to and 
-        ''' ConnectionController.Finished afterwards or the statement be wrapped in a TransactionScope().
-        ''' Otherwise the connection will not be correctly closed.
-        ''' If wrapped in a TransactionScope call then Start is implicitly called if it has
-        ''' not been called previously with the transaction scope.
+        ''' ConnectionController.Start must be called prior to and ConnectionController.Finished afterwards.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
         Public Function Execute(ByVal objSQLStatements As SQL.ISQLStatement()) As IDataReader
-
-            StartIfInTransactionScope()
 
             Return ExecuteInternal(pobjConnection, New SQL.SQLStatements(objSQLStatements))
 
@@ -2288,16 +2135,10 @@ Public Class Database
         ''' --------------------------------------------------------------------------------
         ''' <summary>
         ''' Executes the SQL statement. 
-        ''' ConnectionController.Start must be called prior to and 
-        ''' ConnectionController.Finished afterwards or the statement be wrapped in a TransactionScope().
-        ''' Otherwise the connection will not be correctly closed.
-        ''' If wrapped in a TransactionScope call then Start is implicitly called if it has
-        ''' not been called previously with the transaction scope.
+        ''' ConnectionController.Start must be called prior to and ConnectionController.Finished afterwards.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
         Public Function ExecuteNonQuery(ByVal objSQLStatement As SQL.ISQLStatement) As Integer
-
-            StartIfInTransactionScope()
 
             Return ExecuteNonQueryInternal(pobjConnection, objSQLStatement)
 
@@ -2306,16 +2147,10 @@ Public Class Database
         ''' --------------------------------------------------------------------------------
         ''' <summary>
         ''' Executes the SQL statements. 
-        ''' ConnectionController.Start must be called prior to and 
-        ''' ConnectionController.Finished afterwards or the statement be wrapped in a TransactionScope().
-        ''' Otherwise the connection will not be correctly closed.
-        ''' If wrapped in a TransactionScope call then Start is implicitly called if it has
-        ''' not been called previously with the transaction scope.
+        ''' ConnectionController.Start must be called prior to and ConnectionController.Finished afterwards.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
         Public Function ExecuteNonQuery(ByVal objSQLStatements As SQL.ISQLStatement()) As Integer
-
-            StartIfInTransactionScope()
 
             Return ExecuteNonQueryInternal(pobjConnection, New SQL.SQLStatements(objSQLStatements))
 
@@ -2323,8 +2158,7 @@ Public Class Database
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
-        ''' Executes an SQL statement on a new connection from the connection pool or 
-        ''' if in transaction mode the current connection.
+        ''' Executes an SQL statement on a new connection from the connection pool.
         ''' ConnectionController.Start or ConnectionController.Finished do not have to be called.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
@@ -2339,8 +2173,7 @@ Public Class Database
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
-        ''' Executes the SQL statements on a new connection from the connection pool or 
-        ''' if in transaction mode the current connection.
+        ''' Executes the SQL statements on a new connection from the connection pool.
         ''' ConnectionController.Start or ConnectionController.Finished do not have to be called.
         ''' </summary>
         ''' --------------------------------------------------------------------------------

@@ -141,7 +141,7 @@ Public Class MicrosoftSQLServerDatabase
 
     Private Shared Function ConnectionStringRoot(ByVal strDataSource As String, ByVal strDatabaseName As String) As String
 
-        Return "Provider=SQLOLEDB;Data Source=" & strDataSource & ";" & "Database=" & strDatabaseName & ";OLE DB Services=-3;"
+        Return "Provider=SQLOLEDB;Data Source=" & strDataSource & ";" & "Database=" & strDatabaseName & ";"
 
     End Function
 

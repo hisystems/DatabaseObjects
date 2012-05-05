@@ -24,11 +24,8 @@ Public Class ConnectionScope
 
     ''' <summary>
     ''' Ensures that a new connection is opened.
-    ''' If defined within a TransactionScope then the transaction is utilised
-    ''' and object effectively does nothing.
+    ''' If a connection is already opened then the already open connection is utilised.
     ''' </summary>
-    ''' <param name="database"></param>
-    ''' <remarks></remarks>
     Public Sub New(database As Database)
 
         If database Is Nothing Then
