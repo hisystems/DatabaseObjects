@@ -1818,15 +1818,15 @@ Public Class Database
         ''' If a transaction is not in progress an exception will occur.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
-        Public Sub ExecuteNonQuery(ByVal objStatement As SQL.ISQLStatement)
+        Public Function ExecuteNonQuery(ByVal objStatement As SQL.ISQLStatement) As Integer
 
             If Not pobjConnectionController.InTransactionMode Then
                 Throw New Exceptions.DatabaseObjectsException("Not in transaction mode")
             End If
 
-            pobjConnectionController.ExecuteNonQuery(objStatement)
+            Return pobjConnectionController.ExecuteNonQuery(objStatement)
 
-        End Sub
+        End Function
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
@@ -1834,11 +1834,11 @@ Public Class Database
         ''' If a transaction is not in progress an exception will occur.
         ''' </summary>
         ''' --------------------------------------------------------------------------------
-        Public Sub ExecuteNonQuery(ByVal objStatements As SQL.ISQLStatement())
+        Public Function ExecuteNonQuery(ByVal objStatements As SQL.ISQLStatement()) As Integer
 
-            Me.ExecuteNonQuery(New SQL.SQLStatements(objStatements))
+            Return Me.ExecuteNonQuery(New SQL.SQLStatements(objStatements))
 
-        End Sub
+        End Function
 
         ''' --------------------------------------------------------------------------------
         ''' <summary>
