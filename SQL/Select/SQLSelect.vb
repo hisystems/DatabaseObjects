@@ -196,7 +196,16 @@ Namespace SQL
                 End If
 
                 strSQL = _
-                    "SELECT " & DistinctClause() & TopClause() & pobjFields.SQL(Me.ConnectionType) & _
+                    "SELECT " & DistinctClause()
+
+                Select Case MyBase.ConnectionType
+                    Case Database.ConnectionType.MicrosoftAccess
+                    Case Database.ConnectionType.SQLServer
+                    Case Database.ConnectionType.SQLServerCompactEdition
+                        strSQL &= TopClause()
+                End Select
+
+                strSQL &= pobjFields.SQL(Me.ConnectionType) & _
                     " FROM " & pobjTables.SQL(Me.ConnectionType)
 
                 If pbPerformLocking Then
@@ -236,6 +245,14 @@ Namespace SQL
                         Case Database.ConnectionType.MySQL, _
                              Database.ConnectionType.Pervasive
                             strSQL &= " FOR UPDATE"
+                    End Select
+                End If
+
+                If pintTop > 0 Then
+                    Select Case Me.ConnectionType
+                        Case Database.ConnectionType.MySQL, _
+                             Database.ConnectionType.Pervasive
+                            strSQL &= " LIMIT " & pintTop
                     End Select
                 End If
 
