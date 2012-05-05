@@ -154,6 +154,7 @@
     <Compile Include="Database\DatabaseObjectsEnumerable.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Misc\SystemReflectionExtensions.vb" />
     <Compile Include="Obsolete\DatabaseObjectUsingAttributes.vb">
       <SubType>Code</SubType>
     </Compile>

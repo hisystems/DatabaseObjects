@@ -81,10 +81,10 @@ Public Module DatabaseObjectUsingAttributesHelper
             If Not objAttributes Is Nothing Then
                 For Each objFieldMappingObjectHook As FieldMappingObjectHookAttribute In objAttributes
                     If objField.FieldType.IsValueType Then
-                        Throw New Exceptions.DatabaseObjectsException("Field " & objField.Name & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
+                        Throw New Exceptions.DatabaseObjectsException("Field " & objField.FullName & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
                     Else
                         objFieldObject = objField.GetValue(objObject)
-                        If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Field " & objField.Name & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
+                        If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Field " & objField.FullName & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
                         objFieldValues.Add(SaveFieldsForBaseTypes(objFieldObject, objFieldObject.GetType))
                     End If
                 Next
@@ -98,10 +98,10 @@ Public Module DatabaseObjectUsingAttributesHelper
                 For Each objFieldMappingObjectHook As FieldMappingObjectHookAttribute In objAttributes
                     If objProperty.CanRead Then
                         If objProperty.PropertyType.IsValueType Then
-                            Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.Name & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
+                            Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.FullName & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
                         Else
                             objFieldObject = objProperty.GetValue(objObject, Nothing)
-                            If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.Name & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
+                            If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.FullName & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
                             objFieldValues.Add(SaveFieldsForBaseTypes(objFieldObject, objFieldObject.GetType))
                         End If
                     End If
@@ -140,7 +140,7 @@ Public Module DatabaseObjectUsingAttributesHelper
                             objFieldValues.Add(objFieldMapping.FieldName, objField.GetValue(objObject))
                         End If
                     Catch ex As Exception
-                        Throw New Exceptions.DatabaseObjectsException("Field '" & objType.Name & "." & objField.Name & "' could not be read.", ex)
+                        Throw New Exceptions.DatabaseObjectsException("Field '" & objField.FullName & "' could not be read.", ex)
                     End Try
                 Next
             End If
@@ -160,7 +160,7 @@ Public Module DatabaseObjectUsingAttributesHelper
                                 objFieldValues.Add(objFieldMapping.FieldName, objProperty.GetValue(objObject, Nothing))
                             End If
                         Catch ex As Exception
-                            Throw New Exceptions.DatabaseObjectsException("Property '" & objType.Name & "." & objProperty.Name & "' could not be read.", ex)
+                            Throw New Exceptions.DatabaseObjectsException("Property '" & objProperty.FullName & "' could not be read.", ex)
                         End Try
                     End If
                 Next
@@ -235,10 +235,10 @@ Public Module DatabaseObjectUsingAttributesHelper
             If Not objAttributes Is Nothing Then
                 For Each objFieldMappingObjectHook As FieldMappingObjectHookAttribute In objAttributes
                     If objField.FieldType.IsValueType Then
-                        Throw New Exceptions.DatabaseObjectsException("Field " & objField.Name & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
+                        Throw New Exceptions.DatabaseObjectsException("Field " & objField.FullName & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
                     Else
                         objFieldObject = objField.GetValue(objObject)
-                        If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Field " & objField.Name & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
+                        If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Field " & objField.FullName & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
                         LoadFieldsForBaseTypes(objFieldObject, objFieldObject.GetType, objFields)
                     End If
                 Next
@@ -252,10 +252,10 @@ Public Module DatabaseObjectUsingAttributesHelper
                 For Each objFieldMappingObjectHook As FieldMappingObjectHookAttribute In objAttributes
                     If objProperty.CanRead Then
                         If objProperty.PropertyType.IsValueType Then
-                            Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.Name & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
+                            Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.FullName & " marked with FieldMappingObjectHook attribute on value type - must be a class type")
                         Else
                             objFieldObject = objProperty.GetValue(objObject, Nothing)
-                            If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.Name & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
+                            If objFieldObject Is Nothing Then Throw New Exceptions.DatabaseObjectsException("Property " & objProperty.FullName & " marked with " & GetType(FieldMappingObjectHookAttribute).Name & " is Nothing")
                             LoadFieldsForBaseTypes(objFieldObject, objFieldObject.GetType, objFields)
                         End If
                     End If
@@ -294,7 +294,7 @@ Public Module DatabaseObjectUsingAttributesHelper
                                 objField.SetValue(objObject, objFields(objFieldMapping.FieldName).Value)
                             End If
                         Catch ex As Exception
-                            Throw New Exceptions.DatabaseObjectsException("Field '" & objField.Name & "' could not be set.", ex)
+                            Throw New Exceptions.DatabaseObjectsException("Field '" & objField.FullName & "' could not be set.", ex)
                         End Try
                     End If
                 Next
@@ -320,7 +320,7 @@ Public Module DatabaseObjectUsingAttributesHelper
                                     objProperty.SetValue(objObject, objFields(objFieldMapping.FieldName).Value, Nothing)
                                 End If
                             Catch ex As Exception
-                                Throw New Exceptions.DatabaseObjectsException("Property '" & objProperty.Name & "' could not be set.", ex)
+                                Throw New Exceptions.DatabaseObjectsException("Property '" & objProperty.FullName & "' could not be set.", ex)
                             End Try
                         End If
                     End If
