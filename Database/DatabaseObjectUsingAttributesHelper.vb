@@ -290,6 +290,9 @@ Public Module DatabaseObjectUsingAttributesHelper
                                 'Set the distinct value if this is an ObjectReference field
                             ElseIf TypeOf objField.GetValue(objObject) Is ObjectReference Then
                                 DirectCast(objField.GetValue(objObject), ObjectReference).DistinctValue = objFields(objFieldMapping.FieldName).Value
+                            ElseIf objField.FieldType.Equals(GetType(Boolean)) AndAlso Not objFields(objFieldMapping.FieldName).Value.GetType.Equals(GetType(Boolean)) Then
+                                'MySQL connection provides BIT data as a ULong data type, so convert to boolean.
+                                objField.SetValue(objObject, CInt(objFields(objFieldMapping.FieldName).Value) <> 0)
                             Else
                                 objField.SetValue(objObject, objFields(objFieldMapping.FieldName).Value)
                             End If
@@ -316,6 +319,9 @@ Public Module DatabaseObjectUsingAttributesHelper
                                         System.Enum.ToObject(objProperty.PropertyType, _
                                         objFields(objFieldMapping.FieldName).Value), _
                                         Nothing)
+                                ElseIf objProperty.PropertyType.Equals(GetType(Boolean)) AndAlso Not objFields(objFieldMapping.FieldName).Value.GetType.Equals(GetType(Boolean)) Then
+                                    'MySQL connection provides BIT data as a ULong data type, so convert to boolean.
+                                    objProperty.SetValue(objObject, CInt(objFields(objFieldMapping.FieldName).Value) <> 0, Nothing)
                                 Else
                                     objProperty.SetValue(objObject, objFields(objFieldMapping.FieldName).Value, Nothing)
                                 End If
