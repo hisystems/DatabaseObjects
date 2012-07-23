@@ -8,12 +8,14 @@
 using System.Collections;
 using System;
 using System.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DatabaseObjects.SQL
 {
 	public class SQLFieldValues : IEnumerable
 	{
-		protected ArrayList pobjFields = new ArrayList();
+		protected List<SQLFieldValue> pobjFields = new List<SQLFieldValue>();
 			
 		public SQLFieldValues()
 		{
@@ -50,8 +52,8 @@ namespace DatabaseObjects.SQL
 			{
 				if (!this.Exists(strFieldName))
 					throw new ArgumentException("Field '" + strFieldName + "' does not exist.");
-					
-				return (SQLFieldValue)pobjFields[FieldNameIndex(strFieldName)];
+
+				return pobjFields.First(field => Equals(field, strFieldName));
 			}
 		}
 			
@@ -73,7 +75,7 @@ namespace DatabaseObjects.SQL
 			
 		public bool Exists(string strFieldName)
 		{
-			return FieldNameIndex(strFieldName) >= 0;
+			return pobjFields.FirstOrDefault(field => Equals(field, strFieldName)) != null;
 		}
 			
 		public void Delete(ref SQLFieldValue objFieldValue)
@@ -85,18 +87,9 @@ namespace DatabaseObjects.SQL
 			objFieldValue = null;
 		}
 			
-		internal int FieldNameIndex(string strFieldName)
+		private bool Equals(SQLFieldValue fieldValue, string strFieldName)
 		{
-			SQLFieldValue objSQLFieldValue;
-				
-			for (int intIndex = 0; intIndex < this.Count; intIndex++)
-			{
-				objSQLFieldValue = (SQLFieldValue) (pobjFields[intIndex]);
-				if (string.Compare(strFieldName, objSQLFieldValue.Name, true) == 0)
-					return intIndex;
-			}
-				
-			return -1;
+			return fieldValue.Name.Equals(strFieldName, StringComparison.InvariantCultureIgnoreCase);
 		}
 			
 		public System.Collections.IEnumerator GetEnumerator()

@@ -9,6 +9,7 @@ using System.Collections;
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DatabaseObjects.SQL
 {
@@ -84,7 +85,10 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				return this[TableNameIndex(strTableName)];
+				if (!Exists(strTableName))
+					throw new ArgumentException(strTableName + " does not exist");
+
+				return pobjTables.Single(table => Equals(table, strTableName));
 			}
 		}
 			
@@ -119,7 +123,7 @@ namespace DatabaseObjects.SQL
 			
 		public bool Exists(string strTableName)
 		{
-			return TableNameIndex(strTableName) >= 0;
+			return pobjTables.SingleOrDefault(table => Equals(table, strTableName)) != null;
 		}
 			
 		public void Delete(ref SQLSelectTable objTable)
@@ -167,18 +171,9 @@ namespace DatabaseObjects.SQL
 			return strSQL;
 		}
 			
-		private int TableNameIndex(string strTableName)
+		private bool Equals(SQLSelectTable table, string strTableName)
 		{
-			SQLSelectTable objTable;
-				
-			for (int intIndex = 0; intIndex < this.Count; intIndex++)
-			{
-				objTable = (SQLSelectTable)pobjTables[intIndex];
-				if (string.Compare(strTableName, objTable.Name, true) == 0)
-					return intIndex;
-			}
-				
-			return -1;
+			return table.Name.Equals(strTableName, StringComparison.InvariantCultureIgnoreCase);
 		}
 			
 		public System.Collections.IEnumerator GetEnumerator()

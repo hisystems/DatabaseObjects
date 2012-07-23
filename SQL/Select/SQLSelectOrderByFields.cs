@@ -9,6 +9,7 @@ using System.Collections;
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DatabaseObjects.SQL
 {
@@ -76,7 +77,10 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				return this[FieldNameIndex(strFieldName)];
+				if (!Exists(strFieldName))
+					throw new ArgumentException(strFieldName + " does not exist");
+
+				return this.Single(field => Equals(field, strFieldName));
 			}
 		}
 			
@@ -112,7 +116,7 @@ namespace DatabaseObjects.SQL
 			
 		public bool Exists(string strFieldName)
 		{
-			return FieldNameIndex(strFieldName) >= 0;
+			return this.SingleOrDefault(field => Equals(field, strFieldName)) != null;
 		}
 			
 		public void Delete(ref SQLSelectOrderByField objOrderByField)
@@ -130,18 +134,9 @@ namespace DatabaseObjects.SQL
 				objOrderBy.OrderingReverse();
 		}
 			
-		private int FieldNameIndex(string strFieldName)
+		private bool Equals(SQLSelectOrderByField field, string strFieldName)
 		{
-			SQLSelectOrderByField objOrderByField;
-				
-			for (int intIndex = 0; intIndex < this.Count; intIndex++)
-			{
-				objOrderByField = (SQLSelectOrderByField) (pobjOrderByFields[intIndex]);
-				if (string.Compare(strFieldName, objOrderByField.Name, true) == 0)
-					return intIndex;
-			}
-				
-			return -1;
+			return field.Name.Equals(strFieldName, StringComparison.InvariantCultureIgnoreCase);
 		}
 			
 		public System.Collections.IEnumerator GetEnumerator()

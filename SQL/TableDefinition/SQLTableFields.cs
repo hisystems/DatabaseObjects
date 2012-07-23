@@ -101,17 +101,14 @@ namespace DatabaseObjects.SQL
             {
                 EnsureAlterModeValid(AlterModeType.Modify);
 
-                SQLTableField tableField;
-                var intIndex = FieldNameIndex(strFieldName);
+				var tableField = GetTableFieldOrDefault(strFieldName);
 
-                if (intIndex == -1)
+				if (tableField == null)
                 {
                     tableField = new SQLTableField();
                     tableField.Name = strFieldName;
                     pobjFields.Add(tableField);
                 }
-                else
-                    tableField = (SQLTableField)(pobjFields[intIndex]);
 
                 return tableField;
             }
@@ -125,21 +122,20 @@ namespace DatabaseObjects.SQL
 
             objField.Name = strFieldName;
 
-            if (FieldNameIndex(strFieldName) == -1)
-                pobjFields.Add(objField);
-            else
-                throw new ArgumentException("Field '" + strFieldName + "' already exists");
+			if (GetTableFieldOrDefault(strFieldName) != null)
+				throw new ArgumentException("Field '" + strFieldName + "' already exists");
+			
+            pobjFields.Add(objField);
         }
+		
+		private SQLTableField GetTableFieldOrDefault(string strFieldName)
+		{
+			return pobjFields.Where(field => field is SQLTableField).Cast<SQLTableField>().SingleOrDefault(field => Equals(field, strFieldName));
+		}
 
-        private int FieldNameIndex(string strFieldName)
+        private bool Equals(SQLTableField tableField, string strFieldName)
         {
-            for (int intIndex = 0; intIndex < pobjFields.Count; intIndex++)
-            {
-                if (string.Compare(((SQLTableField)(pobjFields[intIndex])).Name, strFieldName, true) == 0)
-                    return intIndex;
-            }
-
-            return -1;
+			return tableField.Name.Equals(strFieldName, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
