@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5A77FD9E-F9DD-44D6-BE59-2A45C1D6B6BC}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>DatabaseObjects</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyMode>None</AssemblyOriginatorKeyMode>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>On</OptionStrict>
+    <RootNamespace>DatabaseObjects</RootNamespace>
+    <StartupObject>DatabaseObjects.%28None%29</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <MyType>Windows</MyType>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\DatabaseObjects.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <NOWARN>1591,660,661</NOWARN>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\DatabaseObjects.xml</DocumentationFile>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>
+    </DefineConstants>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>1</WarningLevel>
+    <NOWARN>1591,660,661</NOWARN>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\ObjectReferenceEarlyBindingAttribute.cs" />
+    <Compile Include="Attributes\ItemInstanceAttribute.cs" />
+    <Compile Include="Attributes\DistinctFieldAttribute.cs" />
+    <Compile Include="Attributes\FieldMappingAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Attributes\FieldMappingObjectHookAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Attributes\KeyFieldAttribute.cs" />
+    <Compile Include="Attributes\OrderByAttribute.cs" />
+    <Compile Include="Attributes\SubsetAttribute.cs" />
+    <Compile Include="Attributes\TableAttribute.cs" />
+    <Compile Include="Attributes\TableJoinAttribute.cs" />
+    <Compile Include="Contraints\EmailAddressConstraint.cs" />
+    <Compile Include="Contraints\KeyFieldIsUniqueInCollectionConstraint.cs" />
+    <Compile Include="Contraints\Constraint.cs" />
+    <Compile Include="Contraints\RegExConstraint.cs" />
+    <Compile Include="Contraints\DateIsTodayOrFutureForNewObjectConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.cs" />
+    <Compile Include="Contraints\StringMaxLengthConstraint.cs" />
+    <Compile Include="Database\LocalTransactionScope.cs" />
+    <Compile Include="Database\ObjectReferenceEarlyBinding.cs" />
+    <Compile Include="Database\ConnectionScope.cs" />
+    <Compile Include="Database\DatabaseObjectsItemInstance.cs" />
+    <Compile Include="Database\RootContainer.cs" />
+    <Compile Include="Database\DatabaseObjectsUsingAttributesHelper.cs" />
+    <Compile Include="Database\DatabaseObjectUsingAttributesHelper.cs" />
+    <Compile Include="Database\IDatabaseObjectsMultipleSubclass.cs" />
+    <Compile Include="Database\MicrosoftAccessDatabase.cs" />
+    <Compile Include="Database\MicrosoftSQLCompactEditionDatabase.cs" />
+    <Compile Include="Database\MicrosoftSQLServerDatabase.cs" />
+    <Compile Include="Database\MySQLDatabase.cs" />
+    <Compile Include="Database\ObjectReference.cs" />
+    <Compile Include="Database\Database.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\DatabaseObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\DatabaseObjectLockable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\DatabaseObjectLockController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\DatabaseObjects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\DatabaseObjectsEnumerable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Misc\SystemReflectionExtensions.cs" />
+    <Compile Include="Obsolete\DatabaseObjectUsingAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\IDatabaseObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\IDatabaseObjectLockable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\IDatabaseObjects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Database\IDatabaseObjectVolatile.cs" />
+    <Compile Include="Database\IGlobalDatabaseObjects.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Obsolete\DatabaseObjectsUsingAttributes.cs" />
+    <Compile Include="Database\DatabaseObjectsVolatile.cs" />
+    <Compile Include="Obsolete\DatabaseObjectsVolatileUsingAttributes.cs" />
+    <Compile Include="Obsolete\DatabaseObjectUsingAttributesLockable.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsEnumerableUsingAttributes.cs" />
+    <Compile Include="Generic\DatabaseObjectsListKeyed.cs" />
+    <Compile Include="Generic\DatabaseObjectsList.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsListKeyedUsingAttributes.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsListUsingAttributes.cs" />
+    <Compile Include="Generic\DatabaseObjectsMultipleSubclass.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsMultipleSubclassUsingAttributes.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsUsingAttributes.cs" />
+    <Compile Include="Generic\DatabaseObjectsVolatile.cs" />
+    <Compile Include="Generic\DatabaseObjectsEnumerable.cs" />
+    <Compile Include="Generic\DatabaseObjects.cs" />
+    <Compile Include="Generic\DatabaseObjectsVolatileList.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsVolatileListUsingAttributes.cs" />
+    <Compile Include="Obsolete\Generic.DatabaseObjectsVolatileUsingAttributes.cs" />
+    <Compile Include="Generic\ObjectReference.cs" />
+    <Compile Include="Misc\AssemblyInfo.cs" />
+    <Compile Include="SQL\Amend\SQLInsertFromSelect.cs" />
+    <Compile Include="SQL\Amend\SQLUpdateField.cs" />
+    <Compile Include="SQL\Expressions\SQLStringConcatExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLAggregateExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLAllFieldsExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLRightFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLArithmeticExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLBitwiseExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLCaseExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLCastFieldExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFieldAggregateExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFieldExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLGetDateFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLLeftFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLLengthFunctionExpression.cs" />
+    <Compile Include="SQL\Select\SQLSelectHavingCondition.cs" />
+    <Compile Include="SQL\Select\SQLSelectHavingConditions.cs" />
+    <Compile Include="SQL\Select\SQLConditionExpression.cs" />
+    <Compile Include="SQL\Select\SQLSelectExpression.cs" />
+    <Compile Include="SQL\Select\SQLSelectGetDate.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableBase.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableFromSelect.cs" />
+    <Compile Include="SQL\TableDefinition\SQLTableFields.cs" />
+    <Compile Include="SQL\TableDefinition\SQLAlterTable.cs" />
+    <Compile Include="SQL\SQLStatements.cs" />
+    <Compile Include="Misc\Exceptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\ISQLStatement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Misc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\SQL.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLAutoIncrementValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLCondition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLConditionFieldCompare.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLConditionInSelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLConditions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLConditionSelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\TableDefinition\SQLCreateIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLDelete.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\TableDefinition\SQLDropIndex.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\TableDefinition\SQLDropTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLFieldValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLFieldValues.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLInsert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectFields.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectGroupByField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectGroupByFields.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectOrderByField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectOrderByFields.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTableJoin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTableJoinCondition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTableJoinConditions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTableJoins.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Select\SQLSelectTables.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\SQLStatement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\TableDefinition\SQLCreateTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\TableDefinition\SQLTableExists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Transactions\SQLRollbackTransaction.cs" />
+    <Compile Include="SQL\Transactions\SQLCommitTransaction.cs" />
+    <Compile Include="SQL\Transactions\SQLBeginTransaction.cs" />
+    <Compile Include="SQL\Select\SQLUnion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLUpdate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Amend\SQLUpdateFields.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQL\Expressions\SQLValueExpression.cs" />
+    <Compile Include="SQL\Transactions\SQLSetTransactionIsolationLevel.cs" />
+    <Compile Include="Contraints\ConstraintBinding.cs" />
+    <Compile Include="Contraints\NumberIsInRangeConstraint.cs" />
+    <Compile Include="Contraints\NumberIsBetweenConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMinimumOrGreaterConstraint.cs" />
+    <Compile Include="Contraints\DateIsSetConstraint.cs" />
+    <Compile Include="Contraints\ObjectIsSetConstraint.cs" />
+    <Compile Include="Contraints\StringIsSetConstraint.cs" />
+    <Compile Include="Contraints\IConstraint.cs" />
+    <Compile Include="SQL\Views\SQLCreateView.cs" />
+    <Compile Include="SQL\Views\SQLDropView.cs" />
+    <Compile Include="SQL\Views\SQLViewExists.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)/Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
