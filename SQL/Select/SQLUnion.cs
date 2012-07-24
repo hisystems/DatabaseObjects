@@ -40,7 +40,7 @@ namespace DatabaseObjects.SQL
 		{
 			Add(objSelect1);
 			AddUnionType(eType);
-			Add(objSelect1);
+			Add(objSelect2);
 		}
 			
 		public void Add(SQLSelect objSelect)
