@@ -30,10 +30,5 @@ namespace DatabaseObjects.SQL
 				return pobjExpression;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			return pobjExpression.SQL(eConnectionType);
-		}
 	}
 }

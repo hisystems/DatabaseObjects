@@ -61,14 +61,5 @@ namespace DatabaseObjects.SQL
 				pobjLeftExpression = value;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			//Account for the situation where EqualTo to NULL is appropriately translated to 'IS NULL'
-			if (pobjRightExpression is SQLValueExpression)
-				return pobjLeftExpression.SQL(eConnectionType) + " " + Misc.SQLConvertCondition(Compare, ((SQLValueExpression)pobjRightExpression).Value, eConnectionType);
-			else
-				return pobjLeftExpression.SQL(eConnectionType) + " " + Misc.SQLConvertCompare(Compare) + " " + pobjRightExpression.SQL(eConnectionType);
-		}
 	}
 }

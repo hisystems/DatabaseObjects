@@ -100,20 +100,6 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = string.Empty;
-				
-			for (int intIndex = 0; intIndex < this.Count; intIndex++)
-			{
-				strSQL += this[intIndex].SQL(eConnectionType);
-				if (intIndex != this.Count - 1)
-					strSQL += ", ";
-			}
-				
-			return strSQL;
-		}
-			
 		public bool Exists(string strFieldName)
 		{
 			return this.SingleOrDefault(field => Equals(field, strFieldName)) != null;

@@ -77,15 +77,16 @@ namespace DatabaseObjects.SQL
 				
 			set
 			{
-				pobjValue = Misc.SQLConditionValue(value);
+				pobjValue = GetConditionValue(value);
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
+
+		internal static object GetConditionValue(object objValue)
 		{
-			Misc.CompareValuePairAssertValid(this.Compare, pobjValue);
-				
-			return Misc.SQLFieldNameAndTablePrefix(this.Table, this.FieldName, eConnectionType) + " " + Misc.SQLConvertCondition(this.Compare, this.Value, eConnectionType);
+			if (objValue is SQLFieldValue)
+				return ((SQLFieldValue)objValue).Value;
+			else
+				return objValue;
 		}
 	}
 }

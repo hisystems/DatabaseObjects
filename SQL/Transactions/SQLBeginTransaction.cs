@@ -17,22 +17,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				switch (base.ConnectionType)
-				{
-					case Database.ConnectionType.SQLServer:
-					case Database.ConnectionType.SQLServerCompactEdition:
-						return "BEGIN TRANSACTION";
-					case Database.ConnectionType.MicrosoftAccess:
-						return "BEGIN TRANSACTION";
-					case Database.ConnectionType.MySQL:
-						return "START TRANSACTION";
-					case Database.ConnectionType.Pervasive:
-						return "START TRANSACTION";
-					case Database.ConnectionType.HyperSQL:
-						return "START TRANSACTION";
-					default:
-						throw new NotImplementedException(this.ConnectionType.ToString());
-				}
+				return base.Serializer.SerializeBeingTransaction(this);
 			}
 		}
 	}

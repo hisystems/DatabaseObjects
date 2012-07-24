@@ -64,14 +64,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			if (left == null)
-				throw new ArgumentNullException(this.GetType().Name + ".LeftExpression");
-			else if (right == null)
-				throw new ArgumentNullException(this.GetType().Name + ".RightExpression");
-				
-			return left.SQL(eConnectionType) + " + " + right.SQL(eConnectionType);
+			return serializer.SerializeStringContactExpression(this);
 		}
 
 		public static SQLExpression ConcatenateAll(params SQLExpression[] sqlExpressions)

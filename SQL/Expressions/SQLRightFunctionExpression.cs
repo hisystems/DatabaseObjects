@@ -19,10 +19,15 @@ namespace DatabaseObjects.SQL
 		}
 			
 		public SQLRightFunctionExpression(SQLExpression objExpression, int intLength) 
-            : base("RIGHT", objExpression, new SQLValueExpression(intLength))
+            : base(objExpression, new SQLValueExpression(intLength))
 		{
 			if (intLength < 0)
 				throw new ArgumentException("Length: " + intLength.ToString());
+		}
+
+		internal override string SQL(Serializers.Serializer serializer)
+		{
+			return serializer.SerializeRightFunctionExpression(this);
 		}
 	}
 }

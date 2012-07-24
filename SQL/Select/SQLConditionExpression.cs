@@ -73,26 +73,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			if (pobjLeftExpression == null)
-				throw new InvalidOperationException("Left expression is not set");
-			else if (pobjRightExpression == null)
-				throw new InvalidOperationException("Right expression is not set");
-				
-			return Condition(pobjLeftExpression, peCompare, pobjRightExpression, eConnectionType);
-		}
-			
-		private string Condition(SQLExpression objLeftExpression, ComparisonOperator eCompare, SQLExpression objRightExpression, Database.ConnectionType eConnectionType)
-		{
-			string strSQL = pobjLeftExpression.SQL(eConnectionType) + " ";
-				
-			if (objRightExpression is SQLValueExpression)
-				strSQL += Misc.SQLConvertCondition(eCompare, ((SQLValueExpression) objRightExpression).Value, eConnectionType);
-			else
-				strSQL += Misc.SQLConvertCompare(eCompare) + " " + objRightExpression.SQL(eConnectionType);
-				
-			return strSQL;
+			return serializer.SerializeConditionExpression(this);
 		}
 	}
 }

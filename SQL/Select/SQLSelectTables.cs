@@ -134,43 +134,7 @@ namespace DatabaseObjects.SQL
 			pobjTables.Remove(objTable);
 			objTable = null;
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = string.Empty;
-			bool bAddTable;
-				
-			for (int intIndex = 0; intIndex < this.Count; intIndex++)
-			{
-				//Include the table if it's not being used in a join
-				if (pobjJoins == null)
-					bAddTable = true;
-				else if (!pobjJoins.Exists(this[intIndex]))
-					bAddTable = true;
-				else
-					bAddTable = false;
-					
-				if (bAddTable)
-				{
-					strSQL += this[intIndex].SQL(eConnectionType);
-					if (intIndex != this.Count - 1)
-						strSQL += ", ";
-				}
-			}
-				
-			if (pobjJoins != null)
-			{
-				string strJoinsSQL = pobjJoins.SQL(eConnectionType);
-
-				if (strJoinsSQL != string.Empty && strSQL != string.Empty)
-					strSQL += " ";
-				
-                strSQL += strJoinsSQL;
-			}
-				
-			return strSQL;
-		}
-			
+						
 		private bool Equals(SQLSelectTable table, string strTableName)
 		{
 			return table.Name.Equals(strTableName, StringComparison.InvariantCultureIgnoreCase);

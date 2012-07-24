@@ -58,6 +58,17 @@ namespace DatabaseObjects.SQL
 				peConnectionType = value;
 			}
 		}
+
+		/// <summary>
+		/// Returns the serializer to be used based on the connection type.
+		/// </summary>
+		internal Serializers.Serializer Serializer
+		{
+			get
+			{
+				return Serializers.Serializers.Items[peConnectionType];
+			}
+		}
 			
 		public override string ToString()
 		{

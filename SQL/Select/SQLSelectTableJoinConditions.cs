@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace DatabaseObjects.SQL
 {
-	public class SQLSelectTableJoinConditions
+	public class SQLSelectTableJoinConditions : IEnumerable
 	{
 		private List<LogicalOperator> pobjLogicalOperators = new List<LogicalOperator>();
 		private ArrayList pobjConditions = new ArrayList();
@@ -118,6 +118,14 @@ namespace DatabaseObjects.SQL
 				return pobjConditions.Count;
 			}
 		}
+
+		internal LogicalOperator[] LogicalOperators
+		{
+			get
+			{
+				return pobjLogicalOperators.ToArray();
+			}
+		}
 			
 		public void Delete(ref SQLSelectTableJoinConditions objConditions)
 		{
@@ -136,28 +144,10 @@ namespace DatabaseObjects.SQL
 			pobjConditions.Remove(objOrderByField);
 			objOrderByField = null;
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			string strSQL = string.Empty;
-			int intIndex = 0;
-				
-			foreach (object objCondition in pobjConditions)
-			{
-				if (intIndex > 0)
-					strSQL += " " + Misc.SQLConvertLogicalOperator((LogicalOperator) (pobjLogicalOperators[intIndex - 1])) + " ";
-					
-				if (objCondition is SQLSelectTableJoinConditions)
-					strSQL += "(" + ((SQLSelectTableJoinConditions) objCondition).SQL(eConnectionType) + ")";
-				else if (objCondition is SQLSelectTableJoinCondition)
-					strSQL += ((SQLSelectTableJoinCondition) objCondition).SQL(eConnectionType);
-				else
-					throw new NotImplementedException(objCondition.GetType().FullName);
-					
-				intIndex++;
-			}
-				
-			return strSQL;
+			return pobjConditions.GetEnumerator();
 		}
 	}
 }

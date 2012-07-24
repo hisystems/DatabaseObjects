@@ -30,7 +30,7 @@ namespace DatabaseObjects.SQL
 	/// </summary>
 	public class SQLCaseExpression : SQLExpression
 	{
-		public class CasesCollection
+		public class CasesCollection : IEnumerable<Case>
 		{
 			private List<Case> pobjCases = new List<Case>();
 				
@@ -43,13 +43,15 @@ namespace DatabaseObjects.SQL
 			{
 				pobjCases.Add(objCase);
 			}
-				
-			internal string SQL(Database.ConnectionType eConnectionType)
+
+			IEnumerator<Case> IEnumerable<Case>.GetEnumerator()
 			{
-				if (pobjCases.Count == 0)
-					throw new InvalidOperationException("There are no cases for the CASE statement");
-					
-				return string.Join(" ", pobjCases.Select(objCase => objCase.SQL(eConnectionType)).ToArray());
+				return pobjCases.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return pobjCases.GetEnumerator();
 			}
 		}
 			
@@ -71,10 +73,21 @@ namespace DatabaseObjects.SQL
 				pobjWhenCondition = objWhenCondition;
 				pobjResult = objResult;
 			}
-				
-			internal string SQL(Database.ConnectionType eConnectionType)
+
+			public SQLExpression WhenCondition
 			{
-				return "WHEN " + pobjWhenCondition.SQL(eConnectionType) + " THEN " + pobjResult.SQL(eConnectionType);
+				get
+				{
+					return pobjWhenCondition;
+				}
+			}
+
+			public SQLExpression Result
+			{
+				get
+				{
+					return pobjResult;
+				}
 			}
 		}
 			
@@ -114,22 +127,18 @@ namespace DatabaseObjects.SQL
 				pobjElseResult = value;
 			}
 		}
-			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+
+		public SQLExpression InputExpression
 		{
-			string strSQL = "CASE";
-				
-			if (pobjInputExpression != null)
-				strSQL += " " + pobjInputExpression.SQL(eConnectionType);
-				
-			strSQL += " " + pobjCases.SQL(eConnectionType);
-				
-			if (pobjElseResult != null)
-				strSQL += " ELSE " + pobjElseResult.SQL(eConnectionType);
-				
-			strSQL += " END";
-				
-			return strSQL;
+			get
+			{
+				return pobjInputExpression;
+			}
+		}
+			
+		internal override string SQL(Serializers.Serializer serializer)
+		{
+			return serializer.SerializeCaseExpression(this);
 		}
 	}
 }

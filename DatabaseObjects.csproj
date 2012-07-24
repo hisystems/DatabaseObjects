@@ -214,6 +214,15 @@
     <Compile Include="SQL\Select\SQLSelectGetDate.cs" />
     <Compile Include="SQL\Select\SQLSelectTableBase.cs" />
     <Compile Include="SQL\Select\SQLSelectTableFromSelect.cs" />
+    <Compile Include="SQL\Serializers\MicrosoftSqlServerCompactEditionSerializer.cs" />
+    <Compile Include="SQL\Serializers\MicrosoftSqlServerSerializer.cs" />
+    <Compile Include="SQL\Serializers\HyperSqlSerializer.cs" />
+    <Compile Include="SQL\Serializers\MicrosoftAccessSerializer.cs" />
+    <Compile Include="SQL\Serializers\Serializer.cs" />
+    <Compile Include="SQL\Serializers\MicrosoftSerializer.cs" />
+    <Compile Include="SQL\Serializers\MySqlSerializer.cs" />
+    <Compile Include="SQL\Serializers\PervasiveSerializer.cs" />
+    <Compile Include="SQL\Serializers\Serializers.cs" />
     <Compile Include="SQL\TableDefinition\SQLTableFields.cs" />
     <Compile Include="SQL\TableDefinition\SQLAlterTable.cs" />
     <Compile Include="SQL\SQLStatements.cs" />
@@ -221,9 +230,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SQL\ISQLStatement.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SQL\Misc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SQL\SQL.cs">

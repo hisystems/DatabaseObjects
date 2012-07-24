@@ -17,22 +17,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				switch (base.ConnectionType)
-				{
-					case Database.ConnectionType.SQLServer:
-					case Database.ConnectionType.SQLServerCompactEdition:
-						return "ROLLBACK TRANSACTION";
-					case Database.ConnectionType.MicrosoftAccess:
-						return "ROLLBACK TRANSACTION";
-					case Database.ConnectionType.MySQL:
-						return "ROLLBACK";
-					case Database.ConnectionType.Pervasive:
-						return "ROLLBACK";
-					case Database.ConnectionType.HyperSQL:
-						return "ROLLBACK";
-					default:
-						throw new NotImplementedException(base.ConnectionType.ToString());
-				}
+				return base.Serializer.SerializeRollbackTransaction(this);
 			}
 		}
 	}

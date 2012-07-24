@@ -83,16 +83,5 @@ namespace DatabaseObjects.SQL
 				pstrFieldName2 = value;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			if (String.IsNullOrEmpty(FieldName1))
-				throw new ArgumentException("FieldName1 not set.");
-				
-			if (String.IsNullOrEmpty(FieldName2))
-				throw new ArgumentException("FieldName2 not set.");
-				
-			return Misc.SQLFieldNameAndTablePrefix(this.Table1, this.FieldName1, eConnectionType) + " " + Misc.SQLConvertCompare(this.Compare) + " " + Misc.SQLFieldNameAndTablePrefix(this.Table2, this.FieldName2, eConnectionType);
-		}
 	}
 }

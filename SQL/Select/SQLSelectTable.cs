@@ -73,21 +73,10 @@ namespace DatabaseObjects.SQL
 				pstrName = value;
 			}
 		}
-			
-		protected override string Source(Database.ConnectionType eConnectionType)
+
+		internal override string Source(Serializers.Serializer serializer)
 		{
-			if (String.IsNullOrEmpty(this.Name))
-				throw new Exceptions.DatabaseObjectsException("Table has not been set.");
-				
-			string strSQL = string.Empty;
-				
-			if (!String.IsNullOrEmpty(pstrDatabaseName))
-				strSQL += Misc.SQLConvertIdentifierName(pstrDatabaseName, eConnectionType) + ".";
-				
-			if (!String.IsNullOrEmpty(pstrSchemaName))
-				strSQL += Misc.SQLConvertIdentifierName(pstrSchemaName, eConnectionType) + ".";
-				
-			return strSQL + Misc.SQLConvertIdentifierName(this.Name, eConnectionType);
+			return serializer.SerializeSelectTable(this);
 		}
 	}
 }

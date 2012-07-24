@@ -48,19 +48,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			if (this.AggregateFunction == AggregateFunction.None)
-				throw new InvalidOperationException("AggregateFunction unspecified for " + this.GetType().Name);
-				
-			string strFieldName = string.Empty;
-				
-			if (this.AggregateFunction == AggregateFunction.Count)
-				strFieldName = "*";
-			else
-				strFieldName = base.SQL(eConnectionType);
-				
-			return Misc.SQLConvertAggregate(this.AggregateFunction) + "(" + strFieldName + ")";
+			return serializer.SerializeFieldAggregateExpression(this);
 		}
 	}
 }

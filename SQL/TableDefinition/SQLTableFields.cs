@@ -57,7 +57,7 @@ namespace DatabaseObjects.SQL
 
         public SQLTableField Add(string strFieldName, SQL.DataType eDataType, int intSize)
         {
-            EnsureAlterModeValid(AlterModeType.Add);
+			EnsureAlterModeValid(AlterModeType.Add);
 
             SQLTableField objField = new SQLTableField();
 
@@ -66,7 +66,7 @@ namespace DatabaseObjects.SQL
             if (intSize > 0)
                 objField.Size = intSize;
 
-            if (Misc.DataTypeIsCharacter(eDataType) && intSize == 0)
+            if (DataTypeExtensions.IsCharacter(eDataType) && intSize == 0)
                 throw new ArgumentException("Size not specified for character based field " + strFieldName);
 
             pobjFields.Add(objField);
@@ -76,7 +76,7 @@ namespace DatabaseObjects.SQL
 
         public SQLTableFieldComputed AddComputed(string strFieldName, SQLExpression objComputation)
         {
-            EnsureAlterModeValid(AlterModeType.Add);
+			EnsureAlterModeValid(AlterModeType.Add);
 
             SQLTableFieldComputed objField = new SQLTableFieldComputed(strFieldName, objComputation);
 
@@ -89,7 +89,7 @@ namespace DatabaseObjects.SQL
 		{
 			if (objField == null)
 				throw new ArgumentNullException();
-				
+
 			EnsureAlterModeValid(AlterModeType.Add);
 				
 			pobjFields.Add(objField);
@@ -99,7 +99,7 @@ namespace DatabaseObjects.SQL
         {
             get
             {
-                EnsureAlterModeValid(AlterModeType.Modify);
+				EnsureAlterModeValid(AlterModeType.Modify);
 
 				var tableField = GetTableFieldOrDefault(strFieldName);
 
@@ -116,7 +116,7 @@ namespace DatabaseObjects.SQL
 
         public void Drop(string strFieldName)
         {
-            EnsureAlterModeValid(AlterModeType.Drop);
+			EnsureAlterModeValid(AlterModeType.Drop);
 
             SQLTableField objField = new SQLTableField();
 
@@ -138,86 +138,16 @@ namespace DatabaseObjects.SQL
 			return tableField.Name.Equals(strFieldName, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="eConnectionType"></param>
-        /// <param name="bIncludeColumnModifier">
-        /// Indicates whether the ADD, MODIFY or DROP modifiers are required for each column.
-        /// When utilised from SQLCreateTable this will always be false. However, for SQLAlterTable this will be true.</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        internal string SQL(Database.ConnectionType eConnectionType, bool bIncludeColumnModifier)
-        {
-            const string cstrSeperator = ", ";
-
-            string strSQL = string.Empty;
-            string strColumnModifier = string.Empty;
-
-            //Include mode when altering a table, otherwise when creating a table the mode is not required.
-            if (bIncludeColumnModifier)
-            {
-                strColumnModifier = GetAlterModeColumnModifier(AlterMode, eConnectionType);
-
-                //This case statement is related to the if statement below with the mode space char being added for MySQL
-                if (eConnectionType != Database.ConnectionType.MySQL)
-                    strSQL = strColumnModifier + " ";
-            }
-
-            foreach (SQLTableFieldBase objField in pobjFields)
-            {
-                if (bIncludeColumnModifier)
-                {
-                    if (eConnectionType == Database.ConnectionType.MySQL)
-                        strSQL += strColumnModifier + " ";
-                }
-
-                strSQL += objField.SQL(eConnectionType, (AlterMode == AlterModeType.Drop)) + cstrSeperator;
-            }
-
-            return strSQL.Substring(0, strSQL.Length - cstrSeperator.Length); //remove the last comma and space
-        }
-
-        private static string GetAlterModeColumnModifier(AlterModeType eAlterMode, Database.ConnectionType eConnectionType)
+		private void EnsureAlterModeValid(SQLTableFields.AlterModeType eAlterMode)
 		{
-			switch (eAlterMode)
-			{
-				case AlterModeType.Add:
-					return "ADD";
-				case AlterModeType.Modify:
-					switch (eConnectionType)
-					{
-						case Database.ConnectionType.MySQL:
-						case Database.ConnectionType.Pervasive:
-							return "MODIFY COLUMN";
-						case Database.ConnectionType.MicrosoftAccess:
-						case Database.ConnectionType.SQLServer:
-						case Database.ConnectionType.SQLServerCompactEdition:
-						case Database.ConnectionType.HyperSQL:
-							return "ALTER COLUMN";
-						default:
-							throw new NotImplementedException(eConnectionType.ToString());
-							break;
-					}
-					break;
-				case AlterModeType.Drop:
-					return "DROP COLUMN";
-				default:
-					throw new NotImplementedException();
-					break;
-			}
+			//if the alter mode hasn't been set then any of the modes are valid
+			if ((int)AlterMode == pcintAlterModeUninitialized)
+				AlterMode = eAlterMode;
+			else if (eAlterMode != AlterMode)
+				throw new Exceptions.DatabaseObjectsException("Cannot mix " + AlterModeDescription(AlterMode) + " fields and " + AlterModeDescription(eAlterMode) + " fields into one SQL statement");
 		}
 
-        private void EnsureAlterModeValid(SQLTableFields.AlterModeType eAlterMode)
-        {
-            //if the alter mode hasn't been set then any of the modes are valid
-            if ((int)AlterMode == pcintAlterModeUninitialized)
-                AlterMode = eAlterMode;
-            else if (eAlterMode != AlterMode)
-                throw new Exceptions.DatabaseObjectsException("Cannot mix " + AlterModeDescription(AlterMode) + " fields and " + AlterModeDescription(eAlterMode) + " fields into one SQL statement");
-        }
-
-        private string AlterModeDescription(SQLTableFields.AlterModeType eAlterMode)
+		private string AlterModeDescription(SQLTableFields.AlterModeType eAlterMode)
 		{
 			switch (eAlterMode)
 			{
@@ -231,7 +161,7 @@ namespace DatabaseObjects.SQL
 					throw new NotSupportedException();
 			}
 		}
-
+		
         IEnumerator<SQLTableFieldBase> IEnumerable<SQLTableFieldBase>.GetEnumerator()
         {
             return pobjFields.GetEnumerator();
@@ -245,7 +175,7 @@ namespace DatabaseObjects.SQL
 
     public abstract class SQLTableFieldBase
     {
-        protected internal abstract string SQL(Database.ConnectionType eConnectionType, bool bOnlyFieldName);
+		internal abstract string SQL(Serializers.Serializer serializer, SQLTableFields.AlterModeType alterMode);
 
         private SQLFieldExpression pobjNameAsExpression = new SQLFieldExpression();
 
@@ -265,7 +195,7 @@ namespace DatabaseObjects.SQL
 			}
         }
 
-        protected SQLExpression NameAsExpression
+        internal SQLExpression NameAsExpression
         {
             get
             {
@@ -288,12 +218,17 @@ namespace DatabaseObjects.SQL
 			pobjComputation = objComputation;
 		}
 
-        protected internal override string SQL(Database.ConnectionType eConnectionType, bool bOnlyFieldName)
-        {
-            if (bOnlyFieldName)
-                throw new InvalidOperationException("Computed columns cannot be used for dropping fields");
+		public SQLExpression Computation
+		{
+			get
+			{
+				return pobjComputation;
+			}
+		}
 
-            return base.NameAsExpression.SQL(eConnectionType) + " AS (" + pobjComputation.SQL(eConnectionType) + ")";
+		internal override string SQL(Serializers.Serializer serializer, SQLTableFields.AlterModeType alterMode)
+        {
+			return serializer.SerializeTableFieldComputed(this, alterMode);
         }
     }
 
@@ -325,7 +260,7 @@ namespace DatabaseObjects.SQL
 
             set
             {
-                if (pbAutoIncrements && !Misc.DataTypeIsInteger(value))
+                if (pbAutoIncrements && !DataTypeExtensions.IsInteger(value))
                     throw new InvalidOperationException("Data type " + value.ToString() + " cannot be used as an autoincrement field, as it is not an integer field");
 
                 peType = value;
@@ -352,7 +287,7 @@ namespace DatabaseObjects.SQL
         {
             set
 			{
-				Misc.DataTypeEnsureIsCharacter(peType);
+				DataTypeExtensions.EnsureIsCharacter(peType);
 						
 				if (value <= 1)
 					throw new ArgumentException();
@@ -362,8 +297,6 @@ namespace DatabaseObjects.SQL
 
             get
             {
-                Misc.DataTypeEnsureIsCharacter(peType);
-
                 return pintSize;
             }
         }
@@ -378,14 +311,12 @@ namespace DatabaseObjects.SQL
         {
             get
             {
-                Misc.DataTypeEnsureIsDecimal(peType);
-
                 return pintScale;
             }
 
             set
 			{
-				Misc.DataTypeEnsureIsDecimal(peType);
+				DataTypeExtensions.EnsureIsDecimal(peType);
 						
 				if (value <= 0)
 					throw new ArgumentException();
@@ -404,14 +335,12 @@ namespace DatabaseObjects.SQL
         {
             get
             {
-                Misc.DataTypeEnsureIsDecimal(peType);
-
                 return pintPrecision;
             }
 
             set
 			{
-				Misc.DataTypeEnsureIsDecimal(peType);
+				DataTypeExtensions.EnsureIsDecimal(peType);
 						
 				if (value <= 0)
 					throw new ArgumentException();
@@ -424,14 +353,12 @@ namespace DatabaseObjects.SQL
         {
             get
             {
-                Misc.DataTypeEnsureIsInteger(peType);
-
                 return pbAutoIncrements;
             }
 
             set
             {
-                Misc.DataTypeEnsureIsInteger(peType);
+                DataTypeExtensions.EnsureIsInteger(peType);
                 pbAutoIncrements = value;
                 pbAcceptsNull = System.Convert.ToBoolean(!value);
             }
@@ -466,93 +393,9 @@ namespace DatabaseObjects.SQL
             }
         }
 
-        protected internal override string SQL(Database.ConnectionType eConnectionType, bool bOnlyFieldName)
-        {
-            if (bOnlyFieldName)
-                return base.NameAsExpression.SQL(eConnectionType);
-            else
-                return SQLForColumnAddOrModify(eConnectionType);
-        }
-
-        private string SQLForColumnAddOrModify(Database.ConnectionType eConnectionType)
-        {
-            string strDataType = string.Empty;
-            string strColumnOptions;
-            string strSQL = string.Empty;
-
-            //For Pervasive do not specify NULL/NOT NULL and the data type for an IDENTITY field
-            bool bSpecifyNullStatus = !(pbAutoIncrements && (eConnectionType == Database.ConnectionType.Pervasive));
-            bool bSpecifyDataType = !(pbAutoIncrements && (eConnectionType == Database.ConnectionType.Pervasive));
-
-            if (bSpecifyDataType)
-                strDataType = Misc.SQLConvertDataTypeString(eConnectionType, peType, pintSize, pintPrecision, pintScale);
-
-            strColumnOptions = ColumnOptions(eConnectionType, bSpecifyNullStatus);
-            strSQL = base.NameAsExpression.SQL(eConnectionType) + " " + strDataType + strColumnOptions;
-
-            return strSQL;
-        }
-
-        private string ColumnOptions(Database.ConnectionType eConnection, bool bSpecifyNullStatus)
-        {
-            ArrayList objOptions = new ArrayList();
-            string strOptions = string.Empty;
-
-            //In version 2.13+ the IDENTITY constraint has been reordered
-            //to before the contraints (i.e. DEFAULT, NULL etc.)
-            if (Misc.DataTypeIsInteger(peType) && pbAutoIncrements)
-            {
-                switch (eConnection)
-                {
-                    case Database.ConnectionType.MicrosoftAccess:
-                        objOptions.Add("IDENTITY");
-                        break;
-                    case Database.ConnectionType.MySQL:
-                        objOptions.Add("AUTO_INCREMENT");
-                        //must be set to a key
-                        if (peKeyType == KeyType.None)
-                            peKeyType = KeyType.Unique;
-                        break;
-                    case Database.ConnectionType.SQLServer:
-                    case Database.ConnectionType.SQLServerCompactEdition:
-                        objOptions.Add("IDENTITY");
-                        break;
-                    case Database.ConnectionType.Pervasive:
-                        objOptions.Add("IDENTITY");
-                        break;
-                    case Database.ConnectionType.HyperSQL:
-                        objOptions.Add("GENERATED BY DEFAULT AS IDENTITY(START WITH 1 INCREMENT BY 1)");
-                        break;
-                    default:
-                        throw new NotImplementedException(eConnection.ToString() + "; Auto Increment");
-                        break;
-                }
-            }
-
-            if (pobjDefault != null)
-                objOptions.Add("DEFAULT " + Misc.SQLConvertValue(pobjDefault, eConnection));
-
-            //NULL status MUST be after the default value for Pervasive
-            //In version 2.13+ the NULL/NOT NULL constraint has been reordered
-            //to after the DEFAULT constraint. Hopefully, this won't cause any problems.
-            //According to the T-SQL docs it should not be a problem.
-            if (bSpecifyNullStatus)
-            {
-                if (pbAcceptsNull)
-                    objOptions.Add("NULL");
-                else
-                    objOptions.Add("NOT NULL");
-            }
-
-            if (peKeyType == KeyType.Primary)
-                objOptions.Add("PRIMARY KEY");
-            else if (peKeyType == KeyType.Unique)
-                objOptions.Add("UNIQUE");
-
-            foreach (object objOption in objOptions)
-                strOptions += " " + ((string)objOption);
-
-            return strOptions;
-        }
+		internal override string SQL(Serializers.Serializer serializer, SQLTableFields.AlterModeType alterMode)
+		{
+			return serializer.SerializeTableField(this, alterMode);
+		}
     }
 }

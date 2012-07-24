@@ -89,27 +89,8 @@ namespace DatabaseObjects.SQL
         {
             get
             {
-                string strSQL = string.Empty;
-
-                //Although the index name is optional with SQL Server it is not optional with MySQL or Pervasive
-                if (String.IsNullOrEmpty(this.Name))
-                    throw new Exceptions.DatabaseObjectsException("IndexName has not been set.");
-
-                if (String.IsNullOrEmpty(this.TableName))
-                    throw new Exceptions.DatabaseObjectsException("TableName has not been set.");
-
-                strSQL = "CREATE " + UniqueString() + "INDEX " + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType) + " ON " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType) + " (" + pobjFields.SQL(this.ConnectionType) + ")";
-
-                return strSQL;
+				return base.Serializer.SerializeCreateIndex(this);
             }
-        }
-
-        private string UniqueString()
-        {
-            if (pbIsUnique)
-                return "UNIQUE ";
-            else
-                return "";
         }
     }
 
@@ -141,18 +122,6 @@ namespace DatabaseObjects.SQL
             pobjFields.Add(objField);
 
             return objField;
-        }
-
-        internal string SQL(Database.ConnectionType eConnectionType)
-        {
-            const string cstrSeperator = ", ";
-
-            string strSQL = string.Empty;
-
-            foreach (SQLIndexField objField in pobjFields)
-                strSQL += objField.SQL(eConnectionType) + cstrSeperator;
-
-            return strSQL.Substring(0, strSQL.Length - cstrSeperator.Length); //remove the last comma and space
         }
 
         IEnumerator<SQLIndexField> IEnumerable<SQLIndexField>.GetEnumerator()
@@ -199,19 +168,6 @@ namespace DatabaseObjects.SQL
             {
                 peOrder = value;
             }
-        }
-
-        internal string SQL(Database.ConnectionType eConnectionType)
-        {
-            return Misc.SQLConvertIdentifierName(this.Name, eConnectionType) + OrderString();
-        }
-
-        private string OrderString()
-        {
-            if (peOrder == OrderBy.Descending)
-                return " DESC";
-            else
-                return "";
         }
     }
 }

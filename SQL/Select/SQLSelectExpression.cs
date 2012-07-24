@@ -22,12 +22,20 @@ namespace DatabaseObjects.SQL
 				
 			pobjExpression = objExpression;
 		}
+
+		public SQL.SQLExpression Expression
+		{
+			get
+			{
+				return pobjExpression;
+			}
+		}
 			
 		public override string SQL
 		{
 			get
 			{
-				return "SELECT " + pobjExpression.SQL(base.ConnectionType);
+				return base.Serializer.SerializeSelectExpression(this);
 			}
 		}
 	}

@@ -90,30 +90,10 @@ namespace DatabaseObjects.SQL
 				pobjConditions = value;
 			}
 		}
-			
-		protected override string Source(Database.ConnectionType eConnectionType)
+
+		internal override string Source(Serializers.Serializer serializer)
 		{
-			string strSQL = pobjLeftTable.SQL(eConnectionType) + " " + GetJoinString(this.TheType) + " " + pobjRightTable.SQL(eConnectionType);
-				
-			if (pobjConditions != null && !pobjConditions.IsEmpty)
-				strSQL += " ON " + pobjConditions.SQL(eConnectionType);
-				
-			//Surround the join with parentheses - MS Access won't accept it otherwise
-			return "(" + strSQL + ")";
-		}
-			
-		private static string GetJoinString(Type eJoinType)
-		{
-			if (eJoinType == SQLSelectTableJoin.Type.Inner)
-				return "INNER JOIN";
-			else if (eJoinType == SQLSelectTableJoin.Type.FullOuter)
-				return "FULL OUTER JOIN";
-			else if (eJoinType == SQLSelectTableJoin.Type.LeftOuter)
-				return "LEFT OUTER JOIN";
-			else if (eJoinType == SQLSelectTableJoin.Type.RightOuter)
-				return "RIGHT OUTER JOIN";
-			else
-				throw new NotImplementedException(eJoinType.ToString());
+			return serializer.SerializeSelectTableJoin(this);
 		}
 	}
 }

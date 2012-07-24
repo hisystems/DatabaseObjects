@@ -290,4 +290,53 @@ namespace DatabaseObjects.SQL
 		/// <remarks></remarks>
 		NewUniqueIdentifier
 	}
+
+	internal static class DataTypeExtensions
+	{
+		public static void EnsureIsDecimal(DataType eDataType)
+		{
+			if (eDataType != DataType.Decimal)
+				throw new Exceptions.MethodLockedException("First set Type to " + DataType.Decimal.ToString());
+		}
+
+		public static void EnsureIsCharacter(SQL.DataType eDataType)
+		{
+			if (!IsCharacter(eDataType))
+				throw new Exceptions.MethodLockedException("Data type is not character based");
+		}
+
+		public static void EnsureIsInteger(SQL.DataType eDataType)
+		{
+			if (!IsInteger(eDataType))
+				throw new Exceptions.MethodLockedException();
+		}
+
+		public static bool IsInteger(SQL.DataType eDataType)
+		{
+			switch (eDataType)
+			{
+				case DataType.BigInteger:
+				case DataType.Integer:
+				case DataType.SmallInteger:
+				case DataType.TinyInteger:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		public static bool IsCharacter(DataType eDataType)
+		{
+			switch (eDataType)
+			{
+				case DataType.Character:
+				case DataType.UnicodeCharacter:
+				case DataType.VariableCharacter:
+				case DataType.UnicodeVariableCharacter:
+					return true;
+				default:
+					return false;
+			}
+		}
+	}
 }

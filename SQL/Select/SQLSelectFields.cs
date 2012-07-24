@@ -107,27 +107,6 @@ namespace DatabaseObjects.SQL
 			pobjFieldNames.Clear();
 		}
 			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = string.Empty;
-				
-			if (this.Count == 0)
-				strSQL = "*";
-			else
-			{
-				for (int intIndex = 0; intIndex < this.Count; intIndex++)
-				{
-					strSQL += this[intIndex].SQL(eConnectionType);
-					if (intIndex != this.Count - 1)
-					{
-						strSQL += ", ";
-					}
-				}
-			}
-				
-			return strSQL;
-		}
-			
 		public bool Exists(string strFieldName)
 		{
 			return FieldNameIndex(strFieldName) >= 0;

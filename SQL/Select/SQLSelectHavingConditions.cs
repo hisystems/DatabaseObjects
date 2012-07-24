@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace DatabaseObjects.SQL
 {
-	public class SQLSelectHavingConditions
+	public class SQLSelectHavingConditions : IEnumerable
 	{
 		private ArrayList pobjConditions = new ArrayList();
 		private List<LogicalOperator> pobjLogicalOperators = new List<LogicalOperator>();
@@ -67,6 +67,14 @@ namespace DatabaseObjects.SQL
 				return pobjConditions.Count == 0;
 			}
 		}
+
+		internal LogicalOperator[] LogicalOperators
+		{
+			get
+			{
+				return pobjLogicalOperators.ToArray();
+			}
+		}
 			
 		private void EnsurePreviousLogicalOperatorExists()
 		{
@@ -82,25 +90,10 @@ namespace DatabaseObjects.SQL
 				
 			pobjLogicalOperators.Add(eLogicalOperator);
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			string strSQL = string.Empty;
-				
-			for (int intIndex = 0; intIndex < pobjConditions.Count; intIndex++)
-			{
-				if (intIndex > 0)
-					strSQL += " " + Misc.SQLConvertLogicalOperator(pobjLogicalOperators[intIndex - 1]) + " ";
-					
-				if (pobjConditions[intIndex] is SQLSelectHavingCondition)
-					strSQL += ((SQLSelectHavingCondition) (pobjConditions[intIndex])).SQL(eConnectionType);
-				else if (pobjConditions[intIndex] is SQLSelectHavingConditions)
-					strSQL += "(" + ((SQLSelectHavingConditions) (pobjConditions[intIndex])).SQL(eConnectionType) + ")";
-				else
-					throw new NotImplementedException(pobjConditions[intIndex].GetType().FullName);
-			}
-				
-			return strSQL;
+			return pobjConditions.GetEnumerator();
 		}
 	}
 }

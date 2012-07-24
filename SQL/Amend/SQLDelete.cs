@@ -56,22 +56,12 @@ namespace DatabaseObjects.SQL
 				pobjConditions = value;
 			}
 		}
-			
+
 		public override string SQL
 		{
-			get
+			get 
 			{
-				string strSQL;
-					
-				if (String.IsNullOrEmpty(TableName))
-					throw new Exceptions.DatabaseObjectsException("TableName property has not been set.");
-					
-				strSQL = "DELETE FROM " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType);
-
-				if (pobjConditions != null && !pobjConditions.IsEmpty)
-					strSQL += " WHERE " + pobjConditions.SQL(this.ConnectionType);
-					
-				return strSQL;
+				return base.Serializer.SerializeDelete(this);
 			}
 		}
 	}

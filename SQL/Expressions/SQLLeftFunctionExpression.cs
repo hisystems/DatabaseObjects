@@ -1,7 +1,7 @@
 // ___________________________________________________
 //
 //  (c) Hi-Integrity Systems 2010. All rights reserved.
-//  www.hisystems.com.au<http://www.hisystems.com.au> - Toby Wicks
+//  www.hisystems.com.au - Toby Wicks
 // ___________________________________________________
 //
 
@@ -22,10 +22,15 @@ namespace DatabaseObjects.SQL
 		}
 			
 		public SQLLeftFunctionExpression(SQLExpression objExpression, int intLength) 
-            : base("LEFT", objExpression, new SQLValueExpression(intLength))
+            : base(objExpression, new SQLValueExpression(intLength))
 		{
 			if (intLength < 0)
 				throw new ArgumentException("Length: " + intLength.ToString());
+		}
+
+		internal override string SQL(Serializers.Serializer serializer)
+		{
+			return serializer.SerializeLeftFunctionExpression(this);
 		}
 	}
 }

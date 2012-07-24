@@ -89,24 +89,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			if (pobjLeft == null)
-				throw new ArgumentNullException(this.GetType().Name + ".LeftExpression");
-			else if (pobjRight == null)
-				throw new ArgumentNullException(this.GetType().Name + ".RightExpression");
-				
-			return "(" + pobjLeft.SQL(eConnectionType) + " " + OperatorString(peOperator) + " " + pobjRight.SQL(eConnectionType) + ")";
-		}
-			
-		private string OperatorString(SQL.BitwiseOperator eOperator)
-		{
-			if (eOperator == BitwiseOperator.And)
-				return "&";
-			else if (eOperator == BitwiseOperator.Or)
-				return "|";
-			else
-				throw new NotSupportedException(typeof(SQL.BitwiseOperator).Name);
+			return serializer.SerializeBitwiseExpression(this);
 		}
 	}
 }

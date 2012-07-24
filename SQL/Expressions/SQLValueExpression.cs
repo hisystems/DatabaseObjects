@@ -34,10 +34,10 @@ namespace DatabaseObjects.SQL
 				return pobjValue;
 			}
 		}
-			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			return Misc.SQLConvertValue(pobjValue, eConnectionType);
+			return serializer.SerializeValue(pobjValue);
 		}
 	}
 }

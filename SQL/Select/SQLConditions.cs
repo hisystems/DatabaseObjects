@@ -207,35 +207,15 @@ namespace DatabaseObjects.SQL
 			pobjSQLConditions.Remove(objCondition);
 			objCondition = null;
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
+
+		internal LogicalOperator[] LogicalOperators
 		{
-			string strSQL = string.Empty;
-				
-			for (int intIndex = 0; intIndex < pobjSQLConditions.Count; intIndex++)
+			get
 			{
-				if (intIndex > 0)
-					strSQL += " " + Misc.SQLConvertLogicalOperator(pobjLogicalOperators[intIndex - 1]) + " ";
-					
-				if (pobjSQLConditions[intIndex] is SQLCondition)
-					strSQL += ((SQLCondition)(pobjSQLConditions[intIndex])).SQL(eConnectionType);
-				else if (pobjSQLConditions[intIndex] is SQLConditions)
-					strSQL += "(" + ((SQLConditions)(pobjSQLConditions[intIndex])).SQL(eConnectionType) + ")";
-				else if (pobjSQLConditions[intIndex] is SQLConditionInSelect)
-					strSQL += ((SQLConditionInSelect)(pobjSQLConditions[intIndex])).SQL(eConnectionType);
-				else if (pobjSQLConditions[intIndex] is SQLConditionSelect)
-					strSQL += ((SQLConditionSelect)(pobjSQLConditions[intIndex])).SQL(eConnectionType);
-				else if (pobjSQLConditions[intIndex] is SQLConditionFieldCompare)
-					strSQL += ((SQLConditionFieldCompare)(pobjSQLConditions[intIndex])).SQL(eConnectionType);
-				else if (pobjSQLConditions[intIndex] is SQLConditionExpression)
-					strSQL += ((SQLConditionExpression)(pobjSQLConditions[intIndex])).SQL(eConnectionType);
-				else
-					throw new NotImplementedException(pobjSQLConditions[intIndex].GetType().FullName);
+				return this.pobjLogicalOperators.ToArray();
 			}
-				
-			return strSQL;
 		}
-			
+
 		public System.Collections.IEnumerator GetEnumerator()
 		{
 			return pobjSQLConditions.GetEnumerator();

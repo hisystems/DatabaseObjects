@@ -73,25 +73,5 @@ namespace DatabaseObjects.SQL
 				pbNotInSelect = value;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			if (String.IsNullOrEmpty(FieldName))
-				throw new Exceptions.DatabaseObjectsException("FieldName not set.");
-				
-			if (Select == null)
-				throw new Exceptions.DatabaseObjectsException("SelectSet not set.");
-				
-			Select.ConnectionType = eConnectionType;
-				
-			string strIn;
-				
-			if (pbNotInSelect)
-				strIn = "NOT IN";
-			else
-				strIn = "IN";
-				
-			return Misc.SQLFieldNameAndTablePrefix(this.Table, this.FieldName, eConnectionType) + " " + strIn + " (" + Select.SQL + ")";
-		}
 	}
 }

@@ -33,6 +33,22 @@ namespace DatabaseObjects.SQL
 		{
 			this.Size = intSize;
 		}
+
+		public DataType ToDataType
+		{
+			get
+			{
+				return peCastAsType;
+			}
+		}
+
+		public string FieldName
+		{
+			get
+			{
+				return pstrFieldName;
+			}
+		}
 			
 		/// <summary>
 		/// The size of the character data type.
@@ -41,7 +57,7 @@ namespace DatabaseObjects.SQL
 		{
 			set
 			{
-				Misc.DataTypeEnsureIsCharacter(peCastAsType);
+				DataTypeExtensions.EnsureIsCharacter(peCastAsType);
 					
 				if (value <= 1)
 					throw new ArgumentException();
@@ -51,7 +67,7 @@ namespace DatabaseObjects.SQL
 				
 			get
 			{
-				Misc.DataTypeEnsureIsCharacter(peCastAsType);
+				DataTypeExtensions.EnsureIsCharacter(peCastAsType);
 
 				return pintSize;
 			}
@@ -67,14 +83,14 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				Misc.DataTypeEnsureIsDecimal(peCastAsType);
+				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
 
 				return pintScale;
 			}
 				
 			set
 			{
-				Misc.DataTypeEnsureIsDecimal(peCastAsType);
+				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
 					
 				if (value <= 0)
 					throw new ArgumentException();
@@ -93,14 +109,14 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				Misc.DataTypeEnsureIsDecimal(peCastAsType);
+				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
 			
                 return pintPrecision;
 			}
 				
 			set
 			{
-				Misc.DataTypeEnsureIsDecimal(peCastAsType);
+				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
 					
 				if (value <= 0)
 					throw new ArgumentException();
@@ -109,9 +125,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			return "CAST(" + Misc.SQLConvertIdentifierName(pstrFieldName, eConnectionType) + " AS " + Misc.SQLConvertDataTypeString(eConnectionType, peCastAsType, pintSize, pintPrecision, pintScale) + ")";
+			return serializer.SerializeCastExpression(this);
 		}
 	}
 }

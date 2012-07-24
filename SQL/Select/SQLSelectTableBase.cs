@@ -13,7 +13,7 @@ namespace DatabaseObjects.SQL
 {
 	public abstract class SQLSelectTableBase
 	{
-        protected abstract string Source(Database.ConnectionType eConnectionType);
+        internal abstract string Source(Serializers.Serializer serializer);
 
 		private string pstrAlias = string.Empty;
 			
@@ -32,16 +32,6 @@ namespace DatabaseObjects.SQL
 			{
 				pstrAlias = value;
 			}
-		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = this.Source(eConnectionType);
-				
-			if (!String.IsNullOrEmpty(this.Alias))
-				strSQL += " " + Misc.SQLConvertIdentifierName(this.Alias, eConnectionType);
-				
-			return strSQL;
 		}
 	}
 }

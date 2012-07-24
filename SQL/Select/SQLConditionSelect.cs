@@ -59,26 +59,8 @@ namespace DatabaseObjects.SQL
 				
 			set
 			{
-				pobjValue = Misc.SQLConditionValue(value);
+				pobjValue = SQLCondition.GetConditionValue(value);
 			}
-		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			if (this.Select == null)
-				throw new Exceptions.DatabaseObjectsException("Select is not set.");
-				
-			Misc.CompareValuePairAssertValid(this.Compare, pobjValue);
-				
-			this.Select.ConnectionType = eConnectionType;
-			return Condition(this.Select, this.Compare, pobjValue, eConnectionType);
-		}
-			
-		private string Condition(SQLSelect objSelect, ComparisonOperator eCompare, object vValue, Database.ConnectionType eConnectionType)
-		{
-			Misc.SQLConvertBooleanValue(ref vValue, ref eCompare);
-				
-			return "(" + objSelect.SQL + ") " + Misc.SQLConvertCompare(eCompare) + " " + Misc.SQLConvertValue(vValue, eConnectionType);
 		}
 	}
 }

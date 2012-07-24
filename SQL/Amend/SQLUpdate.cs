@@ -77,45 +77,12 @@ namespace DatabaseObjects.SQL
 				pobjConditions = value;
 			}
 		}
-			
+
 		public override string SQL
 		{
-			get
+			get 
 			{
-				string strSQL;
-				string strFieldValues = string.Empty;
-					
-				if (String.IsNullOrEmpty(TableName))
-					throw new Exceptions.DatabaseObjectsException("TableName property has not been set.");
-				else if (pobjFields.Count == 0)
-					throw new Exceptions.DatabaseObjectsException("Field values have not been set.");
-					
-				SQLFieldValue objField;
-					
-				for (int intIndex = 0; intIndex < pobjFields.Count; intIndex++)
-				{
-					objField = pobjFields[intIndex];
-					//Check the field name has been set. Can't really check whether the value has been set or not.
-					if (String.IsNullOrEmpty(objField.Name))
-						throw new Exceptions.DatabaseObjectsException("Field Name has not been set.");
-						
-					if (objField is SQLUpdateField)
-						strFieldValues += Misc.SQLConvertIdentifierName(objField.Name, this.ConnectionType) + " = " + ((SQLUpdateField) objField).Value.SQL(this.ConnectionType);
-					else if (objField is SQLFieldValue)
-						strFieldValues += Misc.SQLConvertIdentifierName(objField.Name, this.ConnectionType) + " = " + Misc.SQLConvertValue(objField.Value, this.ConnectionType);
-					else
-						throw new NotSupportedException(objField.GetType().Name);
-						
-					if (intIndex != pobjFields.Count - 1)
-						strFieldValues += ", ";
-				}
-					
-				strSQL = "UPDATE " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType) + " " + "SET " + strFieldValues;
-					
-				if (pobjConditions != null && !pobjConditions.IsEmpty)
-					strSQL += " WHERE " + pobjConditions.SQL(this.ConnectionType);
-					
-				return strSQL;
+				return base.Serializer.SerializeUpdate(this);
 			}
 		}
 	}

@@ -13,25 +13,9 @@ namespace DatabaseObjects.SQL
 {
 	public class SQLGetDateFunctionExpression : SQLExpression
 	{
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			switch (eConnectionType)
-			{
-				case Database.ConnectionType.MicrosoftAccess:
-					return "Now()";
-				case Database.ConnectionType.SQLServer:
-					return "GetDate()";
-				case Database.ConnectionType.SQLServerCompactEdition:
-					return "GetDate()";
-				case Database.ConnectionType.MySQL:
-					return "CURDATE()";
-				case Database.ConnectionType.Pervasive:
-					throw new NotImplementedException();
-					break;
-				default:
-					throw new NotSupportedException();
-					break;
-			}
+			return serializer.SerializeGetDateFunctionExpression(this);
 		}
 	}
 }

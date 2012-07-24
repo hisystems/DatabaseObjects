@@ -57,16 +57,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			string strSQL = string.Empty;
-				
-			if (String.IsNullOrEmpty(this.Name))
-				throw new Exceptions.DatabaseObjectsException("Field Name has not been set.");
-				
-			strSQL += Misc.SQLFieldNameAndTablePrefix(pobjTable, pstrFieldName, eConnectionType);
-				
-			return strSQL;
+			return serializer.SerializeFieldExpression(this);
 		}
 	}
 }

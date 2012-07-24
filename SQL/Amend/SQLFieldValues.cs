@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace DatabaseObjects.SQL
 {
-	public class SQLFieldValues : IEnumerable
+	public class SQLFieldValues : IEnumerable<SQLFieldValue>
 	{
 		protected List<SQLFieldValue> pobjFields = new List<SQLFieldValue>();
 			
@@ -92,7 +92,12 @@ namespace DatabaseObjects.SQL
 			return fieldValue.Name.Equals(strFieldName, StringComparison.InvariantCultureIgnoreCase);
 		}
 			
-		public System.Collections.IEnumerator GetEnumerator()
+		IEnumerator<SQLFieldValue> IEnumerable<SQLFieldValue>.GetEnumerator()
+		{
+			return pobjFields.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return pobjFields.GetEnumerator();
 		}

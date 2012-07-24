@@ -28,10 +28,34 @@ namespace DatabaseObjects.SQL
 			peCompare = eCompare;
 			pobjRightHandExpression = objRightHandExpression;
 		}
-			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+
+		internal ComparisonOperator Compare
 		{
-			return pobjLeftHandExpression.SQL(eConnectionType) + " " + Misc.SQLConvertCompare(peCompare) + " " + pobjRightHandExpression.SQL(eConnectionType);
+			get
+			{
+				return peCompare;
+			}
+		}
+
+		internal SQLExpression LeftExpression
+		{
+			get
+			{
+				return pobjLeftHandExpression;
+			}
+		}
+
+		internal SQLExpression RightExpression
+		{
+			get
+			{
+				return pobjRightHandExpression;
+			}
+		}
+
+		internal override string SQL(Serializers.Serializer serializer)
+		{
+			return serializer.SerializeSelectHavingCondition(this);
 		}
 	}
 }

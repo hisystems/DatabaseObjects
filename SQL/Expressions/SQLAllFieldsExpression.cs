@@ -41,12 +41,12 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
 			string strSQL = string.Empty;
 				
 			if (pobjTable != null)
-				strSQL += Misc.SQLTablePrefix(pobjTable, eConnectionType) + ".";
+				strSQL += serializer.SerializeTablePrefix(pobjTable) + ".";
 				
 			return strSQL + "*";
 		}

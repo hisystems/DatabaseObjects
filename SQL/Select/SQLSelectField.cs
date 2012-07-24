@@ -44,15 +44,5 @@ namespace DatabaseObjects.SQL
 				pstrAlias = value;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = pobjExpression.SQL(eConnectionType);
-				
-			if (!String.IsNullOrEmpty(this.Alias))
-				strSQL += " AS " + Misc.SQLConvertIdentifierName(this.Alias, eConnectionType);
-				
-			return strSQL;
-		}
 	}
 }

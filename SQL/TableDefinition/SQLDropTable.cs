@@ -41,10 +41,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(this.Name))
-					throw new Exceptions.DatabaseObjectsException("TableName has not been set.");
-					
-				return "DROP TABLE " + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType);
+				return base.Serializer.SerializeDropTable(this);
 			}
 		}
 	}

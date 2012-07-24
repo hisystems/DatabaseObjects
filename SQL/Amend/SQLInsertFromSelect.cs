@@ -106,32 +106,12 @@ namespace DatabaseObjects.SQL
 				pobjSourceSelect = value;
 			}
 		}
-			
+
 		public override string SQL
 		{
-			get
+			get 
 			{
-				string strFields = string.Empty;
-					
-				if (String.IsNullOrEmpty(TableName))
-					throw new Exceptions.DatabaseObjectsException("TableName property has not been set.");
-					
-				if (pobjInsertIntoFields.Count > 0)
-				{
-					for (int intIndex = 0; intIndex < pobjInsertIntoFields.Count; intIndex++)
-					{
-						strFields += Misc.SQLConvertIdentifierName(System.Convert.ToString(pobjInsertIntoFields[intIndex]), this.ConnectionType);
-						if (intIndex != pobjInsertIntoFields.Count - 1)
-						{
-							strFields += ", ";
-						}
-					}
-					strFields = "(" + strFields + ") ";
-				}
-					
-				pobjSourceSelect.ConnectionType = base.ConnectionType;
-					
-				return "INSERT INTO " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType) + " " + strFields + pobjSourceSelect.SQL;
+				return base.Serializer.SerializeInsertFromSelect(this);
 			}
 		}
 	}

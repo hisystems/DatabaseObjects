@@ -62,12 +62,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(this.Name))
-					throw new Exceptions.DatabaseObjectsException("View name has not been set");
-				else if (pobjSelect == null)
-					throw new Exceptions.DatabaseObjectsException("Select statement has not been set");
-					
-				return "CREATE VIEW " + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType) + " AS " + pobjSelect.SQL;
+				return base.Serializer.SerializeCreateView(this);
 			}
 		}
 	}

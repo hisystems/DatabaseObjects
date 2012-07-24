@@ -1476,6 +1476,30 @@ namespace DatabaseObjects
 				return pobjConnection;
 			}
 		}
+
+		/// <summary>
+		/// All keys are returned in lower case.
+		/// </summary>
+		/// <exception cref="FormatException">If the connection string is in an invalid format.</exception>
+		protected static IDictionary<string, string> GetDictionaryFromConnectionString(string strConnectionString)
+		{
+			var objDictionary = new Dictionary<string, string>();
+			string[] strPropertyValueArray;
+
+			foreach (string strPropertyValue in strConnectionString.Split(';'))
+			{
+				if (!String.IsNullOrEmpty(strPropertyValue))
+				{
+					strPropertyValueArray = strPropertyValue.Split('=');
+					if (strPropertyValueArray.Length == 2)
+						objDictionary.Add(strPropertyValueArray[0].Trim().ToLower(), strPropertyValueArray[1].Trim());
+					else
+						throw new FormatException("Invalid key property definition for '" + strPropertyValue + "' from '" + strConnectionString + "'");
+				}
+			}
+
+			return objDictionary;
+		}
 		
 		/// --------------------------------------------------------------------------------
 		/// <summary>
@@ -2044,7 +2068,7 @@ namespace DatabaseObjects
 			{
 				//Searches for an occurance of 'Provider='
 				//If found then it is assumed to be an OLEDB connection otherwise an ODBC connection
-				if (SQL.Misc.GetDictionaryFromConnectionString(strConnectionString).ContainsKey("provider"))
+				if (GetDictionaryFromConnectionString(strConnectionString).ContainsKey("provider"))
 					return new System.Data.OleDb.OleDbConnection(strConnectionString);
 				else
 					return new System.Data.Odbc.OdbcConnection(strConnectionString);

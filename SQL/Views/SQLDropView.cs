@@ -22,12 +22,20 @@ namespace DatabaseObjects.SQL
 				
 			pstrName = strViewName;
 		}
+
+		public string ViewName
+		{
+			get
+			{
+				return pstrName;
+			}
+		}
 			
 		public override string SQL
 		{
 			get
 			{
-				return "DROP VIEW " + Misc.SQLConvertIdentifierName(pstrName, this.ConnectionType);
+				return base.Serializer.SerializeDropView(this);
 			}
 		}
 	}

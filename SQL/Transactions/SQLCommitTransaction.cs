@@ -17,22 +17,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				switch (base.ConnectionType)
-				{
-					case Database.ConnectionType.SQLServer:
-					case Database.ConnectionType.SQLServerCompactEdition:
-						return "COMMIT TRANSACTION";
-					case Database.ConnectionType.MicrosoftAccess:
-						return "COMMIT TRANSACTION";
-					case Database.ConnectionType.MySQL:
-						return "COMMIT";
-					case Database.ConnectionType.Pervasive:
-						return "COMMIT";
-					case Database.ConnectionType.HyperSQL:
-						return "COMMIT";
-					default:
-						throw new NotImplementedException(this.ConnectionType.ToString());
-				}
+				return base.Serializer.SerializeCommitTransaction(this);
 			}
 		}
 	}

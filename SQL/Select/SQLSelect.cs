@@ -172,110 +172,13 @@ namespace DatabaseObjects.SQL
 				pobjGroupByFields = value;
 			}
 		}
-			
+
 		public override string SQL
 		{
-			get
+			get 
 			{
-				string strSQL;
-					
-				if (pobjTables.Count == 0)
-					throw new Exceptions.DatabaseObjectsException("The table has not been set.");
-					
-				strSQL = "SELECT " + DistinctClause();
-					
-				switch (base.ConnectionType)
-				{
-					case Database.ConnectionType.MicrosoftAccess:
-						break;
-					case Database.ConnectionType.SQLServer:
-						break;
-					case Database.ConnectionType.SQLServerCompactEdition:
-						strSQL += TopClause();
-						break;
-				}
-					
-				strSQL += pobjFields.SQL(this.ConnectionType) + " FROM " + pobjTables.SQL(this.ConnectionType);
-					
-				if (pbPerformLocking)
-				{
-					switch (this.ConnectionType)
-					{
-						case Database.ConnectionType.SQLServer:
-						case Database.ConnectionType.SQLServerCompactEdition:
-							strSQL += " WITH (HOLDLOCK, ROWLOCK)";
-							break;
-						case Database.ConnectionType.MySQL:
-						case Database.ConnectionType.Pervasive:
-							break;
-							//Done below
-						case Database.ConnectionType.HyperSQL:
-						case Database.ConnectionType.MicrosoftAccess:
-							throw new NotSupportedException("Locking is not supported for " + this.ConnectionType.ToString());
-							break;
-						default:
-							throw new NotImplementedException(this.ConnectionType.ToString());
-							break;
-					}
-				}
-					
-				if (pobjConditions != null && !pobjConditions.IsEmpty)
-					strSQL += " WHERE " + pobjConditions.SQL(this.ConnectionType);
-					
-				if (pobjGroupByFields != null && !pobjGroupByFields.IsEmpty)
-					strSQL += " GROUP BY " + pobjGroupByFields.SQL(this.ConnectionType);
-					
-				if (pobjOrderByFields != null && !pobjOrderByFields.IsEmpty)
-					strSQL += " ORDER BY " + pobjOrderByFields.SQL(this.ConnectionType);
-					
-				if (pobjHavingConditions != null && !pobjHavingConditions.IsEmpty)
-					strSQL += " HAVING " + pobjHavingConditions.SQL(this.ConnectionType);
-					
-				if (pbPerformLocking)
-				{
-					switch (this.ConnectionType)
-					{
-						case Database.ConnectionType.MySQL:
-						case Database.ConnectionType.Pervasive:
-							strSQL += " FOR UPDATE";
-							break;
-					}
-				}
-					
-				if (pintTop > 0)
-				{
-					switch (this.ConnectionType)
-					{
-						case Database.ConnectionType.MySQL:
-						case Database.ConnectionType.Pervasive:
-							strSQL += " LIMIT " + pintTop.ToString();
-							break;
-					}
-				}
-					
-				return strSQL;
+				return base.Serializer.SerializeSelect(this);
 			}
-		}
-			
-		private string TopClause()
-		{
-			if (pintTop > 0)
-			{
-				if (base.ConnectionType == Database.ConnectionType.SQLServerCompactEdition)
-					return "TOP(" + pintTop.ToString() + ") ";
-				else
-					return "TOP " + pintTop.ToString() + " ";
-			}
-			else
-				return string.Empty;
-		}
-			
-		private string DistinctClause()
-		{
-			if (pbDistinct)
-				return "DISTINCT ";
-			else
-				return string.Empty;
 		}
 	}
 }

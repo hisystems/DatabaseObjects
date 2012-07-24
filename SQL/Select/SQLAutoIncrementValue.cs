@@ -39,24 +39,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				switch (this.ConnectionType)
-				{
-					case Database.ConnectionType.SQLServer:
-						return "SELECT SCOPE_IDENTITY() AS " + Misc.SQLConvertIdentifierName(this.ReturnFieldName, this.ConnectionType);
-					case Database.ConnectionType.MicrosoftAccess:
-					case Database.ConnectionType.Pervasive:
-					case Database.ConnectionType.SQLServerCompactEdition:
-						return "SELECT @@IDENTITY AS " + Misc.SQLConvertIdentifierName(this.ReturnFieldName, this.ConnectionType);
-					case Database.ConnectionType.MySQL:
-						//The @@IDENTITY function is supported by MySQL from version 3.23.25
-						//but I've put the original function here just in case
-						return "SELECT LAST_INSERT_ID() AS " + Misc.SQLConvertIdentifierName(this.ReturnFieldName, this.ConnectionType);
-					case Database.ConnectionType.HyperSQL:
-						return "SELECT IDENTITY() AS " + Misc.SQLConvertIdentifierName(this.ReturnFieldName, this.ConnectionType);
-					default:
-						throw new NotImplementedException(this.ConnectionType.ToString());
-						break;
-				}
+				return base.Serializer.SerializeAutoIncrementValue(this);
 			}
 		}
 	}

@@ -69,7 +69,7 @@ namespace DatabaseObjects
 		/// <exception cref="FormatException">If the connection string is in an invalid format.</exception>
 		public static MicrosoftSQLServerDatabase Parse(string strConnectionString)
 		{
-			var objDictionary = SQL.Misc.GetDictionaryFromConnectionString(strConnectionString);
+			var objDictionary = GetDictionaryFromConnectionString(strConnectionString);
 			
 			if (objDictionary.ContainsKey("integrated security"))
 				return new MicrosoftSQLServerDatabase(GetDataSource(objDictionary), GetDatabase(objDictionary));

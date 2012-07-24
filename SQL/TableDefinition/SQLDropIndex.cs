@@ -56,24 +56,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(this.Name))
-					throw new Exceptions.DatabaseObjectsException("IndexName has not been set.");
-				else if (String.IsNullOrEmpty(this.TableName))
-					throw new Exceptions.DatabaseObjectsException("TableName has not been set.");
-					
-				switch (this.ConnectionType)
-				{
-					case Database.ConnectionType.SQLServer:
-					case Database.ConnectionType.SQLServerCompactEdition:
-						return "DROP INDEX " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType) + "." + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType);
-					case Database.ConnectionType.MicrosoftAccess:
-					case Database.ConnectionType.MySQL:
-					case Database.ConnectionType.Pervasive:
-						return "DROP INDEX " + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType) + " ON " + Misc.SQLConvertIdentifierName(this.TableName, this.ConnectionType);
-					default:
-						throw new NotSupportedException();
-						break;
-				}
+				return base.Serializer.SerializeDropIndex(this);
 			}
 		}
 	}

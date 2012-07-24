@@ -29,51 +29,20 @@ namespace DatabaseObjects.SQL
 				
 			pstrViewName = strViewName;
 		}
-			
+		
+		public string ViewName
+		{
+			get
+			{
+				return pstrViewName;
+			}
+		}
+
 		public override string SQL
 		{
 			get
 			{
-				string strSQL = string.Empty;
-				SQLSelect objSelect;
-					
-				switch (this.ConnectionType)
-				{
-					case Database.ConnectionType.MicrosoftAccess:
-						throw new NotSupportedException();
-					case Database.ConnectionType.MySQL:
-						objSelect = new SQLSelect();
-						objSelect.ConnectionType = this.ConnectionType;
-						objSelect.Tables.Add("Tables").SchemaName = "INFORMATION_SCHEMA";
-						objSelect.Where.Add("Table_Type", ComparisonOperator.EqualTo, "View");
-						objSelect.Where.Add("TABLE_NAME", ComparisonOperator.Like, pstrViewName);
-						strSQL = objSelect.SQL;
-						break;
-					case Database.ConnectionType.SQLServer:
-						objSelect = new SQLSelect();
-						objSelect.ConnectionType = this.ConnectionType;
-						objSelect.Tables.Add("sysobjects");
-						objSelect.Where.Add("Name", ComparisonOperator.EqualTo, pstrViewName);
-						objSelect.Where.Add("XType", ComparisonOperator.EqualTo, "V"); //V = User defined view
-						strSQL = objSelect.SQL;
-						break;
-					case Database.ConnectionType.Pervasive:
-						throw new NotSupportedException();
-					case Database.ConnectionType.HyperSQL:
-						objSelect = new SQLSelect();
-						objSelect.ConnectionType = this.ConnectionType;
-						objSelect.Tables.Add("VIEWS").SchemaName = "INFORMATION_SCHEMA";
-						objSelect.Where.Add("TABLE_SCHEMA", ComparisonOperator.EqualTo, "PUBLIC");
-						objSelect.Where.Add("TABLE_NAME", ComparisonOperator.EqualTo, pstrViewName);
-						strSQL = objSelect.SQL;
-						break;
-					case Database.ConnectionType.SQLServerCompactEdition:
-						throw new NotSupportedException();
-					default:
-						throw new NotImplementedException(this.ConnectionType.ToString());
-				}
-					
-				return strSQL;
+				return base.Serializer.SerializeViewExists(this);
 			}
 		}
 	}

@@ -9,6 +9,7 @@ using System.Collections;
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DatabaseObjects.SQL
 {
@@ -68,6 +69,14 @@ namespace DatabaseObjects.SQL
 				pobjOrderByFields = value;
 			}
 		}
+
+		internal SQLUnion.Type[] UnionTypes
+		{
+			get
+			{
+				return pobjUnionType.Cast<SQLUnion.Type>().ToArray();
+			}
+		}
 			
 		internal SQL.SQLSelect[] SelectStatements
 		{
@@ -88,35 +97,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				if (pobjSelectStatements.Count == 0)
-					throw new Exceptions.DatabaseObjectsException("The table has not been set.");
-
-                string strSQL = string.Empty;
-                SQLSelect objSelect;
-                string strOrderBy;
-	
-				for (int intIndex = 0; intIndex < pobjSelectStatements.Count; intIndex++)
-				{
-					if (intIndex > 0)
-					{
-						strSQL += " UNION ";
-						if (((SQLUnion.Type)pobjUnionType[intIndex - 1]) == Type.All)
-							strSQL += "ALL ";
-					}
-						
-					objSelect = pobjSelectStatements[intIndex];
-					objSelect.ConnectionType = this.ConnectionType;
-					strSQL += "(" + objSelect.SQL + ")";
-				}
-					
-				if (pobjOrderByFields != null)
-				{
-					strOrderBy = pobjOrderByFields.SQL(this.ConnectionType);
-					if (strOrderBy != string.Empty)
-						strSQL += " ORDER BY " + strOrderBy;
-				}
-					
-				return strSQL;
+				return base.Serializer.SerializeUnion(this);
 			}
 		}
 	}

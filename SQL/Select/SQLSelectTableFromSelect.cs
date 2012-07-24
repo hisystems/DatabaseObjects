@@ -25,12 +25,18 @@ namespace DatabaseObjects.SQL
 			pobjSelect = objSelect;
 			base.Alias = strAlias;
 		}
-			
-		protected override string Source(Database.ConnectionType eConnectionType)
-		{
-			pobjSelect.ConnectionType = eConnectionType;
 
-			return "(" + pobjSelect.SQL + ")";
+		public SQLSelect Select
+		{
+			get
+			{
+				return pobjSelect;
+			}
+		}
+					
+		internal override string Source(Serializers.Serializer serializer)
+		{
+			return serializer.SerializeSelectTableFromSelect(this);
 		}
 	}
 }

@@ -92,30 +92,9 @@ namespace DatabaseObjects.SQL
 			}
 		}
 			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			if (pobjLeft == null)
-				throw new ArgumentNullException(this.GetType().Name + ".LeftExpression");
-			else if (pobjRight == null)
-				throw new ArgumentNullException(this.GetType().Name + ".RightExpression");
-				
-			return "(" + pobjLeft.SQL(eConnectionType) + " " + OperatorString(peOperator) + " " + pobjRight.SQL(eConnectionType) + ")";
-		}
-			
-		private string OperatorString(SQL.ArithmeticOperator eOperator)
-		{
-			if (eOperator == ArithmeticOperator.Add)
-				return "+";
-			else if (eOperator == ArithmeticOperator.Subtract)
-				return "-";
-			else if (eOperator == ArithmeticOperator.Divide)
-				return "/";
-			else if (eOperator == ArithmeticOperator.Multiply)
-				return "*";
-			else if (eOperator == ArithmeticOperator.Modulus)
-				return "%";
-			else
-				throw new NotSupportedException(typeof(SQL.ArithmeticOperator).Name);
+			return serializer.SerializeArithmeticExpression(this);
 		}
 	}
 }

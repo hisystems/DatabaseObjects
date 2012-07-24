@@ -79,32 +79,5 @@ namespace DatabaseObjects.SQL
 				pobjTable = value;
 			}
 		}
-			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			string strSQL = string.Empty;
-				
-			if (String.IsNullOrEmpty(this.Name))
-				throw new Exceptions.DatabaseObjectsException("Order By field has not been set.");
-				
-			if (this.AggregateFunction > 0)
-				strSQL = Misc.SQLConvertAggregate(this.AggregateFunction) + "(";
-				
-			strSQL += Misc.SQLFieldNameAndTablePrefix(this.Table, this.Name, eConnectionType);
-				
-			if (this.AggregateFunction > 0)
-				strSQL += ")";
-				
-			switch (this.Order)
-			{
-				case OrderBy.Ascending:
-					break;
-				case OrderBy.Descending:
-					strSQL += " DESC";
-					break;
-			}
-				
-			return strSQL;
-		}
 	}
 }

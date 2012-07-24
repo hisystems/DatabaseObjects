@@ -13,7 +13,7 @@ namespace DatabaseObjects.SQL
 {
     public abstract class SQLExpression
     {
-        internal abstract string SQL(Database.ConnectionType eConnectionType);
+        internal abstract string SQL(Serializers.Serializer serializer);
 
         public static SQLArithmeticExpression operator +(SQLExpression left, SQLExpression right)
         {

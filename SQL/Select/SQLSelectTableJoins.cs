@@ -79,15 +79,6 @@ namespace DatabaseObjects.SQL
 			objJoin = null;
 		}
 			
-		internal string SQL(Database.ConnectionType eConnectionType)
-		{
-			if (this.Count > 0)
-				//recurse through the joins from right to left
-				return this[this.Count - 1].SQL(eConnectionType);
-			else
-				return string.Empty;
-		}
-			
 		public System.Collections.IEnumerator GetEnumerator()
 		{
 			return pobjJoins.GetEnumerator();

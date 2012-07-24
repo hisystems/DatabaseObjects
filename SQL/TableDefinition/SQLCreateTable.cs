@@ -47,10 +47,7 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(this.Name))
-					throw new Exceptions.DatabaseObjectsException("TableName has not been set.");
-					
-				return "CREATE TABLE " + Misc.SQLConvertIdentifierName(this.Name, this.ConnectionType) + " (" + pobjFields.SQL(this.ConnectionType, false) + ")";
+				return base.Serializer.SerializeCreateTable(this);
 			}
 		}
 	}

@@ -21,21 +21,9 @@ namespace DatabaseObjects.SQL
 		{
 		}
 			
-		protected override string FunctionName(Database.ConnectionType eConnectionType)
+		internal override string SQL(Serializers.Serializer serializer)
 		{
-			switch (eConnectionType)
-			{
-				case Database.ConnectionType.MySQL:
-					return "LENGTH";
-				case Database.ConnectionType.SQLServer:
-				case Database.ConnectionType.MicrosoftAccess:
-					return "LEN";
-				default:
-					throw new NotImplementedException(eConnectionType.ToString());
-					break;
-			}
-				
-			return base.FunctionName(eConnectionType);
+			return serializer.SerializeLengthFunctionExpression(this);
 		}
 	}
 }

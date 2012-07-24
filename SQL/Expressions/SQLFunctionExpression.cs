@@ -9,6 +9,7 @@ using System.Collections;
 using System;
 using System.Data;
 using System.Linq;
+using DatabaseObjects.SQL.Serializers;
 	
 namespace DatabaseObjects.SQL
 {
@@ -20,25 +21,17 @@ namespace DatabaseObjects.SQL
 	/// </remarks>
 	public class SQLFunctionExpression : SQLExpression
 	{
-		private string pstrFunctionName;
 		private SQLExpression[] pobjFunctionArguments;
-			
+
+		private string functionName;
 		public bool IncludeParenthesesWhenArgumentsEmpty = false;
-			
-		public SQLFunctionExpression(string strFunctionName)
+
+		public SQLFunctionExpression(string functionName, params SQLExpression[] arguments)
+			: this(arguments)
 		{
-			if (string.IsNullOrEmpty(strFunctionName))
-				throw new ArgumentNullException();
-				
-			pstrFunctionName = strFunctionName;
+			this.functionName = functionName;
 		}
-			
-		public SQLFunctionExpression(string strFunctionName, params SQLExpression[] arguments) 
-            : this(strFunctionName)
-		{
-			InitializeArguments(arguments);
-		}
-			
+
 		/// <summary>
 		/// Used when the arguments are known but the function name is dependant on the connection type.
 		/// Typically, in this scenario the FunctionName() will be overridden.
@@ -57,23 +50,26 @@ namespace DatabaseObjects.SQL
 				
 			pobjFunctionArguments = arguments;
 		}
-			
-		protected virtual string FunctionName(Database.ConnectionType eConnectionType)
+
+		public SQLExpression[] Arguments
 		{
-			return pstrFunctionName;
+			get
+			{
+				return pobjFunctionArguments;
+			}
 		}
-			
-		internal override string SQL(Database.ConnectionType eConnectionType)
+
+		public bool HasArguments
 		{
-			string strArguments = string.Empty;
-				
-			if (pobjFunctionArguments != null)
-				strArguments = String.Join(", ", pobjFunctionArguments.Select(argument => argument.SQL(eConnectionType)).ToArray());
-				
-			if ((IncludeParenthesesWhenArgumentsEmpty && pobjFunctionArguments == null) || pobjFunctionArguments != null)
-				strArguments = "(" + strArguments + ")";
-				
-			return this.FunctionName(eConnectionType) + strArguments;
+			get
+			{
+				return pobjFunctionArguments.Length > 0;
+			}
+		}
+
+		internal override string SQL(Serializer serializer)
+		{
+			return this.functionName + serializer.SerializeFunctionExpressionArguments(this);
 		}
 	}
 }
