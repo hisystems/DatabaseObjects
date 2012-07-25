@@ -24,6 +24,7 @@ namespace DatabaseObjects.SQL.Serializers
 			Items.Add(Database.ConnectionType.MySQL, new MySqlSerializer());
 			Items.Add(Database.ConnectionType.HyperSQL, new HyperSqlSerializer());
 			Items.Add(Database.ConnectionType.Pervasive, new PervasiveSerializer());
+			Items.Add(Database.ConnectionType.SQLite, new SQLiteSerializer());
 		}
 	}
 }

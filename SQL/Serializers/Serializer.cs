@@ -1173,10 +1173,10 @@ namespace DatabaseObjects.SQL.Serializers
 			if (dateTime.Day == 1 && dateTime.Month == 1 && dateTime.Year == 1)
 				dateTimeString = "1899-12-30";
 			else
-				dateTimeString = dateTime.Year + "-" + dateTime.Month + "-" + dateTime.Day;
+				dateTimeString = dateTime.ToString("yyyy-MM-dd");
 
 			if (dateTime.Hour != 0 || dateTime.Minute != 0 || dateTime.Second != 0)
-				dateTimeString += " " + dateTime.Hour + ":" + dateTime.Minute + ":" + dateTime.Second + "." + dateTime.Millisecond;
+				dateTimeString += " " + dateTime.ToString("HH:mm:ss.fff");
 
 			return dateTimeString;
 		}

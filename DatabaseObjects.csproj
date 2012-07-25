@@ -223,6 +223,7 @@
     <Compile Include="SQL\Serializers\MySqlSerializer.cs" />
     <Compile Include="SQL\Serializers\PervasiveSerializer.cs" />
     <Compile Include="SQL\Serializers\Serializers.cs" />
+    <Compile Include="SQL\Serializers\SQLiteSerializer.cs" />
     <Compile Include="SQL\TableDefinition\SQLTableFields.cs" />
     <Compile Include="SQL\TableDefinition\SQLAlterTable.cs" />
     <Compile Include="SQL\SQLStatements.cs" />

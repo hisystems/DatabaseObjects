@@ -38,7 +38,8 @@ namespace DatabaseObjects
 			MySQL,
 			Pervasive,
 			SQLServerCompactEdition,
-			HyperSQL
+			HyperSQL,
+			SQLite
 		}
 		
 		private ConnectionController pobjConnection;
