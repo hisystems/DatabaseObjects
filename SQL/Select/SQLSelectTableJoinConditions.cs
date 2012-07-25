@@ -56,7 +56,7 @@ namespace DatabaseObjects.SQL
 			EnsureComparisonOperatorValid(eCompare);
 			AddLogicalOperatorIfRequired();
 
-            joinCondition = new SQLSelectTableJoinCondition(this);
+            joinCondition = new SQLSelectTableJoinCondition();
             joinCondition.LeftExpression = new SQLFieldExpression((SQLSelectTable)pobjParent.LeftTable, strLeftTableFieldName);
             joinCondition.Compare = eCompare;
             joinCondition.RightExpression = new SQLFieldExpression((SQLSelectTable)pobjParent.RightTable, strRightTableFieldName);
@@ -71,7 +71,7 @@ namespace DatabaseObjects.SQL
 			EnsureComparisonOperatorValid(eCompare);
 			AddLogicalOperatorIfRequired();
 
-            var joinCondition = new SQLSelectTableJoinCondition(this);
+            var joinCondition = new SQLSelectTableJoinCondition();
 
             joinCondition.LeftExpression = objLeftExpression;
             joinCondition.Compare = eCompare;

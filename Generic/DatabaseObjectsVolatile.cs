@@ -117,7 +117,7 @@ namespace DatabaseObjects.Generic
 		/// when VolatileObjectsSave() is called.
 		/// </summary>
 		/// --------------------------------------------------------------------------------
-		protected new void VolatileObjectAdd(T objItem)
+		protected void VolatileObjectAdd(T objItem)
 		{
 			base.VolatileObjectAdd(objItem);
 		}
@@ -138,7 +138,7 @@ namespace DatabaseObjects.Generic
 		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">ArgumentOutOfRangeException</exception>
 		/// --------------------------------------------------------------------------------
-		protected new int VolatileObjectIndexOf(T objObject)
+		protected int VolatileObjectIndexOf(T objObject)
 		{
 			return base.VolatileObjectIndexOf(objObject);
 		}
@@ -149,7 +149,7 @@ namespace DatabaseObjects.Generic
 		/// VolatileObjectsSave() is called.
 		/// </summary>
 		/// --------------------------------------------------------------------------------
-		protected new void VolatileObjectDelete(T objItem)
+		protected void VolatileObjectDelete(T objItem)
 		{
 			base.VolatileObjectDelete(objItem);
 		}
@@ -236,7 +236,7 @@ namespace DatabaseObjects.Generic
 		/// cannot be used to also implement System.Collections.Generic.IEnumerable(Of T).GetEnumerator.
 		/// </summary>
 		/// --------------------------------------------------------------------------------
-		public IEnumerator<T> GetEnumerator()
+		public new IEnumerator<T> GetEnumerator()
 		{
 			return this.VolatileObjectsEnumerator();
 		}

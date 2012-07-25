@@ -22,7 +22,7 @@ namespace DatabaseObjects.SQL
 			
 		public SQLSelectTableJoin Add()
 		{
-			SQLSelectTableJoin objJoin = new SQLSelectTableJoin(this);
+			SQLSelectTableJoin objJoin = new SQLSelectTableJoin();
 				
 			pobjJoins.Add(objJoin);
 				
@@ -31,7 +31,7 @@ namespace DatabaseObjects.SQL
 			
 		public SQLSelectTableJoin Add(SQLSelectTableBase objLeftTable, SQLSelectTableJoin.Type eJoin, SQLSelectTableBase objRightTable)
 		{
-			SQLSelectTableJoin objJoin = new SQLSelectTableJoin(this);
+			SQLSelectTableJoin objJoin = new SQLSelectTableJoin();
 				
 			objJoin.LeftTable = objLeftTable;
 			objJoin.TheType = eJoin;

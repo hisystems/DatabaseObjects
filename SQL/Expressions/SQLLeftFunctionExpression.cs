@@ -13,9 +13,6 @@ namespace DatabaseObjects.SQL
 {
 	public class SQLLeftFunctionExpression : SQLFunctionExpression
 	{
-		private SQLExpression pobjExpression;
-		private int pintLength;
-			
 		public SQLLeftFunctionExpression(string strFieldName, int intLength) 
             : this(new SQLFieldExpression(strFieldName), intLength)
 		{

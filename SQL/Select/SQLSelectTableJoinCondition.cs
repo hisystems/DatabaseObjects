@@ -16,11 +16,9 @@ namespace DatabaseObjects.SQL
 		private SQLExpression pobjLeftExpression;
 		private ComparisonOperator peCompare;
 		private SQLExpression pobjRightExpression;
-		private SQLSelectTableJoinConditions pobjParent;
 			
-		internal SQLSelectTableJoinCondition(SQLSelectTableJoinConditions objParent)
+		internal SQLSelectTableJoinCondition()
 		{
-			pobjParent = objParent;
 		}
 			
 		public SQLExpression RightExpression

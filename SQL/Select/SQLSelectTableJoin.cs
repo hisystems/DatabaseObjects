@@ -21,15 +21,13 @@ namespace DatabaseObjects.SQL
 			RightOuter
 		}
 			
-		private SQLSelectTableJoins pobjParent;
 		private SQLSelectTableBase pobjLeftTable;
 		private SQLSelectTableBase pobjRightTable;
 		private SQLSelectTableJoinConditions pobjConditions;
 		private SQLSelectTableJoin.Type peType;
 			
-		internal SQLSelectTableJoin(SQLSelectTableJoins objParent)
+		internal SQLSelectTableJoin()
 		{
-			pobjParent = objParent;
 			pobjConditions = new SQLSelectTableJoinConditions(this);
 		}
 			

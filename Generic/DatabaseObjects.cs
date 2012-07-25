@@ -190,7 +190,7 @@ namespace DatabaseObjects.Generic
 		/// </param>
 		/// --------------------------------------------------------------------------------
 		///
-		protected new void ObjectSave(T objItem)
+		protected void ObjectSave(T objItem)
 		{
 			this.ParentDatabase.ObjectSave(this, objItem);
 		}
@@ -273,7 +273,7 @@ namespace DatabaseObjects.Generic
 		/// </example>
 		/// --------------------------------------------------------------------------------
 		///
-		protected new void ObjectDelete(T objItem)
+		protected void ObjectDelete(T objItem)
 		{
             var objectToDelete = (IDatabaseObject)objItem;
             base.ObjectDelete(ref objectToDelete);

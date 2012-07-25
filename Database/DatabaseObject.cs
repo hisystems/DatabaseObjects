@@ -633,6 +633,11 @@ namespace DatabaseObjects
 				return false;
 			}
 		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
 		
 		private static bool IsNumeric(object objValue)
 		{

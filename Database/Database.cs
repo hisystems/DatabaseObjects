@@ -775,7 +775,7 @@ namespace DatabaseObjects
 			//The function that calls ObjectDelete objItem MUST be ByRef for this to have any effect
 			objItem = null;
 		}
-		
+
 		private class TransactionExecuteActionOnRollback : IEnlistmentNotification
 		{
 			private Action pobjAction;
@@ -806,7 +806,7 @@ namespace DatabaseObjects
 				pobjAction.Invoke();
 			}
 		}
-		
+
 		/// --------------------------------------------------------------------------------
 		/// <summary>
 		/// Deletes all of the objects in the collection. If IDatabaseObjects.Subset
@@ -1708,8 +1708,6 @@ namespace DatabaseObjects
 			private ConnectionType peConnectionType;
 			private int pintConnectionCount = 0;
 			private int pintTransactionLevel = 0;
-			private Transaction pobjLastTransaction = null;
-			private bool pbInTransactionMode = false;
 			
 			internal ConnectionController(string strConnectionString, ConnectionType eConnectionType)
                 : this(CreateConnection(strConnectionString), eConnectionType)
