@@ -1747,7 +1747,8 @@ namespace DatabaseObjects
 			/// avoiding potential deadlocks.
 			/// </remarks>
 			/// --------------------------------------------------------------------------------
-			[Obsolete("Use DatabaseObjects.ConnectionScope")]public void Start()
+			[Obsolete("Use DatabaseObjects.ConnectionScope")]
+			public void Start()
 			{
 				ConnectionStart();
 			}
@@ -1771,7 +1772,8 @@ namespace DatabaseObjects
 			/// avoiding potential deadlocks.
 			/// </remarks>
 			/// --------------------------------------------------------------------------------
-			[Obsolete("Use DatabaseObjects.ConnectionScope")]public void Finished()
+			[Obsolete("Use DatabaseObjects.ConnectionScope")]
+			public void Finished()
 			{
 				ConnectionFinished();
 			}
