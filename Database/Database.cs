@@ -1778,6 +1778,17 @@ namespace DatabaseObjects
 			{
 				ConnectionFinished();
 			}
+
+            /// <summary>
+            /// Only used for unit tests.
+            /// </summary>
+            internal ConnectionType Type
+            {
+                get
+                {
+                    return peConnectionType;
+                }
+            }
 			
 			private void ConnectionStart()
 			{
