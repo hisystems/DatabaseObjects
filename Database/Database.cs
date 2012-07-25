@@ -1997,7 +1997,8 @@ namespace DatabaseObjects
 			/// ConnectionController.Start or ConnectionController.Finished do not have to be called.
 			/// </summary>
 			/// --------------------------------------------------------------------------------
-			[Obsolete("Use DatabaseObjects.ConnectionScope")]public int ExecuteNonQueryWithConnect(SQL.ISQLStatement[] objSQLStatements)
+			[Obsolete("Use DatabaseObjects.ConnectionScope")]
+			public int ExecuteNonQueryWithConnect(SQL.ISQLStatement[] objSQLStatements)
 			{
 				this.Start();
 				int result = this.ExecuteNonQuery(new SQL.SQLStatements(objSQLStatements));
