@@ -33,6 +33,9 @@ namespace DatabaseObjects
 	{
 		public enum ConnectionType
 		{
+#if MONO_TOUCH
+            SQLite
+#else
 			SQLServer,
 			MicrosoftAccess,
 			MySQL,
@@ -40,6 +43,7 @@ namespace DatabaseObjects
 			SQLServerCompactEdition,
 			HyperSQL,
 			SQLite
+#endif
 		}
 		
 		private ConnectionController pobjConnection;
@@ -1816,6 +1820,7 @@ namespace DatabaseObjects
 				
 				switch (peConnectionType)
 				{
+#if !MONO
 					case ConnectionType.SQLServerCompactEdition:
 						IDbTransaction objTransaction = pobjConnection.BeginTransaction(eIsolationLevel);
 						//Simulate that SET TRANSACTION ISOLATION LEVEL has been called
@@ -1827,7 +1832,8 @@ namespace DatabaseObjects
 						//Simulate that BEGIN TRANSACTION has been called
                         OnStatementExecuted(new SQL.SQLBeginTransaction());
 						break;
-					default:
+#endif
+                    default:
 						if (eIsolationLevel != System.Data.IsolationLevel.Unspecified)
 						{
 							ExecuteNonQuery(new SQL.SQLSetTransactionIsolationLevel(eIsolationLevel));
@@ -1843,6 +1849,7 @@ namespace DatabaseObjects
 			{
 				switch (peConnectionType)
 				{
+#if !MONO
 					case ConnectionType.SQLServerCompactEdition:
 						// Compact edition does not directly support use of COMMIT TRANSACTION
 						IDbTransaction objTransaction = pobjTransactions.Pop();
@@ -1850,7 +1857,8 @@ namespace DatabaseObjects
 						//Simulate that COMMIT TRANSACTION has been called
                         OnStatementExecuted(new SQL.SQLCommitTransaction());
 						break;
-					default:
+#endif 
+                    default:
 						ExecuteNonQuery(new SQL.SQLCommitTransaction());
 						break;
 				}
@@ -1866,6 +1874,7 @@ namespace DatabaseObjects
 				
 				switch (peConnectionType)
 				{
+#if !MONO
 					case ConnectionType.SQLServerCompactEdition:
 						// Compact edition does not directly support use of ROLLBACK TRANSACTION
 						IDbTransaction objTransaction = pobjTransactions.Pop();
@@ -1873,6 +1882,7 @@ namespace DatabaseObjects
 						//Simulate that COMMIT TRANSACTION has been called
                         OnStatementExecuted(new SQL.SQLRollbackTransaction());
 						break;
+#endif
 					default:
 						ExecuteNonQuery(new SQL.SQLRollbackTransaction());
 						break;
@@ -2079,12 +2089,16 @@ namespace DatabaseObjects
 			
 			private static IDbConnection CreateConnection(string strConnectionString)
 			{
+#if MONO
+				throw new NotImplementedException("Pass an IDbConnection object to the constructor");
+#else
 				//Searches for an occurance of 'Provider='
 				//If found then it is assumed to be an OLEDB connection otherwise an ODBC connection
 				if (GetDictionaryFromConnectionString(strConnectionString).ContainsKey("provider"))
 					return new System.Data.OleDb.OleDbConnection(strConnectionString);
 				else
 					return new System.Data.Odbc.OdbcConnection(strConnectionString);
+#endif
 			}
 		}
 	}

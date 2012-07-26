@@ -18,6 +18,9 @@ namespace DatabaseObjects.SQL.Serializers
 
 		static Serializers()
 		{
+#if MONO_TOUCH
+			Items.Add(Database.ConnectionType.SQLite, new SQLiteSerializer());
+#else
 			Items.Add(Database.ConnectionType.SQLServer, new MicrosoftSqlServerSerializer());
 			Items.Add(Database.ConnectionType.SQLServerCompactEdition, new MicrosoftSqlServerCompactEditionSerializer());
 			Items.Add(Database.ConnectionType.MicrosoftAccess, new MicrosoftAccessSerializer());
@@ -25,6 +28,7 @@ namespace DatabaseObjects.SQL.Serializers
 			Items.Add(Database.ConnectionType.HyperSQL, new HyperSqlSerializer());
 			Items.Add(Database.ConnectionType.Pervasive, new PervasiveSerializer());
 			Items.Add(Database.ConnectionType.SQLite, new SQLiteSerializer());
+#endif
 		}
 	}
 }
