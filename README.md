@@ -3,7 +3,7 @@
 
 Overview
 --------
-The DatabaseObjects library is .NET object relational mapping tool that contains a large set of powerful classes that interface to the underlying database system. Classes and properties in the business layer / model are marked with attributes (or functions overridden) in order to indicate the table and field mappings to the database. The library is simple, powerful and easy to learn. There are no external files to setup - everything is setup using standard object-oriented techniques. It is light-weight, flexible and provides facilities for ensuring maximum performance. The library supports access to Microsoft Access, SQL Server, MySQL, HyperSQL and Pervasive database systems. It is also under active development and requests for changes are always welcome. 
+The DatabaseObjects library is .NET object relational mapping tool that contains a large set of powerful classes that interface to the underlying database system. Classes and properties in the business layer / model are marked with attributes (or functions overridden) in order to indicate the table and field mappings to the database. The library is simple, powerful and easy to learn. There are no external files to setup - everything is setup using standard object-oriented techniques. It is light-weight, flexible and provides facilities for ensuring maximum performance. The library supports access to Microsoft Access, SQL Server, MySQL, SQLite, HyperSQL and Pervasive database systems. It is also under active development and requests for changes are always welcome. 
 
 License
 -------
