@@ -1085,17 +1085,13 @@ namespace DatabaseObjects
 			if (objSubset != null && !objSubset.IsEmpty)
 				objSelect.Where.Add(objSubset);
 			
-			IDataReader objReader = this.Transactions.Execute(objSelect);
-			SQL.SQLFieldValues objFieldValues;
-			
-			if (objReader.Read())
-				objFieldValues = FieldValuesFromDataReader(objCollection, objReader);
-			else
-				throw new Exceptions.ObjectDoesNotExistException(objCollection, objItem.DistinctValue);
-			
-			objReader.Close();
-			
-			return objFieldValues;
+			using (var objReader = this.Transactions.Execute(objSelect))
+			{
+				if (objReader.Read())
+					return FieldValuesFromDataReader(objCollection, objReader);
+				else
+					throw new Exceptions.ObjectDoesNotExistException(objCollection, objItem.DistinctValue);
+			}
 		}
 		
 		/// --------------------------------------------------------------------------------
@@ -1916,13 +1912,14 @@ namespace DatabaseObjects
 			/// </summary>
 			/// --------------------------------------------------------------------------------
 			public object ExecuteScalar(SQL.ISQLStatement objSQLStatement)
-			{
-				IDataReader objDataReader = ExecuteInternal(pobjConnection, objSQLStatement);
-				
-				if (objDataReader.Read())
-					return objDataReader[0];
-				else
-					return null;
+            {
+				using (var objDataReader = ExecuteInternal(pobjConnection, objSQLStatement))
+				{
+					if (objDataReader.Read())
+						return objDataReader[0];
+					else
+						return null;
+				}
 			}
 			
 			/// --------------------------------------------------------------------------------
@@ -1935,20 +1932,17 @@ namespace DatabaseObjects
 			/// </summary>
 			/// --------------------------------------------------------------------------------
 			public object ExecuteScalarWithConnect(SQL.ISQLStatement objSQLStatement)
-			{
-				object result;
-				
-				this.Start();
-				
-				IDataReader objDataReader = ExecuteInternal(pobjConnection, objSQLStatement);
-				if (objDataReader.Read())
-                    result = objDataReader[0];
-				else
-                    result = null;
-				
-				this.Finished();
-
-                return result;
+            {
+				using (var connectionScope = new ConnectionScope(this))
+				{
+					using (var objDataReader = connectionScope.Execute(objSQLStatement))
+					{
+						if (objDataReader.Read())
+							return objDataReader[0];
+						else
+							return null;
+					}
+				}
 			}
 			
 			/// --------------------------------------------------------------------------------
@@ -2004,11 +1998,8 @@ namespace DatabaseObjects
 			[Obsolete("Use DatabaseObjects.ConnectionScope")]
             public int ExecuteNonQueryWithConnect(SQL.ISQLStatement objSQLStatement)
 			{
-				this.Start();
-				int result = this.ExecuteNonQuery(objSQLStatement);
-				this.Finished();
-
-                return result;
+                using (var connectionScope = new ConnectionScope(this))
+                    return connectionScope.ExecuteNonQuery(objSQLStatement);
 			}
 			
 			/// --------------------------------------------------------------------------------
@@ -2020,11 +2011,8 @@ namespace DatabaseObjects
 			[Obsolete("Use DatabaseObjects.ConnectionScope")]
 			public int ExecuteNonQueryWithConnect(SQL.ISQLStatement[] objSQLStatements)
 			{
-				this.Start();
-				int result = this.ExecuteNonQuery(new SQL.SQLStatements(objSQLStatements));
-				this.Finished();
-
-                return result;
+                using (var connectionScope = new ConnectionScope(this))
+				    return connectionScope.ExecuteNonQuery(new SQL.SQLStatements(objSQLStatements));
 			}
 			
 			protected virtual IDataReader ExecuteInternal(IDbConnection objConnection, SQL.ISQLStatement objSQLStatement)
@@ -2034,22 +2022,24 @@ namespace DatabaseObjects
 				
 				objSQLStatement.ConnectionType = peConnectionType;
 				string strSQL = objSQLStatement.SQL;
-				
-				var command = objConnection.CreateCommand();
-                command.CommandText = strSQL;
 
-				if (pobjTransactions.Count > 0)
-                    command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
-
-                IDataReader reader;
-
-				try
+				IDataReader reader;
+                
+				using (var command = objConnection.CreateCommand())
 				{
-                    reader = command.ExecuteReader();
-				}
-				catch (Exception ex)
-				{
-					throw new Exceptions.DatabaseObjectsException("Execute failed: " + strSQL, ex);
+					command.CommandText = strSQL;
+
+					if (pobjTransactions.Count > 0)
+						command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
+
+					try
+					{
+						reader = command.ExecuteReader();
+					}
+					catch (Exception ex)
+					{
+						throw new Exceptions.DatabaseObjectsException("Execute failed: " + strSQL, ex);
+					}
 				}
 
 				OnStatementExecuted(objSQLStatement);
@@ -2061,27 +2051,28 @@ namespace DatabaseObjects
 			{
 				if (objConnection == null)
 					throw new Exceptions.DatabaseObjectsException("Connection is not open, call Database.Connection.Start() or Database.Transactions.Begin()");
-				
+
 				objSQLStatement.ConnectionType = peConnectionType;
 				string strSQL = objSQLStatement.SQL;
+				int rowAffected;
 				
-				var command = objConnection.CreateCommand();
-                command.CommandText = strSQL;
-
-				if (pobjTransactions.Count > 0)
-                    command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
-
-                int rowAffected;
-
-				try
+				using (var command = objConnection.CreateCommand())
 				{
-                    rowAffected = command.ExecuteNonQuery();
-				}
-				catch (Exception ex)
-				{
-					throw new Exceptions.DatabaseObjectsException("ExecuteNonQuery failed: " + strSQL, ex);
-				}
+					command.CommandText = strSQL;
 
+					if (pobjTransactions.Count > 0)
+						command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
+
+					try
+					{
+						rowAffected = command.ExecuteNonQuery();
+					}
+					catch (Exception ex)
+					{
+						throw new Exceptions.DatabaseObjectsException("ExecuteNonQuery failed: " + strSQL, ex);
+					}
+				}
+                
                 OnStatementExecuted(objSQLStatement);
 
                 return rowAffected;

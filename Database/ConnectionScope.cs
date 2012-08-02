@@ -25,15 +25,24 @@ namespace DatabaseObjects
 		/// If a connection is already opened then the already open connection is utilised.
 		/// </summary>
 		public ConnectionScope(Database database)
+			: this(GetConnection(database))
 		{
-			if (database == null)
-				throw new ArgumentNullException();
-			
-			connection = database.Connection;
-			
-			connection.Start();
 		}
 		
+        /// <summary>
+        /// Ensures that a new connection is opened.
+        /// If a connection is already opened then the already open connection is utilised.
+        /// </summary>
+        internal ConnectionScope(Database.ConnectionController connection)
+        {
+			if (connection == null)
+				throw new ArgumentNullException();
+
+			this.connection = connection;
+
+			connection.Start();
+        }
+
 		/// --------------------------------------------------------------------------------
 		/// <summary>
 		/// Executes the SQL statement.
@@ -103,6 +112,17 @@ namespace DatabaseObjects
 			}
 			
 			GC.SuppressFinalize(this);
+		}
+
+        /// <summary>
+        /// Called by constructor.
+        /// </summary>
+        private static Database.ConnectionController GetConnection(Database database)
+        {
+			if (database == null)
+				throw new ArgumentNullException();
+
+			return database.Connection;
 		}
 	}
 }
