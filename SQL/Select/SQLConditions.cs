@@ -9,10 +9,11 @@ using System.Collections;
 using System;
 using System.Data;
 using System.Collections.Generic;
+using DatabaseObjects.SQL.Serializers;
 
 namespace DatabaseObjects.SQL
 {
-	public class SQLConditions : IEnumerable
+	public class SQLConditions : SQLExpression, IEnumerable
 	{
 		private ArrayList pobjSQLConditions = new ArrayList();
 		private List<LogicalOperator> pobjLogicalOperators = new List<LogicalOperator>();
@@ -219,6 +220,11 @@ namespace DatabaseObjects.SQL
 		public System.Collections.IEnumerator GetEnumerator()
 		{
 			return pobjSQLConditions.GetEnumerator();
+		}
+
+		internal override string SQL(Serializer serializer)
+		{
+			return serializer.SerializeConditions(this);
 		}
 	}
 }
