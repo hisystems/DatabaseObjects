@@ -192,6 +192,7 @@
     <Compile Include="Misc\AssemblyInfo.cs" />
     <Compile Include="SQL\Amend\SQLInsertFromSelect.cs" />
     <Compile Include="SQL\Amend\SQLUpdateField.cs" />
+    <Compile Include="SQL\Expressions\SQLLogicalExpression.cs" />
     <Compile Include="SQL\Expressions\SQLStringConcatExpression.cs" />
     <Compile Include="SQL\Expressions\SQLAggregateExpression.cs" />
     <Compile Include="SQL\Expressions\SQLAllFieldsExpression.cs" />

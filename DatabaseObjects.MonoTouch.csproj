@@ -163,6 +163,7 @@
     <Compile Include="SQL\Views\SQLCreateView.cs" />
     <Compile Include="SQL\Views\SQLDropView.cs" />
     <Compile Include="SQL\Views\SQLViewExists.cs" />
+    <Compile Include="SQL\Expressions\SQLLogicalExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

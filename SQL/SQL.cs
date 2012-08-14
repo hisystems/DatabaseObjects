@@ -256,12 +256,6 @@ namespace DatabaseObjects.SQL
 		NotLike
 	}
 		
-	public enum LogicalOperator
-	{
-		@And,
-		@Or
-	}
-		
 	public enum FieldValueAutoAssignmentType
 	{
 		/// <summary>

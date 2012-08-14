@@ -387,6 +387,16 @@ namespace DatabaseObjects.SQL.Serializers
 
 			return "(" + arithmeticExpression.LeftExpression.SQL(this) + " " + SerializeArithmeticOperator(arithmeticExpression.Operator) + " " + arithmeticExpression.RightExpression.SQL(this) + ")";
 		}
+		
+		public virtual string SerializeLogicalExpression(SQLLogicalExpression logicalExpression)
+		{
+			if (logicalExpression.LeftExpression == null)
+				throw new ArgumentNullException(logicalExpression.GetType().Name + ".LeftExpression");
+			else if (logicalExpression.RightExpression == null)
+				throw new ArgumentNullException(logicalExpression.GetType().Name + ".RightExpression");
+
+			return "(" + logicalExpression.LeftExpression.SQL(this) + " " + SerializeLogicalOperator(logicalExpression.Operator) + " " + logicalExpression.RightExpression.SQL(this) + ")";
+		}
 
 		public virtual string SerializeAggregateExpression(SQLAggregateExpression aggregateExpression)
 		{
