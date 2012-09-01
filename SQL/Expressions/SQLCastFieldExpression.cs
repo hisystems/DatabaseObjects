@@ -67,8 +67,6 @@ namespace DatabaseObjects.SQL
 				
 			get
 			{
-				DataTypeExtensions.EnsureIsCharacter(peCastAsType);
-
 				return pintSize;
 			}
 		}
@@ -83,8 +81,6 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
-
 				return pintScale;
 			}
 				
@@ -109,8 +105,6 @@ namespace DatabaseObjects.SQL
 		{
 			get
 			{
-				DataTypeExtensions.EnsureIsDecimal(peCastAsType);
-			
                 return pintPrecision;
 			}
 				
