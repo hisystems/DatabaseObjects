@@ -1185,7 +1185,7 @@ namespace DatabaseObjects.SQL.Serializers
 			else
 				dateTimeString = dateTime.ToString("yyyy-MM-dd");
 
-			if (dateTime.Hour != 0 || dateTime.Minute != 0 || dateTime.Second != 0)
+			if (dateTime.Hour != 0 || dateTime.Minute != 0 || dateTime.Second != 0 || dateTime.Millisecond != 0)
 				dateTimeString += " " + dateTime.ToString("HH:mm:ss.fff");
 
 			return dateTimeString;
