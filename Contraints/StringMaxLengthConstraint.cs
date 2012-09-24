@@ -33,7 +33,7 @@ namespace DatabaseObjects.Constraints
 			
 		public bool ValueSatisfiesConstraint(string value)
 		{
-			return !string.IsNullOrEmpty(value) && value.Length <= pintMaxLength;
+			return (value != null && value.Length <= pintMaxLength) || value == null;
 		}
 			
 		public override string ToString()
