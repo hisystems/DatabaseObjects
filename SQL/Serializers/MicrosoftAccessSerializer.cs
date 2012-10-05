@@ -14,7 +14,12 @@ namespace DatabaseObjects.SQL.Serializers
 {
 	internal class MicrosoftAccessSerializer : MicrosoftSerializer
 	{
-		public override Database.ConnectionType Type
+        public MicrosoftAccessSerializer()
+        {
+            base.SerializeTopClauseWithParentheses = false;
+        }
+		
+        public override Database.ConnectionType Type
 		{
 			get 
 			{

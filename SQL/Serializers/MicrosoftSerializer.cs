@@ -19,9 +19,19 @@ namespace DatabaseObjects.SQL.Serializers
 	/// </summary>
 	internal abstract class MicrosoftSerializer : Serializer
 	{
+        protected bool SerializeTopClauseWithParentheses = true;
+
 		public override string SerializeBeforeSelectFields(SQLSelect select)
 		{
-			var topClause = select.Top > 0 ? "TOP(" + select.Top.ToString() + ") " : String.Empty;
+            var topClause = String.Empty;
+
+            if (select.Top > 0)
+            {
+                if (SerializeTopClauseWithParentheses)
+                    topClause = "TOP(" + select.Top.ToString() + ") ";
+                else
+                    topClause = "TOP " + select.Top.ToString() + " ";
+            }
 
 			return base.SerializeBeforeSelectFields(select) + topClause;
 		}
