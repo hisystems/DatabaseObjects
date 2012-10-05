@@ -32,6 +32,17 @@ namespace DatabaseObjects.SQL.Serializers
 			throw new NotSupportedException();
 		}
 
+		/// <summary>
+		/// Microsoft Access does not support milli-second serialization.
+		/// </summary>
+		public override string SerializeDateTimeValue(DateTime dateTime)
+		{
+			if (dateTime.Millisecond != 0)
+				throw new InvalidOperationException("Microsoft Access does not support milliseconds as part of a date/time field");
+
+			return base.SerializeDateTimeValue(dateTime);
+		}
+
 		public override string SerializeTableExists(SQLTableExists tableExists)
 		{
 			var select = new SQLSelect();
