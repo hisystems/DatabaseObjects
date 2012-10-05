@@ -42,6 +42,12 @@ namespace DatabaseObjects.SQL.Serializers
 			{
 				case DataType.SmallDateTime:
 					return "DATETIME";
+                case DataType.Character:
+                    return "NCHAR(" + size.ToString() + ")";
+                case DataType.VariableCharacter:
+                    return "NVARCHAR(" + size.ToString() + ")";
+                case DataType.Text:
+                    return "NTEXT";
 				default:
 					return base.SerializeDataType(dataType, size, precision, scale);
 			}
