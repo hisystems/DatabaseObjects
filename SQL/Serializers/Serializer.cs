@@ -55,6 +55,8 @@ namespace DatabaseObjects.SQL.Serializers
 			}
 		}
 
+		protected string fractionalSecondsFormat = ".fff";
+
 		/// <summary>
 		/// Indicates the serialization type to utilise.
 		/// </summary>
@@ -1190,7 +1192,7 @@ namespace DatabaseObjects.SQL.Serializers
 				dateTimeString += " " + dateTime.ToString("HH:mm:ss");
 
 				if (dateTime.Millisecond != 0)
-					dateTimeString += dateTime.ToString(".fffffff");
+					dateTimeString += dateTime.ToString(fractionalSecondsFormat);
 			}
 
 			return dateTimeString;

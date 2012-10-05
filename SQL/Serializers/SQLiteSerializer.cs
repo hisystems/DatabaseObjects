@@ -7,6 +7,11 @@ namespace DatabaseObjects.SQL.Serializers
 {
 	internal class SQLiteSerializer : Serializer 
 	{
+		public SQLiteSerializer()
+		{
+			base.fractionalSecondsFormat = ".fffffff";
+		}
+
 		public override Database.ConnectionType Type
 		{
 			get 
@@ -19,7 +24,7 @@ namespace DatabaseObjects.SQL.Serializers
 		{
 			return SerializeByteArray("X'", bytData, "'");
 		}
-
+		
 		public override string SerializeAlterTableFieldsModifier(SQLTableFields.AlterModeType alterMode)
 		{
 			if (alterMode == SQLTableFields.AlterModeType.Drop)
