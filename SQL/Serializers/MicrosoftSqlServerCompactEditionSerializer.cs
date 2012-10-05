@@ -29,7 +29,11 @@ namespace DatabaseObjects.SQL.Serializers
 
 		public override string SerializeTableExists(SQLTableExists tableExists)
 		{
-			throw new NotSupportedException("Use SELECT COUNT(*) FROM table to determine if a record exists");
+			var select = new SQLSelect();
+			select.Tables.Add("TABLES").SchemaName = "INFORMATION_SCHEMA";
+			select.Where.Add("TABLE_NAME", ComparisonOperator.EqualTo, tableExists.Name);
+
+			return SerializeSelect(select);
 		}
 
 		public override string SerializeDataType(DataType dataType, int size, int precision, int scale)
