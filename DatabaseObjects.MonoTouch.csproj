@@ -165,6 +165,7 @@
     <Compile Include="SQL\Views\SQLDropView.cs" />
     <Compile Include="SQL\Views\SQLViewExists.cs" />
     <Compile Include="SQL\Expressions\SQLLogicalExpression.cs" />
+    <Compile Include="Contraints\ObjectIsSavedConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

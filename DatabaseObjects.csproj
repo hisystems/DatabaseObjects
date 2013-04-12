@@ -118,6 +118,7 @@
     <Compile Include="Contraints\EmailAddressConstraint.cs" />
     <Compile Include="Contraints\KeyFieldIsUniqueInCollectionConstraint.cs" />
     <Compile Include="Contraints\Constraint.cs" />
+    <Compile Include="Contraints\ObjectIsSavedConstraint.cs" />
     <Compile Include="Contraints\RegExConstraint.cs" />
     <Compile Include="Contraints\DateIsTodayOrFutureForNewObjectConstraint.cs" />
     <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.cs" />
