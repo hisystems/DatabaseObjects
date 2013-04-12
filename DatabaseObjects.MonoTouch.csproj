@@ -166,6 +166,11 @@
     <Compile Include="SQL\Views\SQLViewExists.cs" />
     <Compile Include="SQL\Expressions\SQLLogicalExpression.cs" />
     <Compile Include="Contraints\ObjectIsSavedConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMinimumOrGreaterConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.cs" />
+    <Compile Include="Contraints\NumberIsInRangeConstraint.cs" />
+    <Compile Include="Contraints\NumberIsBetweenConstraint.cs" />
+    <Compile Include="Contraints\EmailAddressConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
