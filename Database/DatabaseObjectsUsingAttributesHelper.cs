@@ -190,7 +190,7 @@ namespace DatabaseObjects
 			else
 			{
 				//If the ObjectReferenceEarlyBindingAttribute is specified on the item instance then create the table joins that will be required
-				var earlyBindingTableJoins = ObjectReferenceEarlyBinding.GetTableJoins(pobjDatabaseObjects, objPrimaryTable, this.GetItemInstanceType());
+				var earlyBindingTableJoins = ObjectReferenceEarlyBinding.GetTableJoins(objPrimaryTable, this.GetItemInstanceType());
 				
 				if (earlyBindingTableJoins.Count > 0)
 					tableJoinsCollection = earlyBindingTableJoins;

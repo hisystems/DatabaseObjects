@@ -131,12 +131,26 @@ namespace DatabaseObjects
 		/// </summary>
 		/// <returns>Returns an empty list if there are no early binding required for the item instance type, otherwise the table joins required.</returns>
 		private static CollectionTypesInAssemblies collectionTypesInAssemblies = new CollectionTypesInAssemblies();
-		
-		internal static SQL.SQLSelectTableJoins GetTableJoins(IDatabaseObjects collection, SQL.SQLSelectTable collectionTable, Type itemInstanceType)
+
+		internal static SQL.SQLSelectTableJoins GetTableJoins(SQL.SQLSelectTable collectionTable, Type itemInstanceType)
 		{
-			SQL.SQLSelectTableJoins tableJoins = new SQL.SQLSelectTableJoins();
-			SQL.SQLSelectTableBase leftTable = collectionTable;
-			
+			var tableJoins = new SQL.SQLSelectTableJoins();
+
+			GetTableJoins(collectionTable, itemInstanceType,  collectionTable, tableJoins);
+
+			return tableJoins;
+		}
+
+		/// <summary>
+		/// Creates all of the table joins by traversing the item instance type and finding ObjectReferenceEarlyBinding and FieldMapping attributed fields
+		/// and then finding the corresponding item instance type and the associated collection / table that it should be joined to.
+		/// This applies to all of the fields in the item instance type and also to any other table joins that the fields refer to.
+		/// Essentially, ensuring that all table joins are created for the collection.
+		/// </summary>
+		/// <param name="leftTable">The joined table which contains all of the calculated table joins</param>
+		/// <returns>The joined table which contains all of the calculated table joins</returns>
+		internal static SQL.SQLSelectTableBase GetTableJoins(SQL.SQLSelectTable collectionTable, Type itemInstanceType, SQL.SQLSelectTableBase leftTable, SQL.SQLSelectTableJoins tableJoins)
+		{
 			foreach (var fieldInfo in GetObjectReferenceEarlyBindingFieldsAndForBaseTypes(itemInstanceType))
 			{
 				var fieldTypeAssembly = fieldInfo.ObjectReferenceFieldType.Assembly; // assume that the collection type is defined in the same assembly as the item instance type
@@ -150,11 +164,14 @@ namespace DatabaseObjects
 				var tableJoin = tableJoins.Add(leftTable, SQL.SQLSelectTableJoin.Type.Inner, rightTable);
 				tableJoin.Where.Add(new SQL.SQLFieldExpression(collectionTable, fieldInfo.FieldMappingName), SQL.ComparisonOperator.EqualTo, new SQL.SQLFieldExpression(new SQL.SQLSelectTable(fieldAssociatedCollectionInfo.TableName), fieldAssociatedCollectionInfo.DistinctFieldName));
 				leftTable = tableJoin;
+
+				// Also traverse "horizontally" / to a greater depth along the reference chain to ensure that referenced objects which also reference other objects are added to the table joins
+				leftTable = GetTableJoins(new SQL.SQLSelectTable(fieldAssociatedCollectionInfo.TableName), fieldAssociatedCollectionInfo.ItemInstanceType, leftTable, tableJoins);
 			}
-			
-			return tableJoins;
+
+			return leftTable;
 		}
-		
+
 		/// <summary>
 		/// Traverses the item instance type and any base classes for reference to fields marked with the
 		/// ObjectReferenceEarlyBindingAttribute.
