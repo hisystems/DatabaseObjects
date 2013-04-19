@@ -11,6 +11,12 @@ using System.Data;
 
 namespace DatabaseObjects.Constraints
 {
+	/// <summary>
+	/// Used for binding a value (typically a field) to a particular constraint.
+	/// This allows the user interface to call ConstraintBinding.ConstraintSatisfied() at any point to determine
+	/// whether the constraint has been satisfied. 
+	/// If not, the ConstraintBinding.ErrorMessage() can be displayed to the user to aid in the notification.
+	/// </summary>
 	public class ConstraintBinding<T>
 	{
 		private Func<T> getValue;

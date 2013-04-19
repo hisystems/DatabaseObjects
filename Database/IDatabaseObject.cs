@@ -9,18 +9,17 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// An IDatabaseObject object represents a single record in a database table. The
-/// Database class provides the facility for classes implementing IDatabaseObject to
-/// copy data to and from the associated database record. Rather than directly
-/// implementing IDatabaseObject inherit from DatabaseObject as the DatabaseObject
-/// class provides the basic "plumbing" code required by IDatabaseObjects.
-/// </summary>
-/// --------------------------------------------------------------------------------
-///
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// An IDatabaseObject object represents a single record in a database table. The
+	/// Database class provides the facility for classes implementing IDatabaseObject to
+	/// copy data to and from the associated database record. Rather than directly
+	/// implementing IDatabaseObject inherit from DatabaseObject as the DatabaseObject
+	/// class provides the basic "plumbing" code required by IDatabaseObjects.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public interface IDatabaseObject
 	{
 		/// --------------------------------------------------------------------------------

@@ -9,15 +9,14 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Extends DatabaseObjects and implements the IEnumerable interface, therefore
-/// providing support for the "For Each" construct.
-/// </summary>
-/// --------------------------------------------------------------------------------
-///
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Extends DatabaseObjects and implements the IEnumerable interface, therefore
+	/// providing support for the "For Each" construct.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public abstract class DatabaseObjectsEnumerable : DatabaseObjects, IEnumerable
 	{		
 		/// --------------------------------------------------------------------------------

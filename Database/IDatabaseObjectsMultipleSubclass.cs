@@ -9,17 +9,16 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Extends the functionality of IDatabaseObjects so that if a collection contains
-/// multiple subclasses of a particular class in the collection then the
-/// ItemInstanceForSubclass is used rather than ItemInstance to return the particular
-/// subclass to be created.
-/// </summary>
-/// --------------------------------------------------------------------------------
-///
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Extends the functionality of IDatabaseObjects so that if a collection contains
+	/// multiple subclasses of a particular class in the collection then the
+	/// ItemInstanceForSubclass is used rather than ItemInstance to return the particular
+	/// subclass to be created.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public interface IDatabaseObjectsMultipleSubclass : IDatabaseObjects
 	{
 		/// --------------------------------------------------------------------------------

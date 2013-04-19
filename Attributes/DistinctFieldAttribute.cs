@@ -9,28 +9,28 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Specifies the field name that uniquely identifies each object
-/// within the collection. Typically, this is the field name of an identity or auto
-/// increment field. If the SubSetAttribute has been specified
-/// then the strDistinctFieldName need only be unique within the subset not the
-/// entire table. The strDistinctFieldName and can be identical to the field name
-/// specified with a KeyField attribute.
-/// This attribute must be specified on a DatabaseObjects*UsingAttributes class.
-/// This attribute is used to implement the IDatabaseObjects.DistinctFieldName
-/// and IDatabaseObjects.DistinctFieldAutoIncrements functions.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;DistinctField("CustomerID", bAutoIncrements:=True)&gt;
-///    Public Class Customers
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Specifies the field name that uniquely identifies each object
+	/// within the collection. Typically, this is the field name of an identity or auto
+	/// increment field. If the SubSetAttribute has been specified
+	/// then the strDistinctFieldName need only be unique within the subset not the
+	/// entire table. The strDistinctFieldName and can be identical to the field name
+	/// specified with a KeyField attribute.
+	/// This attribute must be specified on a DatabaseObjects*UsingAttributes class.
+	/// This attribute is used to implement the IDatabaseObjects.DistinctFieldName
+	/// and IDatabaseObjects.DistinctFieldAutoIncrements functions.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;DistinctField("CustomerID", bAutoIncrements:=True)&gt;
+	///    Public Class Customers
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class DistinctFieldAttribute : Attribute
 	{

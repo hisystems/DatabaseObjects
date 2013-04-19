@@ -9,21 +9,20 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// An IDatabaseObjects object represents either a database table or a sub set of a
-/// database table. The Database class provides the facility for classes implementing
-/// IDatabaseObjects to specify the database table the class is bound to, how to
-/// identify each unique record within the table (or subset), how the table should
-/// be sorted and table joins (in order to improve performance). Rather than
-/// directly implementing IDatabaseObjects inherit from DatabaseObjects
-/// as the DatabaseObjects class provides the basic "plumbing" code required by
-/// IDatabaseObjects.
-/// </summary>
-/// --------------------------------------------------------------------------------
-///
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// An IDatabaseObjects object represents either a database table or a sub set of a
+	/// database table. The Database class provides the facility for classes implementing
+	/// IDatabaseObjects to specify the database table the class is bound to, how to
+	/// identify each unique record within the table (or subset), how the table should
+	/// be sorted and table joins (in order to improve performance). Rather than
+	/// directly implementing IDatabaseObjects inherit from DatabaseObjects
+	/// as the DatabaseObjects class provides the basic "plumbing" code required by
+	/// IDatabaseObjects.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public interface IDatabaseObjects
 	{
 		/// --------------------------------------------------------------------------------

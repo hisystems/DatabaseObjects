@@ -9,15 +9,15 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Specifies the interface of all classes that are considered lockable by the library.
-/// See DatabaseObjectLockable, DatabaseObjectUsingAttributesLockable for further
-/// details.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Specifies the interface of all classes that are considered lockable by the library.
+	/// See DatabaseObjectLockable, DatabaseObjectUsingAttributesLockable for further
+	/// details.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public interface IDatabaseObjectLockable
 	{
 		void Lock();

@@ -10,25 +10,25 @@ using System;
 using System.Data;
 using DatabaseObjects;
 
-/// <summary>
-/// Represents a local (not distributed) database transaction.
-/// Should be used with a 'Using' statement to ensure that the transaction is rolled back if any exception occurs (database or code related).
-/// Performs like the System.Transactions.TransactionScope object, except that it only targets local database transactions
-/// (i.e. BEING/COMMIT/ROLLBACK TRANSACTION commands) and does not utilise the Microsoft Distributed Transaction Coordinator.
-/// </summary>
-/// <example>
-/// Using localTransaction = New LocalTransactionScope(database)
-///
-///     With collection.Add
-///         .Field = "Value"
-///         .Save()
-///     End With
-///
-///     localTransaction.Complete()
-/// End Using
-/// </example>
 namespace DatabaseObjects
 {
+	/// <summary>
+	/// Represents a local (not distributed) database transaction.
+	/// Should be used with a 'Using' statement to ensure that the transaction is rolled back if any exception occurs (database or code related).
+	/// Performs like the System.Transactions.TransactionScope object, except that it only targets local database transactions
+	/// (i.e. BEING/COMMIT/ROLLBACK TRANSACTION commands) and does not utilise the Microsoft Distributed Transaction Coordinator.
+	/// </summary>
+	/// <example>
+	/// Using localTransaction = New LocalTransactionScope(database)
+	///
+	///     With collection.Add
+	///         .Field = "Value"
+	///         .Save()
+	///     End With
+	///
+	///     localTransaction.Complete()
+	/// End Using
+	/// </example>
 	public class LocalTransactionScope : IDisposable
 	{
 		private Database.TransactionsClass transaction;

@@ -9,14 +9,14 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Populates all fields and properties marked with the
-/// FieldMapping and FieldMappingObjectHook attributes with a set of
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Populates all fields and properties marked with the
+	/// FieldMapping and FieldMappingObjectHook attributes with a set of
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public sealed class DatabaseObjectUsingAttributesHelper
 	{
 		private const System.Reflection.BindingFlags pcePropertyFieldScope = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly;

@@ -9,22 +9,22 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The TableAttribute class specifies the name of the database table that this collection
-/// is associated with.
-/// This attribute must be specified for all DatabaseObjects*UsingAttributes classes.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;Table("Customers")&gt;
-///    Public Class Customers
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The TableAttribute class specifies the name of the database table that this collection
+	/// is associated with.
+	/// This attribute must be specified for all DatabaseObjects*UsingAttributes classes.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;Table("Customers")&gt;
+	///    Public Class Customers
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class TableAttribute : Attribute
 	{

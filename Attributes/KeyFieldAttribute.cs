@@ -9,25 +9,25 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The KeyFieldAttribute should specify the field name that uniquely identifies each object
-/// within the collection. As opposed to the ordinal/index position or distinct field, the key field
-/// provides another method of accessing a particular object within the collection.
-/// The key field must be unique within the collection. If the SubsetAttribute
-/// has been specified then the key field only needs to be unique within
-/// the subset, not the entire table. Specifying this attribute is optional.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;KeyField("CustomerName")&gt;
-///    Public Class Customers
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The KeyFieldAttribute should specify the field name that uniquely identifies each object
+	/// within the collection. As opposed to the ordinal/index position or distinct field, the key field
+	/// provides another method of accessing a particular object within the collection.
+	/// The key field must be unique within the collection. If the SubsetAttribute
+	/// has been specified then the key field only needs to be unique within
+	/// the subset, not the entire table. Specifying this attribute is optional.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;KeyField("CustomerName")&gt;
+	///    Public Class Customers
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class KeyFieldAttribute : Attribute
 	{

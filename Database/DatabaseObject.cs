@@ -9,16 +9,16 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Represents a single database record. Implements IDatabaseObject and provides
-/// the basic plumbing code required for the interface.
-/// Mapping of fields from the database record to the fields in the inheriting class
-/// can be defined by using the FieldMappingAttribute.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Represents a single database record. Implements IDatabaseObject and provides
+	/// the basic plumbing code required for the interface.
+	/// Mapping of fields from the database record to the fields in the inheriting class
+	/// can be defined by using the FieldMappingAttribute.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public abstract class DatabaseObject : IDatabaseObject
 	{
 		private bool pbIsSaved;

@@ -9,17 +9,17 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Represents a collection of database records. Implements IDatabaseObjects and provides
-/// the basic plumbing code required for the interface.
-/// Attributes can be used to specify the database specific information using
-/// class attributes DistinctFieldAttribute, TableAttribute, KeyFieldAttribute, ItemInstanceAttribute,
-/// OrderByAttribute, SubsetAttribute and TableJoinAttribute.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Represents a collection of database records. Implements IDatabaseObjects and provides
+	/// the basic plumbing code required for the interface.
+	/// Attributes can be used to specify the database specific information using
+	/// class attributes DistinctFieldAttribute, TableAttribute, KeyFieldAttribute, ItemInstanceAttribute,
+	/// OrderByAttribute, SubsetAttribute and TableJoinAttribute.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public abstract class DatabaseObjects : IDatabaseObjects
 	{
 		internal const string DistinctFieldAutoIncrementsObsoleteWarningMessage = "Obsolete and replaced by DistinctFieldAutoAssignment to support both auto increment and automatically assigned globally unique identifiers.";

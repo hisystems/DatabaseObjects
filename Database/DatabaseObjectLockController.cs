@@ -9,17 +9,17 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// This is the controller class that initializes the lock table and the user
-/// ID that is to be associated with all locking operations. In most situations,
-/// only one instance of this class is ever created and this instance is passed into
-/// the constructor for all DatabaseObjectLockable and DatabaseObjectUsingAttributesLockable
-/// instances.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// This is the controller class that initializes the lock table and the user
+	/// ID that is to be associated with all locking operations. In most situations,
+	/// only one instance of this class is ever created and this instance is passed into
+	/// the constructor for all DatabaseObjectLockable and DatabaseObjectUsingAttributesLockable
+	/// instances.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public class DatabaseObjectLockController
 	{
 		private string pstrCurrentUserID;

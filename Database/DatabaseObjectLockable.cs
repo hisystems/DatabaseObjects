@@ -9,21 +9,21 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Extends the capabilities of the DatabaseObject by providing a set of routines
-/// that lock and unlock this object for exclusive access for a particular user.
-/// When Lock() is called a record is written to the lock table which includes the
-/// object's associated table name, the object's distinct value and the user ID
-/// specified in the DatabaseObjectLockController. When Unlock() is called this
-/// record is deleted. If another or the current user has locked the object then the
-/// IsLocked property will return true.
-/// The DatabseObjects library does not inhibit the loading and/or saving of any
-/// locked objects.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Extends the capabilities of the DatabaseObject by providing a set of routines
+	/// that lock and unlock this object for exclusive access for a particular user.
+	/// When Lock() is called a record is written to the lock table which includes the
+	/// object's associated table name, the object's distinct value and the user ID
+	/// specified in the DatabaseObjectLockController. When Unlock() is called this
+	/// record is deleted. If another or the current user has locked the object then the
+	/// IsLocked property will return true.
+	/// The DatabseObjects library does not inhibit the loading and/or saving of any
+	/// locked objects.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public abstract class DatabaseObjectLockable : DatabaseObject, IDatabaseObjectLockable
 	{
 		private DatabaseObjectLockController pobjLockController;

@@ -13,22 +13,21 @@ using System.Diagnostics;
 using System.Transactions;
 using System.Collections.Generic;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Represents a database connection and provides a set of functions that work
-/// in conjunction with classes implementing IDatabaseObjects and IDatabaseObject.
-/// The Database class automatically generates and executes the required SQL
-/// statements to perform common database operations such as saving, deleting
-/// searching etc. based on the values returned via the IDatabaseObjects and
-/// IDatabaseObject interfaces.
-/// Typically, this class is only used when explicitly implementing the IDatabaseObjects
-/// and IDatabaseObject interfaces rather than inheriting from DatabaseObjects (or
-/// DatabaseObjectsEnumerable) and DatabaseObject.
-/// </summary>
-/// --------------------------------------------------------------------------------
-///
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Represents a database connection and provides a set of functions that work
+	/// in conjunction with classes implementing IDatabaseObjects and IDatabaseObject.
+	/// The Database class automatically generates and executes the required SQL
+	/// statements to perform common database operations such as saving, deleting
+	/// searching etc. based on the values returned via the IDatabaseObjects and
+	/// IDatabaseObject interfaces.
+	/// Typically, this class is only used when explicitly implementing the IDatabaseObjects
+	/// and IDatabaseObject interfaces rather than inheriting from DatabaseObjects (or
+	/// DatabaseObjectsEnumerable) and DatabaseObject.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public class Database
 	{
 		public enum ConnectionType

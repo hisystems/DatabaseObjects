@@ -9,7 +9,6 @@ using System.Collections;
 using System;
 using System.Data;
 
-
 namespace DatabaseObjects.Exceptions
 {
 	/// <summary>

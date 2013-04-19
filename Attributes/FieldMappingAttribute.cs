@@ -9,17 +9,17 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The FieldMappingAttribute class is used to define a mapping between a database
-/// field and a class property. This attribute is used with the
-/// DatabaseObjectUsingAttributes class.
-/// This field can also be used for loading fields that are of type
-/// DatabaseObjects.ObjectReference or DatabaseObjects.Generic.ObjectReference.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The FieldMappingAttribute class is used to define a mapping between a database
+	/// field and a class property. This attribute is used with the
+	/// DatabaseObjectUsingAttributes class.
+	/// This field can also be used for loading fields that are of type
+	/// DatabaseObjects.ObjectReference or DatabaseObjects.Generic.ObjectReference.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
 	public class FieldMappingAttribute : Attribute
 	{

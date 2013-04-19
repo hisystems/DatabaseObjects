@@ -9,12 +9,12 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// <summary>
-/// Facilitates automatically opening and closing a connection.
-/// Implements IDisposable so that the construct can be used with a Using construct.
-/// </summary>
 namespace DatabaseObjects
 {
+	/// <summary>
+	/// Facilitates automatically opening and closing a connection.
+	/// Implements IDisposable so that the construct can be used with a Using construct.
+	/// </summary>
 	public class ConnectionScope : IDisposable
 	{
 		private Database.ConnectionController connection;

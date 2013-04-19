@@ -9,26 +9,26 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The OrderByFieldAttribute should specify the field that is sorted and whether it
-/// is ascending or descending. If the TableJoinAttribute has been specified then
-/// the sort order can be specified on the joined table field.
-/// To further customer the ordering (i.e. sort by more than one field)
-/// simply override the OrderBy function and do not specify an OrderByAttribute.
-/// Specifying this attribute is optional and if not specified the table is not
-/// sorted.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;OrderBy("CustomerName", SQL.OrderBy.Ascending)&gt;
-///    Public Class Customers
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The OrderByFieldAttribute should specify the field that is sorted and whether it
+	/// is ascending or descending. If the TableJoinAttribute has been specified then
+	/// the sort order can be specified on the joined table field.
+	/// To further customer the ordering (i.e. sort by more than one field)
+	/// simply override the OrderBy function and do not specify an OrderByAttribute.
+	/// Specifying this attribute is optional and if not specified the table is not
+	/// sorted.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;OrderBy("CustomerName", SQL.OrderBy.Ascending)&gt;
+	///    Public Class Customers
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
 	public class OrderByFieldAttribute : Attribute
 	{

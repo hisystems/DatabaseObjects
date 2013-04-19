@@ -9,27 +9,27 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The SubsetAttribute class is used to indicate that the collection is a subset
-/// of the parent collection. The library uses the DatabaseObjects.Parent.DistinctValue
-/// property to determine the value to filter this table by using the field name specified
-/// in the attribute. For example if the collection was a set of InvoiceLines then
-/// the table would filter on the InvoiceID in the InvoicesLines table using the InvoiceID
-/// from the parent Invoice object.
-/// To further customer the subset (i.e. make it conditional)
-/// simply override the Subset function and do not specify a SubsetAttribute.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;Subset("InvoiceID")&gt;
-///    Public Class InvoiceLines
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The SubsetAttribute class is used to indicate that the collection is a subset
+	/// of the parent collection. The library uses the DatabaseObjects.Parent.DistinctValue
+	/// property to determine the value to filter this table by using the field name specified
+	/// in the attribute. For example if the collection was a set of InvoiceLines then
+	/// the table would filter on the InvoiceID in the InvoicesLines table using the InvoiceID
+	/// from the parent Invoice object.
+	/// To further customer the subset (i.e. make it conditional)
+	/// simply override the Subset function and do not specify a SubsetAttribute.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;Subset("InvoiceID")&gt;
+	///    Public Class InvoiceLines
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public class SubsetAttribute : Attribute
 	{

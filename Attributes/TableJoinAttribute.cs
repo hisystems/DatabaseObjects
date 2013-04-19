@@ -9,27 +9,27 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// The TableJoinAttribute indicates that this collection's table should be joined
-/// with another.
-/// This function is useful in optimising database loading speeds by allowing multiple
-/// tables to be joined into one data set. The resultant data set can then be used to load
-/// objects from the associated tables avoiding subsequent SQL calls. For a complete
-/// example, see the demonstration program.
-/// To further customer the subset (i.e. make it conditional)
-/// simply override the TableJoins function and do not specify a TableJoinAttribute.
-/// </summary>
-/// <example>
-/// <code>
-///    &lt;TableJoin("MainProductID", "Products", "ProductID")&gt;
-///    Public Class Customers
-///        ...
-/// </code>
-/// </example>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// The TableJoinAttribute indicates that this collection's table should be joined
+	/// with another.
+	/// This function is useful in optimising database loading speeds by allowing multiple
+	/// tables to be joined into one data set. The resultant data set can then be used to load
+	/// objects from the associated tables avoiding subsequent SQL calls. For a complete
+	/// example, see the demonstration program.
+	/// To further customer the subset (i.e. make it conditional)
+	/// simply override the TableJoins function and do not specify a TableJoinAttribute.
+	/// </summary>
+	/// <example>
+	/// <code>
+	///    &lt;TableJoin("MainProductID", "Products", "ProductID")&gt;
+	///    Public Class Customers
+	///        ...
+	/// </code>
+	/// </example>
+	/// --------------------------------------------------------------------------------
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
 	public class TableJoinAttribute : Attribute
 	{

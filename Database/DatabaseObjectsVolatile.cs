@@ -9,20 +9,20 @@ using System.Collections;
 using System;
 using System.Data;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// This class extends DatabaseObjects by storing all objects associated with this
-/// DatabaseObjects collection in memory. Any objects added via VolatileObjectAdd()
-/// or VolatileObjectDelete() only affect the memory list until VolatileObjectsSave() is called.
-/// VolatileObjectsSave() will delete any objects flagged for deletion via VolatileObjectDelete()
-/// and then save any pre-loaded or newly added objects via VolatileObjectsAdd()
-/// to the database.
-/// Item objects can implement IDatabaseObjectVolatile to override the default saving
-/// behaviour of VolatileObjectsSave().
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// This class extends DatabaseObjects by storing all objects associated with this
+	/// DatabaseObjects collection in memory. Any objects added via VolatileObjectAdd()
+	/// or VolatileObjectDelete() only affect the memory list until VolatileObjectsSave() is called.
+	/// VolatileObjectsSave() will delete any objects flagged for deletion via VolatileObjectDelete()
+	/// and then save any pre-loaded or newly added objects via VolatileObjectsAdd()
+	/// to the database.
+	/// Item objects can implement IDatabaseObjectVolatile to override the default saving
+	/// behaviour of VolatileObjectsSave().
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	public abstract class DatabaseObjectsVolatile : DatabaseObjects, IEnumerable
 	{
 		private IList pobjItems;

@@ -12,18 +12,18 @@ using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
-/// --------------------------------------------------------------------------------
-/// <summary>
-/// Used by all of the DatabaseObjects*UsingAttributes classes.
-/// All DatabaseObjects*UsingAttributes classes can use attributes to specify the
-/// IDatabaseObjects.* functions that are normally overridden.
-/// But using attributes provides a nice and cleaner way of doing this - although
-/// sometimes it is a bit limiting and the functions sometimes need to be overriden
-/// and attributes not used.
-/// </summary>
-/// --------------------------------------------------------------------------------
 namespace DatabaseObjects
 {
+	/// --------------------------------------------------------------------------------
+	/// <summary>
+	/// Used by all of the DatabaseObjects*UsingAttributes classes.
+	/// All DatabaseObjects*UsingAttributes classes can use attributes to specify the
+	/// IDatabaseObjects.* functions that are normally overridden.
+	/// But using attributes provides a nice and cleaner way of doing this - although
+	/// sometimes it is a bit limiting and the functions sometimes need to be overriden
+	/// and attributes not used.
+	/// </summary>
+	/// --------------------------------------------------------------------------------
 	internal class DatabaseObjectsUsingAttributesHelper
 	{
 		private DatabaseObjects pobjDatabaseObjects;
