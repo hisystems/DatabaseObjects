@@ -17,6 +17,67 @@ Documentation
 -------------
 All documentation and other information is available on the website [www.hisystems.com.au/databaseobjects](http://www.hisystems.com.au/databaseobjects)
 
+Example
+--------
+Below is a really simple example of what the library can do. This is really just a taste, see the [demo project](https://github.com/hisystems/DatabaseObjects-Demo) or the [unit test project](https://github.com/hisystems/DatabaseObjects-UnitTests) for more advanced examples.
+
+```c#
+namespace Northwind.Model
+{
+	public class Northwind
+	{
+		public Suppliers Suppliers { get; private set; }
+
+		public Northwind()
+		{
+			var database = new DatabaseObjects.MicrosoftSQLServerDatabase("localhost", "Northwind");
+			this.Suppliers = new Suppliers(database);
+		}
+	}
+
+	[DatabaseObjects.Table("Suppliers")]
+	[DatabaseObjects.DistinctField("SupplierID", eAutomaticAssignment: DatabaseObjects.SQL.FieldValueAutoAssignmentType.AutoIncrement)]
+	[DatabaseObjects.OrderByField("CompanyName")]
+	public class Suppliers : DatabaseObjects.Generic.DatabaseObjectsEnumerable<Supplier>
+	{
+		internal Suppliers(DatabaseObjects.Database database)
+			: base(database)
+		{
+		}
+	}
+
+	public class Supplier : DatabaseObjects.DatabaseObject
+	{
+		[DatabaseObjects.FieldMapping("CompanyName")]
+		public string Name { get; set; }
+
+		[DatabaseObjects.FieldMapping("ContactName")]
+		public string ContactName { get; set; }
+
+		internal Supplier(Suppliers suppliers)
+			: base(suppliers)
+		{
+		}
+	}
+}
+
+namespace Northwind.Executable
+{
+	using Model;
+
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			var model = new Northwind();
+
+			foreach (Supplier supplier in model.Suppliers)
+				System.Console.WriteLine(supplier.Name);
+		}
+	}
+}
+```
+
 Demo Project
 ------------
 The demonstration project is available in a separate repository on [Github here](https://github.com/hisystems/DatabaseObjects-Demo). It includes a number of examples on how to utilise the library. To run the demo project in conjunction with the library it must be located in same directory as the library.
