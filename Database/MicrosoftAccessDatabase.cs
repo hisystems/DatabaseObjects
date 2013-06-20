@@ -36,7 +36,7 @@ namespace DatabaseObjects
 		/// </param>
 		/// <remarks></remarks>
 		public MicrosoftAccessDatabase(string strDatabaseFilePath, string strDatabasePassword)
-            : base("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + strDatabaseFilePath + ";Jet OLEDB:Database Password=" + strDatabasePassword + ";OLE DB Services=-3;", ConnectionType.MicrosoftAccess)
+            : base("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + strDatabaseFilePath + ";Jet OLEDB:Database Password=" + strDatabasePassword + ";", ConnectionType.MicrosoftAccess)
 		{
 			if (string.IsNullOrEmpty(strDatabaseFilePath))
 				throw new ArgumentNullException("Database File Path");

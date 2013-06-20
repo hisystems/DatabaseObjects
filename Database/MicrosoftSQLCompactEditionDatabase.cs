@@ -28,7 +28,7 @@ namespace DatabaseObjects
 		/// </summary>
 		/// <param name="strDatabaseFilePath">The full or relative path to the SQL compact edition database. i.e. Data\database.sdf or C:\Data\database.sdf</param>
 		public MicrosoftSQLCompactEditionDatabase(string strDatabaseFilePath, string strPassword) 
-            : base("Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=" + strDatabaseFilePath + ";SSCE:Database Password='" + strPassword + "';OLE DB Services=-3;", ConnectionType.SQLServerCompactEdition)
+            : base("Provider=Microsoft.SQLSERVER.CE.OLEDB.3.5;Data Source=" + strDatabaseFilePath + ";SSCE:Database Password='" + strPassword + "';", ConnectionType.SQLServerCompactEdition)
 		{
 			if (string.IsNullOrEmpty(strDatabaseFilePath))
 				throw new ArgumentNullException("Database File Path");
