@@ -47,6 +47,7 @@ namespace DatabaseObjects.SQL
 		}
 			
 		public SQLSelect(string strTableName, SQLCondition objWhereCondition)
+			: this()
 		{
 			this.Tables.Add(strTableName);
 			this.Where.Add(objWhereCondition);
