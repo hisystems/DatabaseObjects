@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices;
 [assembly:AssemblyCopyright("2010 Hi-Integrity Systems")]
 [assembly:AssemblyTrademark("")]
 [assembly:AssemblyCulture("")]
-[assembly:AssemblyVersion("5.1.0.2")]
+[assembly:AssemblyVersion("5.1.1.0")]
 [assembly:CLSCompliant(true)]
 
 #if DEBUG
