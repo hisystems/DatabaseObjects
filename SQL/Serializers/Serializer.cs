@@ -1241,6 +1241,8 @@ namespace DatabaseObjects.SQL.Serializers
 				return SerializeGuid((Guid)value);
 			else if (value is SQLExpression)
 				return ((SQLExpression)value).SQL(this);
+			else if (value is Enum)
+				return Convert.ToInt64(value).ToString();
 			else
 				return value.ToString();
 		}
