@@ -505,6 +505,15 @@ namespace DatabaseObjects.Generic
 		{
 			return (T)base.ItemInstance();
 		}
+
+		/// <summary>
+		/// On forward the call from the ItemInstance onto the generic ItemInstance_ 
+		/// so that if ItemInstance_ is overridden the correct item instance will be loaded.
+		/// </summary>
+		protected override IDatabaseObject ItemInstance()
+		{
+			return this.ItemInstance_();
+		}
 	}
 }
 	
