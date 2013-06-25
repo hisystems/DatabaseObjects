@@ -68,7 +68,7 @@ namespace DatabaseObjects.SQL.Serializers
 
 		public override string SerializeDateTime(DateTime dateTime)
 		{
-			return "#" + base.SerializeDateTimeValue(dateTime) + "#";
+			return "#" + this.SerializeDateTimeValue(dateTime) + "#";
 		}
 
 		public override string SerializeGetDateFunctionExpression(SQLGetDateFunctionExpression expression)
