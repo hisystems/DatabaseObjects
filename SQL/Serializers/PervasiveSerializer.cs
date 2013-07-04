@@ -36,7 +36,11 @@ namespace DatabaseObjects.SQL.Serializers
 
 		public override string SerializeViewExists(SQLViewExists viewExists)
 		{
-			throw new NotSupportedException();
+			var select = new SQLSelect();
+			select.Tables.Add("X$VIEW");
+			select.Where.Add("Xv$Name", ComparisonOperator.EqualTo, viewExists.ViewName);
+
+			return SerializeSelect(select);
 		}
 
 		public override string SerializeRollbackTransaction(SQLRollbackTransaction rollbackTransaction)
@@ -52,6 +56,16 @@ namespace DatabaseObjects.SQL.Serializers
 		public override string SerializeBeingTransaction(SQLBeginTransaction beginTransaction)
 		{
 			return "START TRANSACTION";
+		}
+
+		public override string SerializeDropIndex(SQLDropIndex dropIndex)
+		{
+			if (String.IsNullOrEmpty(dropIndex.Name))
+				throw new Exceptions.DatabaseObjectsException("IndexName has not been set.");
+			else if (String.IsNullOrEmpty(dropIndex.TableName))
+				throw new Exceptions.DatabaseObjectsException("TableName has not been set.");
+
+			return "DROP INDEX " + SerializeIdentifier(dropIndex.TableName) + "." + SerializeIdentifier(dropIndex.Name);
 		}
 
 		public override string SerializeTableExists(SQLTableExists tableExists)
@@ -72,10 +86,17 @@ namespace DatabaseObjects.SQL.Serializers
 			if (select.PerformLocking)
 				tokens.Add("FOR UPDATE");
 
-			if (select.Top > 0)
-				tokens.Add("LIMIT " + select.Top.ToString());
-
 			return tokens.ToString();
+		}
+
+		public override string SerializeBeforeSelectFields(SQLSelect select)
+		{
+			var topClause = String.Empty;
+
+            if (select.Top > 0)
+                topClause = " TOP " + select.Top.ToString() + " ";
+
+			return base.SerializeBeforeSelectFields(select) + topClause;
 		}
 
 		public override string SerializeIdentifier(string strIdentifierName)
@@ -108,6 +129,11 @@ namespace DatabaseObjects.SQL.Serializers
 				return "IDENTITY";
 			else
 				return base.SerializeTableFieldDataType(field);
+		}
+
+		public override string SerializeByteArray(byte[] bytData)
+		{
+			return SerializeByteArray("'", bytData, "'");
 		}
 
 		public override string SerializeDataType(DataType dataType, int size, int precision, int scale)
