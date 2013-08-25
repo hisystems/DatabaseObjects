@@ -73,11 +73,32 @@ namespace DatabaseObjects.Constraints
 			{
 				//If a value was found in the database then it should only be for this object (i.e. this field was not changed)
 				if (((IDatabaseObject) pobjDatabaseObject).IsSaved)
-					return objExistingObjectDistinctValue.Equals(((IDatabaseObject) pobjDatabaseObject).DistinctValue);
+				{
+					// The distinct value can sometimes be of type DECIMAL because it was loaded via @@IDENTITY (i.e. it is a new object)
+					// and therefore if the actual data type is INT (most likely) then the equality test incorrect fails.
+					// So, if values are numeric then convert to decimals and compare
+					if (IsNumeric(objExistingObjectDistinctValue) && IsNumeric(((IDatabaseObject)pobjDatabaseObject).DistinctValue))
+						return Convert.ToDecimal(objExistingObjectDistinctValue) == Convert.ToDecimal(((IDatabaseObject)pobjDatabaseObject).DistinctValue);
+					else
+						return objExistingObjectDistinctValue.Equals(((IDatabaseObject)pobjDatabaseObject).DistinctValue);
+				}
 				else
 					//If value was found in the database but the object has not been saved then the item found cannot be for this object
 					//and therefore it is being used by another object
 					return false;
+			}
+		}
+
+		private static bool IsNumeric(object objValue)
+		{
+			if (objValue is IConvertible)
+			{
+				System.TypeCode eTypeCode = ((IConvertible)objValue).GetTypeCode();
+				return TypeCode.Char <= eTypeCode && eTypeCode <= TypeCode.Decimal;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}
