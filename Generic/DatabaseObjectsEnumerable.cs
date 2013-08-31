@@ -75,17 +75,12 @@ namespace DatabaseObjects.Generic
         {
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return base.ObjectsList().GetEnumerator();
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return base.ObjectsList().GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return base.ObjectsList().GetEnumerator();
         }
