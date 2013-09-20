@@ -361,7 +361,7 @@ namespace DatabaseObjects
 					if (autoAssignment == SQL.FieldValueAutoAssignmentType.NewUniqueIdentifier)
 						objItem.DistinctValue = objNewGUID;
 					else if (autoAssignment == SQL.FieldValueAutoAssignmentType.AutoIncrement)
-						objItem.DistinctValue = Connection.ExecuteScalar(new SQL.SQLAutoIncrementValue());
+						objItem.DistinctValue = objConnection.ExecuteScalar(new SQL.SQLAutoIncrementValue());
 					
 					object objRollbackDistinctValue = objItem.DistinctValue;
 					objItem.IsSaved = true;
