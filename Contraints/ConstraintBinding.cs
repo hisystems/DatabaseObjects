@@ -33,7 +33,7 @@ namespace DatabaseObjects.Constraints
 	{
 		private Func<T> getValue;
 		private IConstraint<T> pconstraint;
-		private string perrorMessage;
+		private Func<T, string> errorMessageCallback;
 			
 		/// <summary>
 		///
@@ -45,12 +45,24 @@ namespace DatabaseObjects.Constraints
 		/// Parameter {0} represents the value from the callback.</param>
 		/// <remarks></remarks>
 		public ConstraintBinding(Func<T> getValue, IConstraint<T> constraint, string errorMessage)
+			: this(getValue, constraint, (T value) => String.Format(errorMessage, value))
+		{
+		}
+
+		/// <summary>
+		/// Binds a particular value to 
+		/// </summary>
+		/// <param name="errorMessageCallback">
+		/// A callback to an error message that is returned when the constraint fails.
+		/// The parameter is the value that has failed the constraint.
+		/// </param>
+		public ConstraintBinding(Func<T> getValue, IConstraint<T> constraint, Func<T, string> errorMessageCallback)
 		{
 			this.pconstraint = constraint;
 			this.getValue = getValue;
-			this.perrorMessage = errorMessage;
+			this.errorMessageCallback = errorMessageCallback;
 		}
-			
+	
 		/// <summary>
 		///
 		/// </summary>
@@ -81,7 +93,7 @@ namespace DatabaseObjects.Constraints
 			T value = getValue();
 				
 			if (!pconstraint.ValueSatisfiesConstraint(value))
-				throw new ArgumentException(ErrorMessage(value));
+				throw new ArgumentException(this.errorMessageCallback(value));
 		}
 			
 		/// <summary>
@@ -89,12 +101,7 @@ namespace DatabaseObjects.Constraints
 		/// </summary>
 		public string ErrorMessage()
 		{
-			return ErrorMessage(this.getValue());
-		}
-			
-		private string ErrorMessage(T value)
-		{
-			return string.Format(perrorMessage, value);
+			return this.errorMessageCallback(this.getValue());
 		}
 			
 		public IConstraint<T> Constraint
@@ -120,7 +127,7 @@ namespace DatabaseObjects.Constraints
 		/// </example>
 		public ConstraintBinding<T> Clone(T valueToBind)
 		{
-			return new ConstraintBinding<T>(() => valueToBind, this.pconstraint, this.perrorMessage);
+			return new ConstraintBinding<T>(() => valueToBind, this.pconstraint, this.errorMessageCallback);
 		}
 			
 		/// <summary>
@@ -128,7 +135,7 @@ namespace DatabaseObjects.Constraints
 		/// </summary>
 		public ConstraintBinding<T> Clone(Func<T> getValue)
 		{
-			return new ConstraintBinding<T>(getValue, this.pconstraint, this.perrorMessage);
+			return new ConstraintBinding<T>(getValue, this.pconstraint, this.errorMessageCallback);
 		}
 	}
 }
