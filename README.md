@@ -1,4 +1,4 @@
-﻿DatabaseObjects
+DatabaseObjects
 ===============
 
 Overview
@@ -13,6 +13,10 @@ Unless required by applicable law or agreed to in writing, software distributed 
 SQL Support 
 -----------
 The library also supports other database commands for creating / altering tables, indexes, views and specifying table joins, arithmetic expressions, aggregates, grouping, ordering, unions and support for all common data types and more. All commands are database agnostic.
+
+Videos
+------
+A series of tutorial videos are available [here].(http://www.youtube.com/user/80twix/)
 
 Documentation
 -------------
