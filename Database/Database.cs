@@ -380,7 +380,9 @@ namespace DatabaseObjects
 		/// </summary>
 		private SQL.FieldValueAutoAssignmentType MergeDistinctFieldAutoAssignmentAndDistinctFieldAutoIncrements(IDatabaseObjects collection)
 		{
+            #pragma warning disable 0618
 			if (collection.DistinctFieldAutoIncrements())
+            #pragma warning restore 0618
 				return SQL.FieldValueAutoAssignmentType.AutoIncrement;
 			else
 				return collection.DistinctFieldAutoAssignment();

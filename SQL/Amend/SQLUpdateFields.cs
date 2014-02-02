@@ -48,7 +48,7 @@ namespace DatabaseObjects.SQL
 			pobjFields.Add(objField);
 		}
 			
-		public void Add(SQLFieldValues objFieldValues)
+        public new void Add(SQLFieldValues objFieldValues)
 		{
 			foreach (SQLFieldValue objFieldValue in objFieldValues)
 				base.Add(objFieldValue);

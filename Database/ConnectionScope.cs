@@ -52,7 +52,9 @@ namespace DatabaseObjects
 
 			this.connection = connection;
 
+            #pragma warning disable 0618
 			connection.Start();
+            #pragma warning restore 0618
         }
 
 		/// --------------------------------------------------------------------------------
@@ -119,7 +121,9 @@ namespace DatabaseObjects
 		{
 			if (!this.disposed)
 			{
+                #pragma warning disable 0618
 				connection.Finished();
+                #pragma warning restore 0618
 				this.disposed = true;
 			}
 			

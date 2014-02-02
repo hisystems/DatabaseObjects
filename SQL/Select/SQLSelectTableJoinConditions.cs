@@ -41,7 +41,7 @@ namespace DatabaseObjects.SQL
 			
 		public SQLSelectTableJoinCondition Add()
 		{
-			return Add("", ComparisonOperator.EqualTo, "");
+            return Add(new SQLValueExpression(""), ComparisonOperator.EqualTo, new SQLValueExpression(""));
 		}
 			
 		public void Add(SQLSelectTableJoinConditions conditions)

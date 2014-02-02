@@ -924,7 +924,9 @@ namespace DatabaseObjects
         /// </summary>
         bool IDatabaseObjects.DistinctFieldAutoIncrements()
         {
+            #pragma warning disable 0618
             return DistinctFieldAutoIncrements();
+            #pragma warning restore 0618
         }
 
         /// <summary>
