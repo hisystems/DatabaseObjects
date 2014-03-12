@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2BB24C29-723B-4B9B-9A3D-1364A17B7B66}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DatabaseObjects.MonoDroid</RootNamespace>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>DatabaseObjects.MonoDroid</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;MONO_DROID;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>MONO_DROID;MONO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="Attributes\DistinctFieldAttribute.cs" />
+    <Compile Include="Attributes\FieldMappingAttribute.cs" />
+    <Compile Include="Attributes\FieldMappingObjectHookAttribute.cs" />
+    <Compile Include="Attributes\ItemInstanceAttribute.cs" />
+    <Compile Include="Attributes\KeyFieldAttribute.cs" />
+    <Compile Include="Attributes\ObjectReferenceEarlyBindingAttribute.cs" />
+    <Compile Include="Attributes\OrderByAttribute.cs" />
+    <Compile Include="Attributes\SubsetAttribute.cs" />
+    <Compile Include="Attributes\TableAttribute.cs" />
+    <Compile Include="Attributes\TableJoinAttribute.cs" />
+    <Compile Include="Contraints\Constraint.cs" />
+    <Compile Include="Contraints\ConstraintBinding.cs" />
+    <Compile Include="Contraints\DateIsSetConstraint.cs" />
+    <Compile Include="Contraints\DateIsTodayOrFutureForNewObjectConstraint.cs" />
+    <Compile Include="Contraints\EmailAddressConstraint.cs" />
+    <Compile Include="Contraints\IConstraint.cs" />
+    <Compile Include="Contraints\KeyFieldIsUniqueInCollectionConstraint.cs" />
+    <Compile Include="Contraints\NumberIsBetweenConstraint.cs" />
+    <Compile Include="Contraints\NumberIsInRangeConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMaximumOrLesserConstraint.cs" />
+    <Compile Include="Contraints\NumberIsMinimumOrGreaterConstraint.cs" />
+    <Compile Include="Contraints\ObjectIsSavedConstraint.cs" />
+    <Compile Include="Contraints\ObjectIsSetConstraint.cs" />
+    <Compile Include="Contraints\RegExConstraint.cs" />
+    <Compile Include="Contraints\StringIsSetConstraint.cs" />
+    <Compile Include="Contraints\StringMaxLengthConstraint.cs" />
+    <Compile Include="Database\ConnectionScope.cs" />
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\DatabaseObject.cs" />
+    <Compile Include="Database\DatabaseObjectLockController.cs" />
+    <Compile Include="Database\DatabaseObjectLockable.cs" />
+    <Compile Include="Database\DatabaseObjectUsingAttributesHelper.cs" />
+    <Compile Include="Database\DatabaseObjects.cs" />
+    <Compile Include="Database\DatabaseObjectsEnumerable.cs" />
+    <Compile Include="Database\DatabaseObjectsItemInstance.cs" />
+    <Compile Include="Database\DatabaseObjectsUsingAttributesHelper.cs" />
+    <Compile Include="Database\DatabaseObjectsVolatile.cs" />
+    <Compile Include="Database\IDatabaseObject.cs" />
+    <Compile Include="Database\IDatabaseObjectLockable.cs" />
+    <Compile Include="Database\IDatabaseObjectVolatile.cs" />
+    <Compile Include="Database\IDatabaseObjects.cs" />
+    <Compile Include="Database\IDatabaseObjectsMultipleSubclass.cs" />
+    <Compile Include="Database\IGlobalDatabaseObjects.cs" />
+    <Compile Include="Database\LocalTransactionScope.cs" />
+    <Compile Include="Database\ObjectReference.cs" />
+    <Compile Include="Database\ObjectReferenceEarlyBinding.cs" />
+    <Compile Include="Database\RootContainer.cs" />
+    <Compile Include="Generic\DatabaseObjects.cs" />
+    <Compile Include="Generic\DatabaseObjectsEnumerable.cs" />
+    <Compile Include="Generic\DatabaseObjectsList.cs" />
+    <Compile Include="Generic\DatabaseObjectsListKeyed.cs" />
+    <Compile Include="Generic\DatabaseObjectsMultipleSubclass.cs" />
+    <Compile Include="Generic\DatabaseObjectsVolatile.cs" />
+    <Compile Include="Generic\DatabaseObjectsVolatileList.cs" />
+    <Compile Include="Generic\ObjectReference.cs" />
+    <Compile Include="Misc\AssemblyInfo.cs" />
+    <Compile Include="Misc\Exceptions.cs" />
+    <Compile Include="Misc\SystemReflectionExtensions.cs" />
+    <Compile Include="SQL\ISQLStatement.cs" />
+    <Compile Include="SQL\SQL.cs" />
+    <Compile Include="SQL\SQLStatement.cs" />
+    <Compile Include="SQL\SQLStatements.cs" />
+    <Compile Include="SQL\Amend\SQLDelete.cs" />
+    <Compile Include="SQL\Amend\SQLFieldValue.cs" />
+    <Compile Include="SQL\Amend\SQLFieldValues.cs" />
+    <Compile Include="SQL\Amend\SQLInsert.cs" />
+    <Compile Include="SQL\Amend\SQLInsertFromSelect.cs" />
+    <Compile Include="SQL\Amend\SQLUpdate.cs" />
+    <Compile Include="SQL\Amend\SQLUpdateField.cs" />
+    <Compile Include="SQL\Amend\SQLUpdateFields.cs" />
+    <Compile Include="SQL\Expressions\SQLAggregateExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLAllFieldsExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLArithmeticExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLBitwiseExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLCaseExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLCastFieldExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFieldAggregateExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFieldExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLGetDateFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLLeftFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLLengthFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLLogicalExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLRightFunctionExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLStringConcatExpression.cs" />
+    <Compile Include="SQL\Expressions\SQLValueExpression.cs" />
+    <Compile Include="SQL\Select\SQLAutoIncrementValue.cs" />
+    <Compile Include="SQL\Select\SQLCondition.cs" />
+    <Compile Include="SQL\Select\SQLConditionExpression.cs" />
+    <Compile Include="SQL\Select\SQLConditionFieldCompare.cs" />
+    <Compile Include="SQL\Select\SQLConditionInSelect.cs" />
+    <Compile Include="SQL\Select\SQLConditionSelect.cs" />
+    <Compile Include="SQL\Select\SQLConditions.cs" />
+    <Compile Include="SQL\Select\SQLSelect.cs" />
+    <Compile Include="SQL\Select\SQLSelectExpression.cs" />
+    <Compile Include="SQL\Select\SQLSelectField.cs" />
+    <Compile Include="SQL\Select\SQLSelectFields.cs" />
+    <Compile Include="SQL\Select\SQLSelectGetDate.cs" />
+    <Compile Include="SQL\Select\SQLSelectGroupByField.cs" />
+    <Compile Include="SQL\Select\SQLSelectGroupByFields.cs" />
+    <Compile Include="SQL\Select\SQLSelectHavingCondition.cs" />
+    <Compile Include="SQL\Select\SQLSelectHavingConditions.cs" />
+    <Compile Include="SQL\Select\SQLSelectOrderByField.cs" />
+    <Compile Include="SQL\Select\SQLSelectOrderByFields.cs" />
+    <Compile Include="SQL\Select\SQLSelectTable.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableBase.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableFromSelect.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableJoin.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableJoinCondition.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableJoinConditions.cs" />
+    <Compile Include="SQL\Select\SQLSelectTableJoins.cs" />
+    <Compile Include="SQL\Select\SQLSelectTables.cs" />
+    <Compile Include="SQL\Select\SQLUnion.cs" />
+    <Compile Include="SQL\Serializers\SQLiteSerializer.cs" />
+    <Compile Include="SQL\Serializers\Serializer.cs" />
+    <Compile Include="SQL\Serializers\Serializers.cs" />
+    <Compile Include="SQL\TableDefinition\SQLAlterTable.cs" />
+    <Compile Include="SQL\TableDefinition\SQLCreateIndex.cs" />
+    <Compile Include="SQL\TableDefinition\SQLCreateTable.cs" />
+    <Compile Include="SQL\TableDefinition\SQLDropIndex.cs" />
+    <Compile Include="SQL\TableDefinition\SQLDropTable.cs" />
+    <Compile Include="SQL\TableDefinition\SQLTableExists.cs" />
+    <Compile Include="SQL\TableDefinition\SQLTableFields.cs" />
+    <Compile Include="SQL\Transactions\SQLBeginTransaction.cs" />
+    <Compile Include="SQL\Transactions\SQLCommitTransaction.cs" />
+    <Compile Include="SQL\Transactions\SQLRollbackTransaction.cs" />
+    <Compile Include="SQL\Transactions\SQLSetTransactionIsolationLevel.cs" />
+    <Compile Include="SQL\Views\SQLCreateView.cs" />
+    <Compile Include="SQL\Views\SQLDropView.cs" />
+    <Compile Include="SQL\Views\SQLViewExists.cs" />
+  </ItemGroup>
+</Project>

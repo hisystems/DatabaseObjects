@@ -30,7 +30,7 @@ namespace DatabaseObjects.SQL.Serializers
 
 		static Serializers()
 		{
-#if MONO_TOUCH
+#if MONO_TOUCH || MONO_DROID
 			Items.Add(Database.ConnectionType.SQLite, new SQLiteSerializer());
 #else
 			Items.Add(Database.ConnectionType.SQLServer, new MicrosoftSqlServerSerializer());
