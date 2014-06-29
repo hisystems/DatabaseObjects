@@ -36,10 +36,8 @@ namespace DatabaseObjects.Constraints
 		private Func<T, string> errorMessageCallback;
 			
 		/// <summary>
-		///
+		/// Binds a particular value to a constraint.
 		/// </summary>
-		/// <param name="getValue"></param>
-		/// <param name="constraint"></param>
 		/// <param name="errorMessage">
 		/// An error message that is raised as part of an exception, and/or from the user interface.
 		/// Parameter {0} represents the value from the callback.</param>
@@ -50,7 +48,19 @@ namespace DatabaseObjects.Constraints
 		}
 
 		/// <summary>
-		/// Binds a particular value to 
+		/// Binds a particular value to a constraint.
+		/// </summary>
+		/// <param name="errorMessageCallback">
+		/// A callback to an error message that is returned when the constraint fails.
+		/// The parameter is the value that has failed the constraint.
+		/// </param>
+		public ConstraintBinding(Func<T> getValue, Func<T, bool> constraint, Func<T, string> errorMessageCallback)
+			: this(getValue, new Constraint<T>(constraint), errorMessageCallback)
+		{
+		}
+
+		/// <summary>
+		/// Binds a particular value to a constraint.
 		/// </summary>
 		/// <param name="errorMessageCallback">
 		/// A callback to an error message that is returned when the constraint fails.
@@ -64,11 +74,8 @@ namespace DatabaseObjects.Constraints
 		}
 	
 		/// <summary>
-		///
+		/// Binds a particular value to a constraint.
 		/// </summary>
-		/// <param name="getValue"></param>
-		/// <param name="constraint"></param>
-		/// <remarks></remarks>
 		public ConstraintBinding(Func<T> getValue, IConstraint<T> constraint) 
             : this(getValue, constraint, "Value '{0}' did not satisfy constraint; " + constraint.ToString())
 		{
