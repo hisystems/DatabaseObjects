@@ -114,6 +114,12 @@ namespace DatabaseObjects.SQL.Serializers
 			return "\"" + strIdentifierName + "\"";
 		}
 
+		public override string SerializeTableFieldCollationOption(SQLTableField field)
+		{
+			// Force to case-insensitive text comparison.
+			return "COLLATE NOCASE";
+		}
+
 		public override string SerializeDataType(SQL.DataType dataType, int size, int precision, int scale)
 		{
 			switch (dataType)

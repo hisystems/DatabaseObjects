@@ -684,12 +684,18 @@ namespace DatabaseObjects.SQL.Serializers
 			{
 				tokens.Add(SerializeTableFieldAsName(field));
 				tokens.Add(SerializeTableFieldDataType(field));
+				tokens.Add(SerializeTableFieldCollationOption(field));
 				tokens.Add(SerializeTableFieldDefaultOption(field));
 				tokens.Add(SerializeTableFieldNullableOption(field));
 				tokens.Add(SerializeTableFieldKeyTypeOption(field));
 			}
 
 			return tokens.ToString();
+		}
+
+		public virtual string SerializeTableFieldCollationOption(SQLTableField field)
+		{
+			return string.Empty;
 		}
 
 		public virtual string SerializeTableFieldDataType(SQLTableField field)
