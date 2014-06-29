@@ -61,6 +61,18 @@ namespace DatabaseObjects.SQL.Serializers
 			return "DROP INDEX " + SerializeIdentifier(dropIndex.Name);
 		}
 
+		public override string SerializeSelect(SQLSelect select)
+		{
+			var tokens = new TokenSerializer();
+
+			tokens.Add(base.SerializeSelect(select));
+
+			if (select.Top > 0)
+				tokens.Add("LIMIT " + select.Top.ToString());
+
+			return tokens.ToString();
+		}
+
 		public override string SerializeTableField(SQLTableField field, SQLTableFields.AlterModeType alterMode)
 		{
 			// if altering or creating a field append the AUTOINCREMENT. Field format: name datatype default nullable keytype AUTOINCREMENT
