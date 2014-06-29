@@ -846,7 +846,7 @@ namespace DatabaseObjects
 			using (ConnectionScope objConnection = new ConnectionScope(this))
 				objConnection.ExecuteNonQuery(objDelete);
 		}
-		
+
 		/// --------------------------------------------------------------------------------
 		/// <summary>
 		/// Returns an IList object containing all of the collection's associated child
@@ -874,10 +874,46 @@ namespace DatabaseObjects
 		///
 		public IList ObjectsList(IDatabaseObjects objCollection)
 		{
+			return ObjectsList(objCollection, maxRecords: 0);
+		}
+
+		/// --------------------------------------------------------------------------------
+		/// <summary>
+		/// Returns an IList object containing the first n of the collection's associated child
+		/// objects. This function is useful when loading a set of objects for a subset or
+		/// for use with the IEnumerable interface.
+		/// </summary>
+		///
+		/// <param name="objCollection">
+		/// The collection which contains the objects to load.
+		/// </param>
+		///
+		/// <param name="maxRecords">
+		/// The maximum number of records to return. 
+		/// Zero returns all of the records.
+		/// </param>
+		///
+		/// <returns><see cref="Collections.IList" />	(System.Collections.IList)</returns>
+		///
+		/// <example>
+		/// <code>
+		/// 'Can be used to provide an enumerator for use with the "For Each" clause
+		/// Private Function GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
+		///
+		///     Return objDatabase.ObjectsList(objGlobalProductsInstance, 1000).GetEnumerator
+		///
+		/// End Function
+		/// </code>
+		/// </example>
+		/// --------------------------------------------------------------------------------
+		///
+		public IList ObjectsList(IDatabaseObjects objCollection, int maxRecords)
+		{
 			IList objArrayList = new ArrayList();
 			SQL.SQLSelect objSelect = new SQL.SQLSelect();
 			
 			SQL.SQLSelectTable objPrimaryTable = objSelect.Tables.Add(objCollection.TableName());
+			objSelect.Top = maxRecords;
 			objSelect.Tables.Joins = objCollection.TableJoins(objPrimaryTable, objSelect.Tables);
 			objSelect.Where = objCollection.Subset();
 			objSelect.OrderBy = objCollection.OrderBy();

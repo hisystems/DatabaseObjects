@@ -486,7 +486,39 @@ namespace DatabaseObjects
 		{
 			return Database.ObjectFromFieldValues(this, objFieldValues);
 		}
-		
+
+		/// --------------------------------------------------------------------------------
+		/// <summary>
+		/// Returns an IList object containing the first n of the collection's associated child
+		/// objects. This function is useful when loading a set of objects for a subset or
+		/// for use with the IEnumerable interface.
+		/// </summary>
+		///
+		/// <param name="maxRecords">
+		/// The maximum number of records to return. 
+		/// Zero returns all of the records.
+		/// </param>
+		///
+		/// <returns><see cref="Collections.IList" />	(System.Collections.IList)</returns>
+		///
+		/// <example>
+		/// <code>
+		/// 'Alternatively, the DatabaseObjectsEnumerable class can be used which
+		/// 'automatically incorporates an enumerator
+		/// Private Function GetEnumerator() As System.Collections.IEnumerator Implements System.Collections.IEnumerable.GetEnumerator
+		///
+		///     Return MyBase.ObjectsList(1000).GetEnumerator
+		///
+		/// End Function
+		/// </code>
+		/// </example>
+		/// --------------------------------------------------------------------------------
+		///
+		protected IList ObjectsList(int maxRecords)
+		{
+			return this.ParentDatabase.ObjectsList(this, maxRecords);
+		}
+
 		/// --------------------------------------------------------------------------------
 		/// <summary>
 		/// Returns an IList object containing all of this collection's objects. This
