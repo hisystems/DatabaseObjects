@@ -25,8 +25,6 @@ namespace DatabaseObjects.SQL
 {
 	public class SQLUpdateField : SQLFieldValue
 	{
-		private SQLExpression pobjSourceValue;
-			
 		public SQLUpdateField(string strDestinationFieldName, string strSourceFieldName) 
             : this(strDestinationFieldName, new SQLFieldExpression(strSourceFieldName))
 		{
@@ -40,15 +38,7 @@ namespace DatabaseObjects.SQL
 				throw new ArgumentNullException("SourceExpression");
 				
 			base.Name = strDestinationFieldName;
-			pobjSourceValue = objSourceExpression;
-		}
-			
-		public new SQLExpression Value
-		{
-			get
-			{
-				return pobjSourceValue;
-			}
+			base.Value = objSourceExpression;
 		}
 	}
 }
