@@ -120,14 +120,16 @@ namespace DatabaseObjects
 			private IEnumerable<Type> GetRealCollectionTypes(Assembly assemblyToSearch)
 			{
 				List<string> excludeCollectionTypeNames = new List<string>();
-				
 #if DEBUG
 				excludeCollectionTypeNames.Add("DatabaseObjects.UnitTests.ItemInstanceTests+TableWithNoItemInstanceAttribute");
 				excludeCollectionTypeNames.Add("DatabaseObjects.UnitTests.AttributesInvalidTests+InvalidItemInstanceTypeCollection");
 #endif
+				var databaseObjectsAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+
 				return assemblyToSearch.GetTypes()
                     .Where(type => !type.IsAbstract)
                     .Where(type => type.IsSubclassOf(typeof(DatabaseObjects)))
+                    .Where(type => type.BaseType.Assembly.Equals(databaseObjectsAssembly))
                     .Where(type => !excludeCollectionTypeNames.Contains(type.FullName));
 			}
 		}
