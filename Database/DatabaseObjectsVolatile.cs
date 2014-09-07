@@ -344,7 +344,7 @@ namespace DatabaseObjects
 			return this.VolatileObjectsEnumerator();
 		}
 		
-		public System.Collections.IEnumerator VolatileObjectsEnumerator()
+		private System.Collections.IEnumerator VolatileObjectsEnumerator()
 		{
 			return pobjItems.GetEnumerator();
 		}
