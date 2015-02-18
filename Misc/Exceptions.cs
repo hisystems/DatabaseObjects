@@ -125,4 +125,12 @@ namespace DatabaseObjects.Exceptions
 		{
 		}
 	}
+
+	public class RecordDoesNotExistException : ApplicationException
+	{
+		public RecordDoesNotExistException(IDatabaseObjects collection, IDatabaseObject item)
+			: base(collection.GetType().Name + ": '" + item.DistinctValue.ToString() + "' could not be updated because the associated record does not exist in the database.")
+		{
+		}
+	}
 }

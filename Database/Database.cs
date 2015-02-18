@@ -349,7 +349,8 @@ namespace DatabaseObjects
 						objUpdate.Where.Add(objSubset);
 					}
 					
-					objConnection.ExecuteNonQuery(objUpdate);
+					if (objConnection.ExecuteNonQuery(objUpdate) != 1)
+						throw new Exceptions.RecordDoesNotExistException(objCollection, objItem);
 				}
 				else
 				{
