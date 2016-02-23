@@ -207,7 +207,7 @@ namespace DatabaseObjects.SQL.Serializers
 				case DataType.Image:
 					return "LONGBLOB";
 				case DataType.UniqueIdentifier:
-					return "UNIQUEIDENTIFIER";
+                    return "CHAR(38)";
 				default:
 					return base.SerializeDataType(dataType, size, precision, scale);
 			}
