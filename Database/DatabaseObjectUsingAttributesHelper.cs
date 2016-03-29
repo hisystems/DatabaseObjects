@@ -327,14 +327,33 @@ namespace DatabaseObjects
 						{
 							try
 							{
+								var nullableBaseType = GetNullableBaseType(objField.FieldType);
+
 								//If an enum field then convert the integer to the enum equivalent
-								if (objField.FieldType.IsEnum)
+								if (nullableBaseType != null && nullableBaseType.IsEnum)
+								{
+									var value = objFields[objFieldMapping.FieldName].Value;
+									if (value != null)
+										value = System.Enum.ToObject(objField.FieldType.GetGenericArguments()[0], value);
+
+									objField.SetValue(objObject, value);
+								}
+								else if (objField.FieldType.IsEnum)
 									objField.SetValue(objObject, System.Enum.ToObject(objField.FieldType, objFields[objFieldMapping.FieldName].Value));
-                                else if (objField.GetValue(objObject) is ObjectReference)   //Set the distinct value if this is an ObjectReference field
-									((ObjectReference) (objField.GetValue(objObject))).DistinctValue = objFields[objFieldMapping.FieldName].Value;
-								else if (objField.FieldType.Equals(typeof(bool)) && !objFields[objFieldMapping.FieldName].Value.GetType().Equals(typeof(bool)))
-									//MySQL connection provides BIT data as a ULong data type, so convert to boolean.
-									objField.SetValue(objObject, System.Convert.ToInt32(objFields[objFieldMapping.FieldName].Value) != 0);
+								else if (objField.GetValue(objObject) is ObjectReference)   //Set the distinct value if this is an ObjectReference field
+									((ObjectReference)(objField.GetValue(objObject))).DistinctValue = objFields[objFieldMapping.FieldName].Value;
+								else if (
+									(objField.FieldType.Equals(typeof(bool)) || (nullableBaseType != null && nullableBaseType.Equals(typeof(bool)))) &&
+									!objFields[objFieldMapping.FieldName].Value.GetType().Equals(typeof(bool)))
+								{
+									var value = objFields[objFieldMapping.FieldName].Value;
+
+									if (value != null)
+										value = System.Convert.ToInt32(value) != 0;
+
+									// MySQL connection provides BIT data as a ULong data type, so convert to boolean.
+									objField.SetValue(objObject, value);
+								}
 								else
 									objField.SetValue(objObject, objFields[objFieldMapping.FieldName].Value);
 							}
@@ -362,19 +381,39 @@ namespace DatabaseObjects
 							{
 								try
 								{
-									//If an enum field then convert the integer to the enum equivalent
-									if (objProperty.PropertyType.IsEnum)
+									var nullableBaseType = GetNullableBaseType(objProperty.PropertyType);
+
+									if (nullableBaseType != null && nullableBaseType.IsEnum)
+									{
+										var value = objFields[objFieldMapping.FieldName].Value;
+										if (value != null)
+											value = System.Enum.ToObject(objProperty.PropertyType.GetGenericArguments()[0], value);
+
+										objProperty.SetValue(objObject, value, null);
+									}
+									// If an enum field then convert the integer to the enum equivalent
+									else if (objProperty.PropertyType.IsEnum)
 									{
 										objProperty.SetValue(objObject, System.Enum.ToObject(objProperty.PropertyType, objFields[objFieldMapping.FieldName].Value), null);
 									}
-									else if (objProperty.PropertyType.Equals(typeof(bool)) && !objFields[objFieldMapping.FieldName].Value.GetType().Equals(typeof(bool)))
+									else if (
+										(objProperty.PropertyType.Equals(typeof(bool)) || (nullableBaseType != null && nullableBaseType.Equals(typeof(bool)))) &&
+										!objFields[objFieldMapping.FieldName].Value.GetType().Equals(typeof(bool)))
 									{
-										//MySQL connection provides BIT data as a ULong data type, so convert to boolean.
-										objProperty.SetValue(objObject, System.Convert.ToInt32(objFields[objFieldMapping.FieldName].Value) != 0, null);
+										var value = objFields[objFieldMapping.FieldName].Value;
+
+										if (value != null)
+											value = System.Convert.ToInt32(value) != 0;
+
+										// MySQL connection provides BIT data as a ULong data type, so convert to boolean.
+										objProperty.SetValue(objObject, value, null);
 									}
 									else
 									{
-										objProperty.SetValue(objObject, objFields[objFieldMapping.FieldName].Value, null);
+										if (nullableBaseType != null)
+											objProperty.SetValue(objObject, Convert.ChangeType(objFields[objFieldMapping.FieldName].Value, nullableBaseType), null);
+										else
+											objProperty.SetValue(objObject, objFields[objFieldMapping.FieldName].Value, null);
 									}
 								}
 								catch (Exception ex)
@@ -386,6 +425,14 @@ namespace DatabaseObjects
 					}
 				}
 			}
+		}
+
+		private static Type GetNullableBaseType(Type type)
+		{
+			if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+				return type.GetGenericArguments()[0];
+			else
+				return null;
 		}
 	}
 }
