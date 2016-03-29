@@ -91,19 +91,19 @@ namespace DatabaseObjects
 					foreach (FieldMappingObjectHookAttribute objFieldMappingObjectHook in objAttributes)
 					{
 						if (objField.FieldType.IsValueType)
-                            throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with FieldMappingObjectHook attribute on value type - must be a class type");
+							throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with FieldMappingObjectHook attribute on value type - must be a class type");
 						else
 						{
 							objFieldObject = objField.GetValue(objObject);
 							if (objFieldObject == null)
-                                throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
+								throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
 
 							objFieldValues.Add(SaveFieldsForBaseTypes(objFieldObject, objFieldObject.GetType()));
 						}
 					}
 				}
 			}
-			
+
 			//Search for properties that have the FieldMappingObjectHookAttribute
 			foreach (System.Reflection.PropertyInfo objProperty in objType.GetProperties(pcePropertyFieldScope))
 			{
@@ -120,7 +120,7 @@ namespace DatabaseObjects
 							{
 								objFieldObject = objProperty.GetValue(objObject, null);
 								if (objFieldObject == null)
-                                    throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
+									throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
 
 								objFieldValues.Add(SaveFieldsForBaseTypes(objFieldObject, objFieldObject.GetType()));
 							}
@@ -156,8 +156,8 @@ namespace DatabaseObjects
 							//If an enum field then convert the enum to an integer
 							if (objField.FieldType.IsEnum)
 								objFieldValues.Add(objFieldMapping.FieldName, System.Convert.ToInt32(objField.GetValue(objObject)));
-                            else if (objField.GetValue(objObject) is ObjectReference)   //Get the distinct value if this is an ObjectReference field
-								objFieldValues.Add(objFieldMapping.FieldName, ((ObjectReference) (objField.GetValue(objObject))).DistinctValue);
+							else if (objField.GetValue(objObject) is ObjectReference)   //Get the distinct value if this is an ObjectReference field
+								objFieldValues.Add(objFieldMapping.FieldName, ((ObjectReference)(objField.GetValue(objObject))).DistinctValue);
 							else
 								objFieldValues.Add(objFieldMapping.FieldName, objField.GetValue(objObject));
 						}
@@ -168,7 +168,7 @@ namespace DatabaseObjects
 					}
 				}
 			}
-			
+
 			//Search for properties that have the FieldMappingAttribute
 			foreach (System.Reflection.PropertyInfo objProperty in objType.GetProperties(pcePropertyFieldScope))
 			{
@@ -240,21 +240,21 @@ namespace DatabaseObjects
 				LoadFieldsForObjectReferenceEarlyBinding(objObject, objType, objFields);
 			}
 		}
-		
+
 		private static void LoadFieldsForObjectReferenceEarlyBinding(object objectToLoad, System.Type type, SQL.SQLFieldValues fieldValues)
 		{
 			foreach (var earlyBindingField in ObjectReferenceEarlyBinding.GetObjectReferenceEarlyBindingFields(type))
 			{
-				var objectReference = (ObjectReference) (earlyBindingField.Field.GetValue(objectToLoad));
+				var objectReference = (ObjectReference)(earlyBindingField.Field.GetValue(objectToLoad));
 				objectReference.Object = Database.ObjectFromFieldValues(objectReference.ParentCollection, fieldValues);
 			}
 		}
-		
+
 		private static void LoadFieldsForHookedObjects(object objObject, System.Type objType, SQL.SQLFieldValues objFields)
 		{
 			object[] objAttributes;
 			object objFieldObject;
-			
+
 			//Search for fields that have the FieldMappingObjectHookAttribute
 			foreach (System.Reflection.FieldInfo objField in objType.GetFields(pcePropertyFieldScope))
 			{
@@ -271,14 +271,14 @@ namespace DatabaseObjects
 						{
 							objFieldObject = objField.GetValue(objObject);
 							if (objFieldObject == null)
-                                throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
+								throw new Exceptions.DatabaseObjectsException("Field " + objField.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
 
 							LoadFieldsForBaseTypes(objFieldObject, objFieldObject.GetType(), objFields);
 						}
 					}
 				}
 			}
-			
+
 			//Search for properties that have the FieldMappingObjectHookAttribute
 			foreach (System.Reflection.PropertyInfo objProperty in objType.GetProperties(pcePropertyFieldScope))
 			{
@@ -290,12 +290,12 @@ namespace DatabaseObjects
 						if (objProperty.CanRead)
 						{
 							if (objProperty.PropertyType.IsValueType)
-                                throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with FieldMappingObjectHook attribute on value type - must be a class type");
+								throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with FieldMappingObjectHook attribute on value type - must be a class type");
 							else
 							{
 								objFieldObject = objProperty.GetValue(objObject, null);
 								if (objFieldObject == null)
-                                    throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
+									throw new Exceptions.DatabaseObjectsException("Property " + objProperty.FullName() + " marked with " + typeof(FieldMappingObjectHookAttribute).Name + " is Nothing");
 
 								LoadFieldsForBaseTypes(objFieldObject, objFieldObject.GetType(), objFields);
 							}
