@@ -350,6 +350,7 @@
     <Compile Include="SQL\Views\SQLCreateView.cs" />
     <Compile Include="SQL\Views\SQLDropView.cs" />
     <Compile Include="SQL\Views\SQLViewExists.cs" />
+    <Compile Include="SQL\Expressions\SQLLiteralExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
