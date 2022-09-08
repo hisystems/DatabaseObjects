@@ -1,6 +1,6 @@
 // _________________________________________________________________________
 //
-//  © Hi-Integrity Systems 2010. All rights reserved.
+//  ï¿½ Hi-Integrity Systems 2010. All rights reserved.
 //  www.hisystems.com.au - Toby Wicks
 // 
 //  Licensed under the Apache License, Version 2.0 (the "License");
