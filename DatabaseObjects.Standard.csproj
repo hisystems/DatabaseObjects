@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DatabaseObjects</AssemblyName>
+    <RootNamespace>DatabaseObjects</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Attributes\**\*.cs" Link="Attributes\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="Constraints\**\*.cs" Link="Constraints\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="Database\**\*.cs" Link="Database\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="Generic\**\*.cs" Link="Generic\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="Misc\**\*.cs" Link="Misc\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="Obsolete\**\*.cs" Link="Obsolete\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="SQL\**\*.cs" Exclude="..\SQL\Expressions\SQLLiteralExpression.cs" Link="SQL\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.Odbc" Version="4.7.0" />
+    <PackageReference Include="System.Data.OleDb" Version="6.0.0" />
+  </ItemGroup>
+</Project>

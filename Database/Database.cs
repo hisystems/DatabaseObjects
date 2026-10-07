@@ -2074,22 +2074,23 @@ namespace DatabaseObjects
 				string strSQL = objSQLStatement.SQL;
 
 				IDataReader reader;
-                
-				using (var command = objConnection.CreateCommand())
+
+				// Not wrapped in a using statement as the command must remain open for the lifetime of the reader
+				// (some providers, e.g. Microsoft.Data.Sqlite, close the reader when its command is disposed).
+				var command = objConnection.CreateCommand();
+				command.CommandText = strSQL;
+
+				if (pobjTransactions.Count > 0)
+					command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
+
+				try
 				{
-					command.CommandText = strSQL;
-
-					if (pobjTransactions.Count > 0)
-						command.Transaction = pobjTransactions.Peek(); //Only used for SQLServerCompactEdition
-
-					try
-					{
-						reader = command.ExecuteReader();
-					}
-					catch (Exception ex)
-					{
-						throw new Exceptions.DatabaseObjectsException("Execute failed: " + strSQL, ex);
-					}
+					reader = command.ExecuteReader();
+				}
+				catch (Exception ex)
+				{
+					command.Dispose();
+					throw new Exceptions.DatabaseObjectsException("Execute failed: " + strSQL, ex);
 				}
 
 				OnStatementExecuted(objSQLStatement);
